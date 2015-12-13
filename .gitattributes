@@ -1,0 +1,15 @@
+* text=auto
+
+
+*.cs text diff=csharp
+*.js text
+
+
+*.fbx binary
+*.png binary
+*.jpg binary
+*.ogg binary
+*.wav binary
+*.ttf binary
+*.bundle binary
+*.unity binary
