@@ -7,7 +7,7 @@ public class TraceLevel : MonoBehaviour
     private float traceSpeed = 15;
 
     [SerializeField]
-    private float traceDistace = 0.8f;
+    private float traceDistance = 0.6f;
 
     [SerializeField]
     private float tracePointInterval = 0.1f;
@@ -83,7 +83,7 @@ public class TraceLevel : MonoBehaviour
 
     private void OnPathTraceUpdate()
     {
-        if (Vector3.Distance(this.transform.position, this.lastPointTraced) > this.traceDistace)
+        if (Vector3.Distance(this.transform.position, this.lastPointTraced) > this.traceDistance)
         {
             this.lastPointTraced = this.transform.position;
 

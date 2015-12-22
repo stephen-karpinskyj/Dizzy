@@ -3,11 +3,15 @@ using UnityEngine;
 
 public class CameraController : BehaviourSingleton<CameraController>
 {
+    private Vector3 originalCamPos;
+    
     protected override void Awake()
     {
         base.Awake();
 
         instance = this;
+
+        this.originalCamPos = this.transform.position;
     }
 
     public void Shake(float duration, float magnitude)
@@ -20,8 +24,6 @@ public class CameraController : BehaviourSingleton<CameraController>
     {
         var elapsed = 0f;
 
-        var originalCamPos = this.transform.position;
-
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;          
@@ -29,9 +31,8 @@ public class CameraController : BehaviourSingleton<CameraController>
             var percentComplete = elapsed / duration;
             var damper = 1f - Mathf.Clamp(4f * percentComplete - 3f, 0f, 1f);
 
-            // map value to [-1, 1]
-            var x = Random.value * 2f - 1f;
-            var y = Random.value * 2f - 1f;
+            var x = Mathf.PerlinNoise(Random.value * 100f, Random.value * 100f) * 2f - 1f;
+            var y = Mathf.PerlinNoise(Random.value * 100f, Random.value * 100f) * 2f - 1f;
             x *= magnitude * damper;
             y *= magnitude * damper;
 

@@ -15,13 +15,13 @@ public class BombController : MonoBehaviour
     private float destroyDelay = 0.2f;
 
     [SerializeField]
-    private float momentumDecayMultiplier = 0.85f;
-
-    [SerializeField]
     private SpriteRenderer spriteRenderer;
 
     [SerializeField]
     private ParticleSystem explosionParticles;
+
+    [SerializeField]
+    private Vector2 explosionMultiplierRange = new Vector2(0.3f, 1f);
 
     [SerializeField]
     private AudioSource source;
@@ -74,6 +74,13 @@ public class BombController : MonoBehaviour
         }
 
         this.hasExploded = true;
+        Object.Destroy(this.gameObject, this.destroyDelay);
+
+        var angleInRadians = transform.eulerAngles.z * Mathf.Deg2Rad;
+        var forceDirection = new Vector2(Mathf.Cos(angleInRadians), Mathf.Sin(angleInRadians)).normalized;
+
+        var travelling = other.attachedRigidbody.velocity.normalized;
+        var explosionMultiplier = Mathf.Lerp(this.explosionMultiplierRange.x, this.explosionMultiplierRange.y, Mathf.Max(0f, Vector2.Dot(travelling, forceDirection)));
 
         this.source.clip = this.deathClip;
         this.source.volume = 1f;
@@ -82,14 +89,11 @@ public class BombController : MonoBehaviour
 
         this.spriteRenderer.enabled = false;
 
-        CameraController.Instance.Shake(this.explosionShakeDuration, this.explosionShakeMagnitude);
-        Object.Destroy(this.gameObject, this.destroyDelay);
+        CameraController.Instance.Shake(this.explosionShakeDuration, this.explosionShakeMagnitude * explosionMultiplier);
 
-        var angleInRadians = transform.eulerAngles.z * Mathf.Deg2Rad;
-        var forceDirection = new Vector2(Mathf.Cos(angleInRadians), Mathf.Sin(angleInRadians)).normalized;
-        other.attachedRigidbody.velocity *= this.momentumDecayMultiplier;
-        other.attachedRigidbody.AddForce(forceDirection * this.explosionMagnitude, ForceMode2D.Impulse);
+        other.attachedRigidbody.AddForce(forceDirection * this.explosionMagnitude * explosionMultiplier, ForceMode2D.Impulse);
 
+        this.explosionParticles.startLifetime *= explosionMultiplier;
         this.explosionParticles.Play();
 
         if (CurrentCount == 1)

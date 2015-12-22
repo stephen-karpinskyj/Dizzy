@@ -43,7 +43,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 170168}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -1.6733589, y: 0.4543388, z: 0}
   m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
   m_Children:
   - {fileID: 491284}
@@ -56,7 +56,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 162852}
   m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071067}
-  m_LocalPosition: {x: 0, y: -0, z: 0}
+  m_LocalPosition: {x: -0.2, y: -0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 416976}
@@ -74,7 +74,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Size: {x: 1.02, y: 0.75}
+  m_Size: {x: 0.7, y: 0.5}
 --- !u!82 &8288050
 AudioSource:
   m_ObjectHideFlags: 1
@@ -160,13 +160,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43b7ebdb7a8a04a4ab250b84e3f0ba46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  explosionMagnitude: 26
-  explosionShakeMagnitude: 0.06
-  explosionShakeDuration: 0.2
+  explosionMagnitude: 10
+  explosionShakeMagnitude: 0.1
+  explosionShakeDuration: 0.15
   destroyDelay: 0.2
-  momentumDecayMultiplier: 0.85
   spriteRenderer: {fileID: 21217298}
   explosionParticles: {fileID: 19803252}
+  explosionMultiplierRange: {x: 0.3, y: 1}
   source: {fileID: 8288050}
   spawnClip: {fileID: 8300000, guid: aae872fdc56a444de8a6ca6d81a39b73, type: 3}
   deathClip: {fileID: 8300000, guid: 18d0ce2a2923347ae9f0eb29e5c5a206, type: 3}
@@ -227,7 +227,7 @@ ParticleSystem:
     serializedVersion: 2
     enabled: 1
     startLifetime:
-      scalar: 0.08
+      scalar: 0.1
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -262,7 +262,7 @@ ParticleSystem:
         m_RotationOrder: 4
       minMaxState: 0
     startSpeed:
-      scalar: 10
+      scalar: 5
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -391,7 +391,7 @@ ParticleSystem:
         rgba: 4294967295
       minMaxState: 0
     startSize:
-      scalar: 1.25
+      scalar: 0.7
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -538,7 +538,7 @@ ParticleSystem:
     serializedVersion: 2
     enabled: 1
     type: 12
-    radius: 0.3
+    radius: 0.15
     angle: 25
     length: 5
     boxX: 1
@@ -1796,7 +1796,7 @@ Prefab:
       objectReference: {fileID: 4300000, guid: 3ad98fb9a8e124658bc8e94a02d5ee03, type: 3}
     - target: {fileID: 0}
       propertyPath: explosionMagnitude
-      value: 26
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_ReceiveShadows
@@ -1824,7 +1824,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: InitialModule.startSize.scalar
-      value: 1.25
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: InitialModule.startColor.maxColor.rgba
@@ -1836,7 +1836,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: explosionShakeMagnitude
-      value: 0.06
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_Enabled
@@ -1856,7 +1856,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: momentumDecayMultiplier
-      value: .850000024
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_SortingOrder
@@ -1950,6 +1950,30 @@ Prefab:
       propertyPath: spriteRenderer
       value: 
       objectReference: {fileID: 21217298}
+    - target: {fileID: 0}
+      propertyPath: looping
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: explosionShakeDuration
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: EmissionModule.rate.scalar
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: InitialModule.maxNumParticles
+      value: 1000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: minParticleLifetimeMultiplier
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: InitialModule.startLifetime.scalar
+      value: 0.1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 170168}
