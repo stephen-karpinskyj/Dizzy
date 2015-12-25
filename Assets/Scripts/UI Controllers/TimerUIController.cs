@@ -84,7 +84,7 @@ public class TimerUIController : MonoBehaviour
 
     private void Update()
     {
-        var numLeft = GameObject.FindObjectsOfType<BombController>().Length;
+        var bombs = Object.FindObjectsOfType<BombController>();
 
         if (isRunning)
         {
@@ -93,7 +93,7 @@ public class TimerUIController : MonoBehaviour
 
             if (timeLeft < 0)
             {
-                this.text.text = string.Format(this.message, this.countupColor, -timeLeft, numLeft);
+                this.text.text = string.Format(this.message, this.countupColor, -timeLeft, bombs.Length);
             } 
             else if (timeLeft <= this.panicStartTime)
             {
@@ -102,17 +102,22 @@ public class TimerUIController : MonoBehaviour
                     this.isCountingDownAudio = true;
                 }
 
-                this.text.text = string.Format(this.message, timeLeftFloat % 1f > 0.5f ? this.panicColor : this.countdownColor, timeLeftFloat.ToString("f1"), numLeft);
+                this.text.text = string.Format(this.message, timeLeftFloat % 1f > 0.5f ? this.panicColor : this.countdownColor, timeLeftFloat.ToString("f1"), bombs.Length);
             }
             else
             {
-                this.text.text = string.Format(this.message, this.countdownColor, timeLeft, numLeft);
+                this.text.text = string.Format(this.message, this.countdownColor, timeLeft, bombs.Length);
+            }
+
+            if (bombs.Length == 1 && bombs[0].HasExploded)
+            {
+                Broadcast.SendMessage("LevelWin");
             }
         }
         else
         {
             var bestTime = PlayerPrefs.GetFloat("Time", this.defaultTargetTime);
-            this.text.text = string.Format(this.message, this.currentColor, bestTime.ToString("f3"), numLeft);
+            this.text.text = string.Format(this.message, this.currentColor, bestTime.ToString("f3"), bombs.Length);
         }
     }
 

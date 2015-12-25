@@ -52,7 +52,10 @@ public class BombController : MonoBehaviour
 
     private bool hasExploded = false;
 
-    private static int CurrentCount = 0;
+    public bool HasExploded
+    {
+        get { return this.hasExploded; }
+    }
 
     private void Awake()
     {
@@ -62,17 +65,10 @@ public class BombController : MonoBehaviour
         Debug.Assert(this.spawnClip, this);
         Debug.Assert(this.deathClip, this);
 
-        CurrentCount++;
-
         this.source.clip = this.spawnClip;
         this.source.volume = this.spawnVolume;
         this.source.pitch = Random.Range(this.spawnPitchRange.x, this.spawnPitchRange.y);
         this.source.Play();
-    }
-
-    private void OnDestroy()
-    {
-        CurrentCount--;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -121,14 +117,7 @@ public class BombController : MonoBehaviour
         this.explosionParticles.startLifetime *= explosionMultiplier;
         this.explosionParticles.Play();
 
-        if (CurrentCount == 1)
-        {
-            Broadcast.SendMessage("LevelWin");
-        }
-        else
-        {
-            MultiplierController.Instance.Increment();
-        }
+        MultiplierController.Instance.Increment();
     }
 
     private void LevelStart()

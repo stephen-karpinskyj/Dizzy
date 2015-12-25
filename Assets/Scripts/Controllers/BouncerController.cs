@@ -10,19 +10,19 @@ public class BouncerController : MonoBehaviour
     private Renderer rend;
 
     [SerializeField]
-    private float minBounceSpeed = 0.5f;
+    private float minBounceSpeed = 2f;
 
     [SerializeField]
-    private float bounceFrictionMultiplier = 0.9f;
+    private float bounceFrictionMultiplier = 0.8f;
 
     [SerializeField]
     private float flashDuration = 0.05f;
 
     [SerializeField]
-    private Color flashColour = Color.blue;
+    private Color flashColour = new Color(148/255f, 136/255f, 182/255f);
 
     [SerializeField]
-    private float shakeDuration = 0.05f;
+    private float shakeDuration = 0.2f;
 
     [SerializeField]
     private float shakeMagnitude = 0.1f;
@@ -30,20 +30,23 @@ public class BouncerController : MonoBehaviour
     [SerializeField]
     private AudioSource source;
 
+    [SerializeField]
+    private bool passThroughOnce = true;
+
     private Color defaultColour;
 
     private bool hasExited = false;
 
     private void Awake()
     {
-        this.defaultColour = this.rend.material.color;
+        this.defaultColour = this.rend.sharedMaterial.color;
 
         this.hasExited = false;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (!this.hasExited)
+        if (this.passThroughOnce && !this.hasExited)
         {
             return;
         }
@@ -83,15 +86,15 @@ public class BouncerController : MonoBehaviour
 
     private IEnumerator FlashCoroutine()
     {
-        this.rend.material.color = flashColour;
+        this.rend.sharedMaterial.color = flashColour;
         yield return new WaitForSeconds(this.flashDuration);
-        this.rend.material.color = defaultColour;
+        this.rend.sharedMaterial.color = defaultColour;
     }
 
     private void LevelStart()
     {
         this.StopAllCoroutines();
-        this.rend.material.color = defaultColour;
+        this.rend.sharedMaterial.color = defaultColour;
 
         this.hasExited = false;
     }
@@ -99,7 +102,7 @@ public class BouncerController : MonoBehaviour
     private void LevelWin()
     {
         this.StopAllCoroutines();
-        this.rend.material.color = defaultColour;
+        this.rend.sharedMaterial.color = defaultColour;
 
         this.hasExited = false;
     }

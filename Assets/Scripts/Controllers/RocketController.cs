@@ -5,29 +5,30 @@ public class RocketController : MonoBehaviour
     [Header("Boost")]
 
     [SerializeField]
-    private Vector2 boostForce = new Vector2(300f, 0f);
-
-    [SerializeField]
     private float maxSpeed = 7f;
-
     [SerializeField]
     private AnimationCurve boostMultiplierCurve;
-
+    [SerializeField]
+    private Vector2 boostForce = new Vector2(300f, 0f);
     [SerializeField]
     private Vector2 boostMultiplierRange = new Vector2(0f, 1f);
 
     [SerializeField]
-    private AnimationCurve velocityDecayCurve;
+    private AnimationCurve boostTimeMultiplierCurve;
+    [SerializeField]
+    private float boostTimeMultiplierDuration = 0.5f;
+    [SerializeField]
+    private Vector2 boostTimeMultiplierRange = new Vector2(0.5f, 1f);
 
+    [SerializeField]
+    private AnimationCurve velocityDecayCurve;
     [SerializeField]
     private Vector2 velocityDecayRange = new Vector2(0.5f, 0.3f);
 
     [SerializeField]
     private AnimationCurve angularVelocityDecayCurve;
-
     [SerializeField]
     private float angularVelocityDecayDuration = 0.1f;
-
     [SerializeField]
     private Vector2 angularVelocityDecayRange = new Vector2(0.1f, 0.2f);
 
@@ -35,16 +36,13 @@ public class RocketController : MonoBehaviour
     [Header("Spin")]
 
     [SerializeField]
-    private float torque = 150f;
-
+    private float maxAngularVelocity = 260f;
     [SerializeField]
     private AnimationCurve torqueCurve;
-
+    [SerializeField]
+    private float torque = 150f;
     [SerializeField]
     private float torqueCurveDuration = 0.5f;
-
-    [SerializeField]
-    private float maxAngularVelocity = 260f;
 
 
     [Header("Other")]
@@ -144,7 +142,9 @@ public class RocketController : MonoBehaviour
             {
                 var curveValue = this.boostMultiplierCurve.Evaluate(dirDot);
                 var multiplier = Mathf.Lerp(this.boostMultiplierRange.x, this.boostMultiplierRange.y, curveValue);
-                this.rigidBody.AddRelativeForce(this.boostForce * multiplier);
+                var timeCurveValue = this.boostTimeMultiplierCurve.Evaluate(this.timeReleased / this.boostTimeMultiplierDuration);
+                var timeMultiplier = Mathf.Lerp(this.boostTimeMultiplierRange.x, this.boostTimeMultiplierRange.y, timeCurveValue);
+                this.rigidBody.AddRelativeForce(this.boostForce * multiplier * timeMultiplier);
             }
 
             // Cap linear velocity
@@ -183,13 +183,12 @@ public class RocketController : MonoBehaviour
             this.source.Pause();
         }
 
-        //this.debugDiffString = string.Format("{0:f2}", this.rigidBody.angularVelocity);
         //this.debugDiffString = string.Empty;
 
         //this.debugAimLine.Move(this.transform.position, this.transform.position + aimDir * 0.45f);
         //this.debugVelocityLine.Move(this.transform.position, this.transform.position + velDir * 0.45f);
-        //this.debugDiffText.Move(this.transform.position + Vector3.up * 1f);
-        //this.debugDiffText.Text = this.debugDiffString;
+        this.debugDiffText.Move(this.transform.position + Vector3.up * 1f);
+        this.debugDiffText.Text = this.debugDiffString;
     }
 
     private void LevelWin()

@@ -145,7 +145,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rocketPrefab: {fileID: 11488308, guid: f25ee2cce40cc4b428a47685efacfd31, type: 2}
   emitter: {fileID: 456102}
-  initialForce: {x: 0, y: 120}
+  initialForce: {x: 0, y: 140}
   shakeDuration: 0.2
   shakeMagnitude: 0.1
   timeToWaitOnWin: 0.5
