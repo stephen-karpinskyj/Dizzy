@@ -11,12 +11,22 @@ public class DebugLine : MonoBehaviour
 
     public void Move(Vector3 a, Vector3 b)
     {
+        if (!Debug.isDebugBuild)
+        {
+            return;
+        }
+
         this.line.SetPosition(0, a);
         this.line.SetPosition(1, b);
     }
 
     private void Update()
     {
+        if (!Debug.isDebugBuild)
+        {
+            return;
+        }
+
         if (lastsForever)
         {
             return;
@@ -37,6 +47,11 @@ public class DebugLine : MonoBehaviour
     {
         var go = new GameObject("Line");
         var debug = go.AddComponent<DebugLine>();
+
+        if (!Debug.isDebugBuild)
+        {
+            return debug;
+        }
 
         if (Mathf.Approximately(duration, 0f))
         {

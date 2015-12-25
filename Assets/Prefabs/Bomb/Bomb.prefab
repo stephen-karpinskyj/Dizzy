@@ -160,8 +160,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43b7ebdb7a8a04a4ab250b84e3f0ba46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  explosionMagnitude: 10
-  explosionShakeMagnitude: 0.1
+  explosionMagnitude: 15
+  angleDiffCorrectionTolerance: 40
+  correctionTorque: 14
+  correctionTorqueCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0.9999999
+      inSlope: 0.01624069
+      outSlope: 0.01624069
+      tangentMode: 0
+    - time: 1
+      value: 0.00909102
+      inSlope: -2.9453733
+      outSlope: -2.9453733
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  explosionShakeMagnitude: 0.08
   explosionShakeDuration: 0.15
   destroyDelay: 0.2
   spriteRenderer: {fileID: 21217298}
@@ -1763,6 +1781,10 @@ Prefab:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 0}
+      propertyPath: correctionTorqueCurve.m_Curve.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -1796,7 +1818,7 @@ Prefab:
       objectReference: {fileID: 4300000, guid: 3ad98fb9a8e124658bc8e94a02d5ee03, type: 3}
     - target: {fileID: 0}
       propertyPath: explosionMagnitude
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_ReceiveShadows
@@ -1836,7 +1858,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: explosionShakeMagnitude
-      value: 0.1
+      value: 0.08
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_Enabled
@@ -1973,6 +1995,50 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: InitialModule.startLifetime.scalar
       value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: angleDiffCorrectionTolerance
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: correctionTorque
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: correctionTorqueCurve.m_RotationOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: correctionTorqueCurve.m_Curve.Array.data[0].value
+      value: 1.0727271
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: correctionTorqueCurve.m_Curve.Array.data[0].time
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: correctionTorqueCurve.m_Curve.Array.data[1].value
+      value: 0.00909102
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: correctionTorqueCurve.m_Curve.Array.data[1].time
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: correctionTorqueCurve.m_Curve.Array.data[1].inSlope
+      value: -2.9453733
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: correctionTorqueCurve.m_Curve.Array.data[1].outSlope
+      value: -2.9453733
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: correctionTorqueCurve.m_Curve.Array.data[0].inSlope
+      value: 0.01624069
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: correctionTorqueCurve.m_Curve.Array.data[0].outSlope
+      value: 0.01624069
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

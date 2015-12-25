@@ -8,16 +8,28 @@ public class RocketController : MonoBehaviour
     private Vector2 boostForce = new Vector2(300f, 0f);
 
     [SerializeField]
-    private float maxVelocity = 500f;
-
-    [SerializeField]
-    private Vector2 velocityDecayRange = new Vector2(1f, 0.35f);
+    private float maxSpeed = 7f;
 
     [SerializeField]
     private AnimationCurve boostMultiplierCurve;
 
     [SerializeField]
     private Vector2 boostMultiplierRange = new Vector2(0f, 1f);
+
+    [SerializeField]
+    private AnimationCurve velocityDecayCurve;
+
+    [SerializeField]
+    private Vector2 velocityDecayRange = new Vector2(0.5f, 0.3f);
+
+    [SerializeField]
+    private AnimationCurve angularVelocityDecayCurve;
+
+    [SerializeField]
+    private float angularVelocityDecayDuration = 0.1f;
+
+    [SerializeField]
+    private Vector2 angularVelocityDecayRange = new Vector2(0.1f, 0.2f);
 
 
     [Header("Spin")]
@@ -26,10 +38,13 @@ public class RocketController : MonoBehaviour
     private float torque = 150f;
 
     [SerializeField]
-    private float maxAngularVelocity = 260f;
+    private AnimationCurve torqueCurve;
 
     [SerializeField]
-    private float angularVelocityDecayOnPress = 0.2f;
+    private float torqueCurveDuration = 0.5f;
+
+    [SerializeField]
+    private float maxAngularVelocity = 260f;
 
 
     [Header("Other")]
@@ -44,7 +59,8 @@ public class RocketController : MonoBehaviour
     private float pitchIncreaseMultiplier = 0.3f;
 
     private bool inWinMode = false;
-    private float timeHeld = 0;
+    private float timeHeld = 0f;
+    private float timeReleased = 0f;
 
     private DebugLine debugAimLine;
     private DebugLine debugVelocityLine;
@@ -56,6 +72,11 @@ public class RocketController : MonoBehaviour
     public static int CurrentCount
     {
         get { return Count; }
+    }
+
+    public float MaxSpeed
+    {
+        get { return this.maxSpeed; }
     }
 
     private void Awake()
@@ -104,56 +125,71 @@ public class RocketController : MonoBehaviour
     {
         var aimDir = this.transform.right;
         var velDir = (Vector3)this.rigidBody.velocity.normalized;
-        var dirDot = Mathf.Abs(Vector2.Dot(aimDir, velDir));
+        var dirDot = (Vector2.Dot(aimDir, velDir) + 1f) / 2f;
 
         if (Input.anyKey)
         {
+            this.timeReleased = 0f;
             this.timeHeld += Time.deltaTime;
-            this.source.pitch = 1f + this.timeHeld * this.pitchIncreaseMultiplier;
 
+            // Decay previous linear velocity
             if (Input.anyKeyDown)
             {
-                var decayMultiplier = Mathf.Lerp(this.velocityDecayRange.x, this.velocityDecayRange.y, 1f - dirDot);
-
-                var decayedSpeed = this.rigidBody.velocity.magnitude * decayMultiplier;
-
-                this.rigidBody.velocity = velDir * decayedSpeed;
-
-                this.source.Play();
+                var curveValue = this.velocityDecayCurve.Evaluate(dirDot);
+                var multiplier = Mathf.Lerp(this.velocityDecayRange.x, this.velocityDecayRange.y, curveValue);
+                this.rigidBody.velocity = velDir * this.rigidBody.velocity.magnitude * multiplier;
             }
 
-            var boostMultiplier = Mathf.Lerp(this.boostMultiplierRange.x, this.boostMultiplierRange.y, this.boostMultiplierCurve.Evaluate(dirDot)); //this.boostCurve.Evaluate(boostCurveTime);
-            this.rigidBody.AddRelativeForce(this.boostForce * boostMultiplier);
-            this.rigidBody.angularVelocity *= this.angularVelocityDecayOnPress;
+            // Add new linear velocity
+            {
+                var curveValue = this.boostMultiplierCurve.Evaluate(dirDot);
+                var multiplier = Mathf.Lerp(this.boostMultiplierRange.x, this.boostMultiplierRange.y, curveValue);
+                this.rigidBody.AddRelativeForce(this.boostForce * multiplier);
+            }
 
-            if (this.rigidBody.velocity.magnitude > this.maxVelocity)
+            // Cap linear velocity
+            if (this.rigidBody.velocity.magnitude > this.maxSpeed)
             {
                 var unitVel = this.rigidBody.velocity.normalized;
-                this.rigidBody.velocity = unitVel * this.maxVelocity;
+                this.rigidBody.velocity = unitVel * this.maxSpeed;
             }
 
-            //this.debugDiffString = string.Format("{0:f2}", boostMultiplier);
+            // Decay angular velocity
+            {
+                var curveValue = this.angularVelocityDecayCurve.Evaluate(timeHeld / this.angularVelocityDecayDuration);
+                var multiplier = Mathf.Lerp(this.angularVelocityDecayRange.x, this.angularVelocityDecayRange.y, curveValue);
+                var speedMultiplier = this.rigidBody.velocity.magnitude / this.maxSpeed;
+                this.rigidBody.angularVelocity *= multiplier * speedMultiplier;
+            }
+
+            this.source.pitch = 1f + this.timeHeld * this.pitchIncreaseMultiplier;
+            this.source.Play();
         }
         else
         {
-            this.rigidBody.AddTorque(this.torque);
+            this.timeHeld = 0f;
+            this.timeReleased += Time.deltaTime;
 
+            // Add angular velocity
+            var curveMultiplier = this.torqueCurve.Evaluate(this.timeReleased / this.torqueCurveDuration);
+            this.rigidBody.AddTorque(this.torque * curveMultiplier);
+
+            // Cap angular velocity
             if (this.rigidBody.angularVelocity > this.maxAngularVelocity)
             {
                 this.rigidBody.angularVelocity = this.maxAngularVelocity;
             }
 
-            this.timeHeld = 0;
-
             this.source.Pause();
-
-            this.debugDiffString = string.Empty;
         }
 
-        this.debugAimLine.Move(this.transform.position, this.transform.position + aimDir * 0.38f);
-        this.debugVelocityLine.Move(this.transform.position, this.transform.position + velDir * 0.38f);
-        this.debugDiffText.Move(this.transform.position + Vector3.up * 1f);
-        this.debugDiffText.Text = this.debugDiffString;
+        //this.debugDiffString = string.Format("{0:f2}", this.rigidBody.angularVelocity);
+        //this.debugDiffString = string.Empty;
+
+        //this.debugAimLine.Move(this.transform.position, this.transform.position + aimDir * 0.45f);
+        //this.debugVelocityLine.Move(this.transform.position, this.transform.position + velDir * 0.45f);
+        //this.debugDiffText.Move(this.transform.position + Vector3.up * 1f);
+        //this.debugDiffText.Text = this.debugDiffString;
     }
 
     private void LevelWin()

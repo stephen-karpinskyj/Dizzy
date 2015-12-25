@@ -12,11 +12,21 @@ public class DebugText : MonoBehaviour
 
     public void Move(Vector3 worldPos)
     {
+        if (!Debug.isDebugBuild)
+        {
+            return;
+        }
+
         this.worldPos = worldPos;
     }
 
     private void Update()
     {
+        if (!Debug.isDebugBuild)
+        {
+            return;
+        }
+
         if (lastsForever)
         {
             return;
@@ -30,6 +40,11 @@ public class DebugText : MonoBehaviour
 
     private void OnGUI()
     {
+        if (!Debug.isDebugBuild)
+        {
+            return;
+        }
+
         var screenPoint = Camera.main.WorldToScreenPoint(this.worldPos);
         var rect = new Rect(screenPoint.x, Screen.height - screenPoint.y, 500f, 500f); 
         GUI.Label(rect, this.Text, TextStyle);
@@ -45,6 +60,11 @@ public class DebugText : MonoBehaviour
     {
         var go = new GameObject("Text");
         var debug = go.AddComponent<DebugText>();
+
+        if (!Debug.isDebugBuild)
+        {
+            return debug;
+        }
 
         if (Mathf.Approximately(duration, 0f))
         {

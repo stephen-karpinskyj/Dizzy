@@ -6,6 +6,15 @@ public class BombController : MonoBehaviour
     private float explosionMagnitude = 26f;
 
     [SerializeField]
+    private float angleDiffCorrectionTolerance = 20f;
+
+    [SerializeField]
+    private float correctionTorque = 10f;
+
+    [SerializeField]
+    private AnimationCurve correctionTorqueCurve;
+
+    [SerializeField]
     private float explosionShakeMagnitude = 0.06f;
 
     [SerializeField]
@@ -77,10 +86,28 @@ public class BombController : MonoBehaviour
         Object.Destroy(this.gameObject, this.destroyDelay);
 
         var angleInRadians = transform.eulerAngles.z * Mathf.Deg2Rad;
-        var forceDirection = new Vector2(Mathf.Cos(angleInRadians), Mathf.Sin(angleInRadians)).normalized;
+        var aimDir = other.transform.right;
+        var forceDir = new Vector2(Mathf.Cos(angleInRadians), Mathf.Sin(angleInRadians)).normalized;
+        var velDir = other.attachedRigidbody.velocity.normalized;
+        var diffAngle = aimDir.SignedAngle(forceDir);
+        var absDiffAngle = Mathf.Abs(diffAngle);
+        var diffDot = Vector2.Dot(velDir, forceDir);
 
-        var travelling = other.attachedRigidbody.velocity.normalized;
-        var explosionMultiplier = Mathf.Lerp(this.explosionMultiplierRange.x, this.explosionMultiplierRange.y, Mathf.Max(0f, Vector2.Dot(travelling, forceDirection)));
+        if (Input.anyKey && absDiffAngle < this.angleDiffCorrectionTolerance)
+        {
+            var curveValue = this.correctionTorqueCurve.Evaluate(absDiffAngle / this.angleDiffCorrectionTolerance);
+            other.attachedRigidbody.AddTorque(this.correctionTorque * Mathf.Sign(diffAngle) * curveValue, ForceMode2D.Impulse);
+        }
+
+        var explosionMultiplier = Mathf.Lerp(this.explosionMultiplierRange.x, this.explosionMultiplierRange.y, diffDot);
+
+        other.attachedRigidbody.AddForce(forceDir * this.explosionMagnitude * explosionMultiplier, ForceMode2D.Impulse);
+
+        var rocket = Object.FindObjectOfType<RocketController>();
+        if (other.attachedRigidbody.velocity.magnitude > rocket.MaxSpeed)
+        {
+            other.attachedRigidbody.velocity = other.attachedRigidbody.velocity.normalized * rocket.MaxSpeed;
+        }
 
         this.source.clip = this.deathClip;
         this.source.volume = 1f;
@@ -90,8 +117,6 @@ public class BombController : MonoBehaviour
         this.spriteRenderer.enabled = false;
 
         CameraController.Instance.Shake(this.explosionShakeDuration, this.explosionShakeMagnitude * explosionMultiplier);
-
-        other.attachedRigidbody.AddForce(forceDirection * this.explosionMagnitude * explosionMultiplier, ForceMode2D.Impulse);
 
         this.explosionParticles.startLifetime *= explosionMultiplier;
         this.explosionParticles.Play();
