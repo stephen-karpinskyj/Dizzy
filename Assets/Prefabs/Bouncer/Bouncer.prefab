@@ -168,7 +168,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   coll: {fileID: 6890988}
   rend: {fileID: 21272340}
-  minBounceSpeed: 2
+  minBounceSpeed: 4
   bounceFrictionMultiplier: 0.8
   flashDuration: 0.05
   flashColour: {r: 0.627451, g: 0.6901961, b: 0.78823537, a: 1}
@@ -235,7 +235,7 @@ Prefab:
       objectReference: {fileID: 8300000, guid: 9832e00a141db4a88bb6822908154b4a, type: 3}
     - target: {fileID: 0}
       propertyPath: minBounceSpeed
-      value: 2
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: bounceFrictionMultiplier

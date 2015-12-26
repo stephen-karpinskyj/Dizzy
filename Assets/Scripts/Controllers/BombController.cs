@@ -4,6 +4,9 @@ public class BombController : MonoBehaviour
 {
     [SerializeField]
     private float explosionMagnitude = 26f;
+    
+    [SerializeField]
+    private float otherSpeedDecayMultiplier = 0.85f;
 
     [SerializeField]
     private float angleDiffCorrectionTolerance = 20f;
@@ -81,10 +84,12 @@ public class BombController : MonoBehaviour
         this.hasExploded = true;
         Object.Destroy(this.gameObject, this.destroyDelay);
 
+        var rocket = Object.FindObjectOfType<RocketController>();
+
         var angleInRadians = transform.eulerAngles.z * Mathf.Deg2Rad;
         var aimDir = other.transform.right;
         var forceDir = new Vector2(Mathf.Cos(angleInRadians), Mathf.Sin(angleInRadians)).normalized;
-        var velDir = other.attachedRigidbody.velocity.normalized;
+        var velDir = rocket.MainRigidbody.velocity.normalized;
         var diffAngle = aimDir.SignedAngle(forceDir);
         var absDiffAngle = Mathf.Abs(diffAngle);
         var diffDot = Vector2.Dot(velDir, forceDir);
@@ -92,17 +97,17 @@ public class BombController : MonoBehaviour
         if (Input.anyKey && absDiffAngle < this.angleDiffCorrectionTolerance)
         {
             var curveValue = this.correctionTorqueCurve.Evaluate(absDiffAngle / this.angleDiffCorrectionTolerance);
-            other.attachedRigidbody.AddTorque(this.correctionTorque * Mathf.Sign(diffAngle) * curveValue, ForceMode2D.Impulse);
+            rocket.MainRigidbody.AddTorque(this.correctionTorque * Mathf.Sign(diffAngle) * curveValue, ForceMode2D.Impulse);
         }
 
         var explosionMultiplier = Mathf.Lerp(this.explosionMultiplierRange.x, this.explosionMultiplierRange.y, diffDot);
 
-        other.attachedRigidbody.AddForce(forceDir * this.explosionMagnitude * explosionMultiplier, ForceMode2D.Impulse);
+        rocket.MainRigidbody.velocity *= this.otherSpeedDecayMultiplier;
+        rocket.MainRigidbody.AddForce(forceDir * this.explosionMagnitude * explosionMultiplier, ForceMode2D.Impulse);
 
-        var rocket = Object.FindObjectOfType<RocketController>();
-        if (other.attachedRigidbody.velocity.magnitude > rocket.MaxSpeed)
+        if (rocket.MainRigidbody.velocity.magnitude > rocket.MaxSpeed)
         {
-            other.attachedRigidbody.velocity = other.attachedRigidbody.velocity.normalized * rocket.MaxSpeed;
+            rocket.MainRigidbody.velocity = rocket.MainRigidbody.velocity.normalized * rocket.MaxSpeed;
         }
 
         this.source.clip = this.deathClip;

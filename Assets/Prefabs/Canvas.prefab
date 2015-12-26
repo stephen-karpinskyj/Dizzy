@@ -352,7 +352,7 @@ MonoBehaviour:
   defaultTargetTime: 40
   panicStartTime: 5
   countdownColor: '#323232ff'
-  panicColor: '#ff0000ff'
+  panicColor: '#B92F2FFF'
   countupColor: '#32323255'
   newHighScoreColor: '#ffa500ff'
   source: {fileID: 8276072}
@@ -402,7 +402,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 0.72794116, g: 0.1873378, b: 0.1873378, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -422,7 +422,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: <color=red>0s (10)</color>
+  m_Text: <color="#B92F2FFF">0s (10)</color>
 --- !u!114 &11446060
 MonoBehaviour:
   m_ObjectHideFlags: 1
