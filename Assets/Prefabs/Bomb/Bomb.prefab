@@ -162,15 +162,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   explosionMagnitude: 10
   otherSpeedDecayMultiplier: 1
-  angleDiffCorrectionTolerance: 50
+  angleDiffCorrectionTolerance: 70
   correctionTorque: 26
   correctionTorqueCurve:
     serializedVersion: 2
     m_Curve:
     - time: 0
       value: 0.9999999
-      inSlope: -1.9891646
-      outSlope: -1.9891646
+      inSlope: -1.0573139
+      outSlope: -1.0573139
       tangentMode: 0
     - time: 1
       value: -0.00067162886
@@ -1999,7 +1999,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: angleDiffCorrectionTolerance
-      value: 50
+      value: 70
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: correctionTorque
@@ -2035,11 +2035,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: correctionTorqueCurve.m_Curve.Array.data[0].inSlope
-      value: -1.9891646
+      value: -1.0573139
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: correctionTorqueCurve.m_Curve.Array.data[0].outSlope
-      value: -1.9891646
+      value: -1.0573139
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: correctionTorqueCurve.m_Curve.Array.data[2].value

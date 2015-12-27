@@ -170,7 +170,7 @@ public class RocketController : MonoBehaviour
         }
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         var aimDir = this.transform.right;
         var velDir = (Vector3)this.rigidBody.velocity.normalized;
@@ -346,7 +346,7 @@ public class RocketController : MonoBehaviour
             var curveValue = this.barrelRollCurve.Evaluate(t);
             this.currentBarrelRoll = Mathf.Lerp(0, -360f, curveValue);
 
-            yield return new WaitForFixedUpdate();
+            yield return null;
 
         }
         while (t < 1f);

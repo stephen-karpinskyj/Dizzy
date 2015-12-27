@@ -70,7 +70,7 @@ GameObject:
   m_IsActive: 1
 --- !u!1 &185828
 GameObject:
-  m_ObjectHideFlags: 1
+  m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
@@ -111,7 +111,6 @@ Transform:
   m_Children:
   - {fileID: 412828}
   - {fileID: 456650}
-  - {fileID: 475666}
   m_Father: {fileID: 479540}
   m_RootOrder: 0
 --- !u!4 &456650
@@ -132,12 +131,12 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 185828}
-  m_LocalRotation: {x: -0.7071068, y: 0.7071067, z: -0.00000011520229, w: 0.00000011520235}
-  m_LocalPosition: {x: -0.28, y: -0, z: -0.016000092}
-  m_LocalScale: {x: 1.6000001, y: 0.8000001, z: 0.8}
+  m_LocalRotation: {x: -7.1054274e-15, y: 0, z: 0.7071068, w: 0.7071067}
+  m_LocalPosition: {x: -0.35, y: -0, z: 0.020000001}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 415140}
-  m_RootOrder: 2
+  m_Father: {fileID: 479540}
+  m_RootOrder: 1
 --- !u!4 &479540
 Transform:
   m_ObjectHideFlags: 1
@@ -149,6 +148,7 @@ Transform:
   m_LocalScale: {x: 1.2, y: 1.2, z: 0.8}
   m_Children:
   - {fileID: 415140}
+  - {fileID: 475666}
   m_Father: {fileID: 0}
   m_RootOrder: 0
 --- !u!23 &2379130
@@ -353,21 +353,21 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_Time: 0.1
-  m_StartWidth: 0.05
-  m_EndWidth: 0.025
+  m_StartWidth: 0.1
+  m_EndWidth: 0.08
   m_Colors:
     m_Color[0]:
       serializedVersion: 2
-      rgba: 1090519039
+      rgba: 1557042770
     m_Color[1]:
       serializedVersion: 2
-      rgba: 1090519039
+      rgba: 1557442694
     m_Color[2]:
       serializedVersion: 2
-      rgba: 553648127
+      rgba: 1088935617
     m_Color[3]:
       serializedVersion: 2
-      rgba: 285212671
+      rgba: 553054699
     m_Color[4]:
       serializedVersion: 2
       rgba: 16777215
@@ -400,21 +400,21 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_Time: 0.1
-  m_StartWidth: 0.05
-  m_EndWidth: 0.025
+  m_StartWidth: 0.1
+  m_EndWidth: 0.08
   m_Colors:
     m_Color[0]:
       serializedVersion: 2
-      rgba: 1090519039
+      rgba: 1557042770
     m_Color[1]:
       serializedVersion: 2
-      rgba: 1090519039
+      rgba: 1557442694
     m_Color[2]:
       serializedVersion: 2
-      rgba: 553648127
+      rgba: 1088935617
     m_Color[3]:
       serializedVersion: 2
-      rgba: 285212671
+      rgba: 553054699
     m_Color[4]:
       serializedVersion: 2
       rgba: 16777215
@@ -585,8 +585,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
-  barrelRollDelay: 0.1
-  barrelRollDuration: 0.45
+  barrelRollDelay: 0
+  barrelRollDuration: 0.5
   rigidBody: {fileID: 5071878}
   bodyTransform: {fileID: 415140}
   source: {fileID: 8238344}
@@ -2901,7 +2901,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: barrelRollDuration
-      value: 0.45
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: barrelRollCurve.m_Curve.Array.data[1].inSlope
@@ -2913,7 +2913,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: barrelRollDelay
-      value: 0.1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
