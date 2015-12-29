@@ -90,6 +90,9 @@ public class RocketController : MonoBehaviour
     private float baseTrailDuration = 0.1f;
 
     [SerializeField]
+    private float controlDelay = 0.5f;
+
+    [SerializeField]
     private float pitchIncreaseMultiplier = 0.3f;
 
 
@@ -104,10 +107,12 @@ public class RocketController : MonoBehaviour
     private float currentBarrelRoll;
     private float rotXOnInputChange;
 
+    private float controlTime;
+
     private DebugLine debugAimLine;
     private DebugLine debugVelocityLine;
     private DebugText debugDiffText;
-    private string debugDiffString;
+    private string debugString;
 
     private static int Count = 0;
 
@@ -126,8 +131,22 @@ public class RocketController : MonoBehaviour
         get { return this.rigidBody; }
     }
 
+    private static RocketController instance;
+
+    public static RocketController Instance
+    {
+        get { return instance; }
+    }
+
+    public bool HasControl
+    {
+        get { return Time.time < this.controlTime; }
+    }
+
     private void Awake()
     {
+        RocketController.instance = this;
+        
         Debug.Assert(this.rigidBody != null, this);
         Debug.Assert(this.source != null, this);
 
@@ -176,7 +195,7 @@ public class RocketController : MonoBehaviour
         var velDir = (Vector3)this.rigidBody.velocity.normalized;
         var dirDot = (Vector2.Dot(aimDir, velDir) + 1f) / 2f;
 
-        var isTapping = Input.anyKey;
+        var isTapping = Input.anyKey || this.HasControl;
 
         if (isTapping)
         {
@@ -298,12 +317,13 @@ public class RocketController : MonoBehaviour
             }
         }
 
-        //this.debugDiffString = string.Format("{0:f2}", this.currentFullRoll);
+        //this.debugString = string.Format("{0:f2}", this.currentFullRoll);
+        this.debugString = string.Empty;
 
         //this.debugAimLine.Move(this.transform.position, this.transform.position + aimDir * 0.45f);
         //this.debugVelocityLine.Move(this.transform.position, this.transform.position + velDir * 0.45f);
         this.debugDiffText.Move(this.transform.position + Vector3.up * 1f);
-        this.debugDiffText.Text = this.debugDiffString;
+        this.debugDiffText.Text = this.debugString;
 
         this.wasTapping = isTapping;
     }
@@ -318,6 +338,11 @@ public class RocketController : MonoBehaviour
     {
         this.inWinMode = false;
         Object.Destroy(this.gameObject);
+    }
+
+    private void TimeStart()
+    {
+        this.controlTime = Time.time + this.controlDelay;
     }
 
     public void Boost(Vector2 force)

@@ -9,7 +9,7 @@ public class CameraController : BehaviourSingleton<CameraController>
     
     protected override void Awake()
     {
-        base.Awake();
+        Object.DontDestroyOnLoad(this.transform.root.gameObject);
 
         instance = this;
 

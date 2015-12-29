@@ -20,18 +20,18 @@ public class RocketBoostController : MonoBehaviour
 
     private void Update()
     {    
-        if (Input.anyKey)
+        if (Input.anyKey || RocketController.Instance.HasControl)
         {
-            this.StopCoroutine("DelayColliderDisable");
+            //this.StopCoroutine("DelayColliderDisable");
 
             this.boostParticles.Play();
-            this.boostCollider.enabled = true;
+            //this.boostCollider.enabled = true;
             CameraController.Instance.Shake(this.shakeDuration, this.shakeMagnitude);
         }
         else
         {
             this.boostParticles.Stop();
-            this.StartCoroutine("DelayColliderDisable");
+            //this.StartCoroutine("DelayColliderDisable");
         }
     }
 

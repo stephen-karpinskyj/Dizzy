@@ -40,4 +40,9 @@ public class SpinGameObject : MonoBehaviour
                 break;
         }
     }
+
+    public void SetMagnitude(Vector3 mag)
+    {
+        this.magnitude = mag;
+    }
 }

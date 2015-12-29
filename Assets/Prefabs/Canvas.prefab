@@ -547,7 +547,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 642d9a1ace32940bf95bb375df05461d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  message: <color={0}>Tap to thrust</color>
+  message: <color={0}>Tap to launch</color>
   text: {fileID: 11492132}
   onColor: '#cdcdcdff'
   offColor: '#ffa500ff'
@@ -599,7 +599,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Tap to Thrust
+  m_Text: Tap to launch
 --- !u!114 &11492720
 MonoBehaviour:
   m_ObjectHideFlags: 1

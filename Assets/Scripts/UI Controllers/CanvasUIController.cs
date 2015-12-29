@@ -12,7 +12,7 @@ public class CanvasUIController : MonoBehaviour
     private int frameRate = 60;
 
     private void Awake()
-    {
+    {        
         Debug.Assert(this.source, this);
         Debug.Assert(this.winClip, this);
 
