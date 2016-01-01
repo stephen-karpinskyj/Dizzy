@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -111,6 +112,11 @@ public class TimerUIController : MonoBehaviour
 
             if (bombs.Length == 1 && bombs[0].HasExploded)
             {
+                foreach (var b in bombs)
+                {
+                    Object.Destroy(b.gameObject);
+                }
+                
                 Broadcast.SendMessage("LevelWin");
             }
         }

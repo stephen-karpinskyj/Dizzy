@@ -51,6 +51,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &149306
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 457192}
+  - 108: {fileID: 10871904}
+  m_Layer: 9
+  m_Name: Light
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &150920
 GameObject:
   m_ObjectHideFlags: 1
@@ -156,9 +172,9 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 160540}
-  m_LocalRotation: {x: -0.7071067, y: -0.00000023040464, z: 1.4210855e-14, w: 0.7071068}
-  m_LocalPosition: {x: -0.25439996, y: -0.2880002, z: -0}
-  m_LocalScale: {x: 0.8000001, y: 0.8000001, z: 1.6000001}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071067}
+  m_LocalPosition: {x: -0.232, y: -0.225, z: -0.081}
+  m_LocalScale: {x: 0.8, y: 0.8, z: 1.6000001}
   m_Children: []
   m_Father: {fileID: 415140}
   m_RootOrder: 0
@@ -169,7 +185,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 110628}
   m_LocalRotation: {x: 1, y: 0.00000016292068, z: 0.00000016292068, w: 2.654315e-14}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.15, y: 0, z: 0}
   m_LocalScale: {x: 1.25, y: 0.625, z: 1.25}
   m_Children:
   - {fileID: 412828}
@@ -195,7 +211,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 134872}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.15, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 478794}
@@ -208,12 +224,24 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 184120}
-  m_LocalRotation: {x: -0.7071067, y: -0.00000023040464, z: 1.4210855e-14, w: 0.7071068}
-  m_LocalPosition: {x: -0.25440004, y: 0.28799984, z: -0}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071067}
+  m_LocalPosition: {x: -0.232, y: 0.225, z: -0.081}
   m_LocalScale: {x: 0.8, y: 0.8, z: 1.6000001}
   m_Children: []
   m_Father: {fileID: 415140}
   m_RootOrder: 1
+--- !u!4 &457192
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 149306}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.3, z: -0.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 475666}
+  m_RootOrder: 0
 --- !u!4 &466182
 Transform:
   m_ObjectHideFlags: 1
@@ -233,9 +261,10 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 185828}
   m_LocalRotation: {x: -7.1054274e-15, y: 0, z: 0.7071068, w: 0.7071067}
-  m_LocalPosition: {x: -0.35, y: -0, z: 0.020000001}
+  m_LocalPosition: {x: -0.2, y: 0, z: 0.020000001}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 457192}
   m_Father: {fileID: 479540}
   m_RootOrder: 1
 --- !u!4 &478794
@@ -410,7 +439,7 @@ PolygonCollider2D:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0.15, y: 0}
   m_Points:
     m_Paths:
     - - {x: -0.4247931, y: 0.03220553}
@@ -530,21 +559,21 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_Time: 0.1
-  m_StartWidth: 0.1
-  m_EndWidth: 0.08
+  m_StartWidth: 0.2
+  m_EndWidth: 0.15
   m_Colors:
     m_Color[0]:
       serializedVersion: 2
-      rgba: 3234764370
+      rgba: 3238002687
     m_Color[1]:
       serializedVersion: 2
-      rgba: 3235621231
+      rgba: 3238002687
     m_Color[2]:
       serializedVersion: 2
-      rgba: 1088664698
+      rgba: 1090519039
     m_Color[3]:
       serializedVersion: 2
-      rgba: 553048502
+      rgba: 553648127
     m_Color[4]:
       serializedVersion: 2
       rgba: 16777215
@@ -577,26 +606,59 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_Time: 0.1
-  m_StartWidth: 0.1
-  m_EndWidth: 0.08
+  m_StartWidth: 0.2
+  m_EndWidth: 0.15
   m_Colors:
     m_Color[0]:
       serializedVersion: 2
-      rgba: 3234764370
+      rgba: 3238002687
     m_Color[1]:
       serializedVersion: 2
-      rgba: 3235621231
+      rgba: 3238002687
     m_Color[2]:
       serializedVersion: 2
-      rgba: 1088664698
+      rgba: 1090519039
     m_Color[3]:
       serializedVersion: 2
-      rgba: 553048502
+      rgba: 553648127
     m_Color[4]:
       serializedVersion: 2
       rgba: 16777215
   m_MinVertexDistance: 0.05
   m_Autodestruct: 0
+--- !u!108 &10871904
+Light:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 149306}
+  m_Enabled: 1
+  serializedVersion: 6
+  m_Type: 2
+  m_Color: {r: 0.32115054, g: 0.58684826, b: 0.8088235, a: 1}
+  m_Intensity: 8
+  m_Range: 2
+  m_SpotAngle: 30
+  m_CookieSize: 10
+  m_Shadows:
+    m_Type: 0
+    m_Resolution: -1
+    m_Strength: 1
+    m_Bias: 0.05
+    m_NormalBias: 0.4
+    m_NearPlane: 0.2
+  m_Cookie: {fileID: 0}
+  m_DrawHalo: 0
+  m_Flare: {fileID: 0}
+  m_RenderMode: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 2560
+  m_Lightmapping: 4
+  m_BounceIntensity: 0
+  m_ShadowRadius: 0
+  m_ShadowAngle: 0
+  m_AreaSize: {x: 1, y: 1}
 --- !u!114 &11436986
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -612,7 +674,14 @@ MonoBehaviour:
   shakeMagnitude: 0
   boostColliderDisableDelay: 0.083
   boostParticles: {fileID: 19832922}
+  boostParticleRenderer: {fileID: 19988430}
   boostCollider: {fileID: 6010048}
+  ccwColor: {r: 0.32115054, g: 0.58684826, b: 0.8088235, a: 0.5}
+  cwColor: {r: 0.8088235, g: 0.5128564, b: 0.32115054, a: 0.5}
+  ccwLightColor: {r: 0, g: 0.5448277, b: 1, a: 1}
+  cwLightColor: {r: 1, g: 0.39310336, b: 0, a: 1}
+  materialColorPropertyName: _TintColor
+  light: {fileID: 10871904}
 --- !u!114 &11488308
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -725,8 +794,25 @@ MonoBehaviour:
     m_RotationOrder: 0
   torque: 95
   torqueCurveDuration: 0.1
-  rotationXRange: {x: 0, y: -38}
-  rotationXCurve:
+  aimMaxAngularVelocityCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: -0.0000000027939677
+      value: 0.0013386905
+      inSlope: 66.29579
+      outSlope: 66.29579
+      tangentMode: 10
+    - time: 0.015083801
+      value: 1.0013314
+      inSlope: 0.00001306437
+      outSlope: 0.00001306437
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  aimMaxAngularVelocityRange: {x: 0, y: 450}
+  aimTorque: 220
+  aimVelocityDecayCurve:
     serializedVersion: 2
     m_Curve:
     - time: 0
@@ -734,18 +820,46 @@ MonoBehaviour:
       inSlope: 0
       outSlope: 0
       tangentMode: 0
+    - time: 0.82443744
+      value: 0.37025616
+      inSlope: 1.3586879
+      outSlope: 1.3586879
+      tangentMode: 0
     - time: 1
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: 6.7659783
+      outSlope: 6.7659783
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
-  rotationXStartTime: 0.04
-  rotationXStartDuration: 0.22
-  rotationXEndTime: 0.05
-  rotationXEndDuration: 0.25
+  aimVelocityDecayRange: {x: 0.5, y: 0.85}
+  aimBoostMultiplierCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0.00078992546
+      value: 1.0013862
+      inSlope: -0.034622904
+      outSlope: -0.034622904
+      tangentMode: 0
+    - time: 0.69605064
+      value: 0.7144347
+      inSlope: -1.0344672
+      outSlope: -1.0344672
+      tangentMode: 0
+    - time: 1.0000612
+      value: 0.005872125
+      inSlope: -3.66058
+      outSlope: -3.66058
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  aimBoostMultiplierRange: {x: 0.8, y: 1}
+  dotProductLimitBeforeThrust: 0.005
+  rotationXRange: {x: 0, y: -38}
+  rotationXSpeed: 200
+  rotationXStartTime: 0.08
   barrelRollCurve:
     serializedVersion: 2
     m_Curve:
@@ -764,6 +878,7 @@ MonoBehaviour:
     m_RotationOrder: 0
   barrelRollDelay: 0
   barrelRollDuration: 0.4
+  controlMode: 3
   rigidBody: {fileID: 5071878}
   bodyTransform: {fileID: 415140}
   source: {fileID: 8238344}
@@ -771,7 +886,10 @@ MonoBehaviour:
   - {fileID: 9605134}
   - {fileID: 9607078}
   baseTrailDuration: 0.08
-  controlDelay: 0.25
+  dotProductMinBeforeTrails: 0.9
+  controlDelay: 0
+  doubleTapDuration: 0.17
+  minTimeBetweenDoubleTaps: 0.5
   pitchIncreaseMultiplier: 0.4
 --- !u!198 &19832922
 ParticleSystem:
@@ -2350,6 +2468,14 @@ Prefab:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 0}
+      propertyPath: aimVelocityDecayCurve.m_Curve.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimBoostMultiplierCurve.m_Curve.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
       propertyPath: boostTimeMultiplierCurve.m_Curve.Array.size
       value: 2
       objectReference: {fileID: 0}
@@ -2360,6 +2486,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: angularVelocityDecayCurve.m_Curve.Array.size
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimMaxAngularVelocityCurve.m_Curve.Array.size
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_Mass
@@ -2991,7 +3121,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: rotationXStartDuration
-      value: 0.22
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: baseTrailDuration
@@ -3035,11 +3165,11 @@ Prefab:
       objectReference: {fileID: 415140}
     - target: {fileID: 0}
       propertyPath: rotationXStartTime
-      value: 0
+      value: 0.08
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: rotationXEndTime
-      value: 0.05
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: rotationXEndDuration
@@ -3095,7 +3225,323 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: controlDelay
-      value: 0.25
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: controlMode
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: manualTorque
+      value: 250
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimMaxAngularVelocityCurve.m_RotationOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimMaxAngularVelocityRange.x
+      value: 250
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimMaxAngularVelocityRange.y
+      value: 450
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimMaxAngularVelocityCurve.m_Curve.Array.data[0].inSlope
+      value: 66.29579
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimMaxAngularVelocityCurve.m_Curve.Array.data[0].outSlope
+      value: 66.29579
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimMaxAngularVelocityCurve.m_Curve.Array.data[0].tangentMode
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimMaxAngularVelocityCurve.m_Curve.Array.data[1].inSlope
+      value: 0.00001306437
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimMaxAngularVelocityCurve.m_Curve.Array.data[1].outSlope
+      value: 0.00001306437
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimMaxAngularVelocityCurve.m_Curve.Array.data[1].tangentMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimMaxAngularVelocityCurve.m_Curve.Array.data[1].time
+      value: 0.015083801
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimMaxAngularVelocityCurve.m_Curve.Array.data[1].value
+      value: 1.0013314
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimMaxAngularVelocityCurve.m_Curve.Array.data[2].time
+      value: 0.05027932
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimMaxAngularVelocityCurve.m_Curve.Array.data[2].value
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimMaxAngularVelocityCurve.m_Curve.Array.data[2].inSlope
+      value: 0.056281384
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimMaxAngularVelocityCurve.m_Curve.Array.data[2].outSlope
+      value: 0.056281384
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimMaxAngularVelocityCurve.m_Curve.Array.data[0].value
+      value: 0.0013386905
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimMaxAngularVelocityCurve.m_Curve.Array.data[3].value
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimMaxAngularVelocityCurve.m_Curve.Array.data[0].time
+      value: -0.0000000027939677
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: dotProductLimitForThrust
+      value: 0.95
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: fastTorque
+      value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: fastMaxAngularVelocity
+      value: 400
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimMaxAngularVelocityCurve.m_Curve.Array.data[3].time
+      value: 0.098880276
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimMaxAngularVelocityCurve.m_Curve.Array.data[3].inSlope
+      value: 0.056281384
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimMaxAngularVelocityCurve.m_Curve.Array.data[3].outSlope
+      value: 0.056281384
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimTorque
+      value: 220
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimVelocityDecayCurve.m_RotationOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimVelocityDecayRange.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimVelocityDecayRange.y
+      value: 0.85
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimVelocityDecayCurve.m_Curve.Array.data[0].inSlope
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimVelocityDecayCurve.m_Curve.Array.data[0].outSlope
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimVelocityDecayCurve.m_Curve.Array.data[0].tangentMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimVelocityDecayCurve.m_Curve.Array.data[1].inSlope
+      value: 1.3586879
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimVelocityDecayCurve.m_Curve.Array.data[1].outSlope
+      value: 1.3586879
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimVelocityDecayCurve.m_Curve.Array.data[1].tangentMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimVelocityDecayCurve.m_Curve.Array.data[1].time
+      value: 0.82443744
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimVelocityDecayCurve.m_Curve.Array.data[1].value
+      value: 0.37025616
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimVelocityDecayCurve.m_Curve.Array.data[2].time
+      value: 0.044745952
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimVelocityDecayCurve.m_Curve.Array.data[2].value
+      value: 0.852747
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimVelocityDecayCurve.m_Curve.Array.data[2].inSlope
+      value: 6.7659783
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimVelocityDecayCurve.m_Curve.Array.data[2].outSlope
+      value: 6.7659783
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimVelocityDecayCurve.m_Curve.Array.data[3].time
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimVelocityDecayCurve.m_Curve.Array.data[3].value
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimBoostMultiplierCurve.m_RotationOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimBoostMultiplierRange.x
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimBoostMultiplierCurve.m_Curve.Array.data[0].time
+      value: 0.00078992546
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimBoostMultiplierCurve.m_Curve.Array.data[0].value
+      value: 0.99487424
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimBoostMultiplierCurve.m_Curve.Array.data[0].inSlope
+      value: -0.034622904
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimBoostMultiplierCurve.m_Curve.Array.data[0].outSlope
+      value: -0.034622904
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimBoostMultiplierCurve.m_Curve.Array.data[1].time
+      value: 0.69605064
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimBoostMultiplierCurve.m_Curve.Array.data[1].value
+      value: 0.7144347
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimBoostMultiplierCurve.m_Curve.Array.data[1].inSlope
+      value: -1.0344672
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimBoostMultiplierCurve.m_Curve.Array.data[1].outSlope
+      value: -1.0344672
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimBoostMultiplierCurve.m_Curve.Array.data[2].time
+      value: 1.0000612
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimBoostMultiplierCurve.m_Curve.Array.data[2].value
+      value: -0.00063980184
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimBoostMultiplierCurve.m_Curve.Array.data[2].inSlope
+      value: -3.66058
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimBoostMultiplierCurve.m_Curve.Array.data[2].outSlope
+      value: -3.66058
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimBoostMultiplierCurve.m_Curve.Array.data[3].value
+      value: 0.005872125
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimBoostMultiplierCurve.m_Curve.Array.data[3].time
+      value: 1.0000612
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimBoostMultiplierCurve.m_Curve.Array.data[3].inSlope
+      value: -3.7620244
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimBoostMultiplierCurve.m_Curve.Array.data[3].outSlope
+      value: -3.7620244
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimMaxAngularVelocityCurve.m_Curve.Array.data[4].value
+      value: 0.9866131
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: dotProductLimitBeforeThrust
+      value: 0.005
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimMaxAngularVelocityCurve.m_Curve.Array.data[4].inSlope
+      value: 0.056281384
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimMaxAngularVelocityCurve.m_Curve.Array.data[4].outSlope
+      value: 0.056281384
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimMaxAngularVelocityCurve.m_Curve.Array.data[4].time
+      value: 0.122201085
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: aimMaxAngularVelocityCurve.m_Curve.Array.data[2].tangentMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ccwColor.r
+      value: 0.32115054
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ccwColor.g
+      value: 0.58684826
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ccwColor.b
+      value: 0.8088235
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ccwColor.a
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: cwColor.r
+      value: 0.8088235
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: cwColor.g
+      value: 0.5128564
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: cwColor.b
+      value: 0.32115054
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: cwColor.a
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: boostParticleRenderer
+      value: 
+      objectReference: {fileID: 19988430}
+    - target: {fileID: 0}
+      propertyPath: doubleTapDuration
+      value: 0.17
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: minTimeBetweenDoubleTaps
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

@@ -64,17 +64,9 @@ public class LauncherController : MonoBehaviour
 
         if (Input.anyKey)
         {
-            if (RocketController.CurrentCount == 0)
+            if (RocketController.Instance == null)
             {
-                CameraController.Instance.Shake(this.shakeDuration, this.shakeMagnitude);
-
-                var rocket = GameObjectUtility.InstantiatePrefab<RocketController>(this.rocketPrefab);
-                rocket.transform.position = emitter.position;
-                rocket.transform.rotation = emitter.rotation;
-                rocket.Boost(this.initialForce);
-
-                this.source.clip = this.launchClip;
-                this.source.Play();
+                this.Launch();
             }
         }
     }
@@ -94,5 +86,18 @@ public class LauncherController : MonoBehaviour
         this.readyToGo = false;
         yield return new WaitForSeconds(this.timeToWaitOnWin);
         this.readyToGo = true;
+    }
+
+    private void Launch()
+    {
+        CameraController.Instance.Shake(this.shakeDuration, this.shakeMagnitude);
+
+        var rocket = GameObjectUtility.InstantiatePrefab<RocketController>(this.rocketPrefab);
+        rocket.transform.position = emitter.position;
+        rocket.transform.rotation = emitter.rotation;
+        rocket.AddForce(this.initialForce);
+
+        this.source.clip = this.launchClip;
+        this.source.Play();
     }
 }

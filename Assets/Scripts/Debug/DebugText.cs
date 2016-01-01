@@ -54,9 +54,10 @@ public class DebugText : MonoBehaviour
     {
         TextStyle = new GUIStyle();
         TextStyle.fontSize = 20;
+        TextStyle.normal.textColor = Color.white;
     }
 
-    public static DebugText Draw(Vector3 worldPos, string text, Color colour, float duration = 0f)
+    public static DebugText Draw(Vector3 worldPos, string text, float duration = 0f)
     {
         var go = new GameObject("Text");
         var debug = go.AddComponent<DebugText>();

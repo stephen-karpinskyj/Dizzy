@@ -315,26 +315,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43b7ebdb7a8a04a4ab250b84e3f0ba46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  explosionMagnitude: 10
-  otherSpeedDecayMultiplier: 1
-  angleDiffCorrectionTolerance: 70
-  correctionTorque: 26
-  correctionTorqueCurve:
-    serializedVersion: 2
-    m_Curve:
-    - time: 0
-      value: 0.9999999
-      inSlope: -1.0573139
-      outSlope: -1.0573139
-      tangentMode: 0
-    - time: 1
-      value: -0.00067162886
-      inSlope: -0.6901187
-      outSlope: -0.6901187
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 0
   explosionShakeMagnitude: 0.04
   explosionShakeDuration: 0.1
   destroyDelay: 0.5
@@ -342,7 +322,6 @@ MonoBehaviour:
   - {fileID: 2320446}
   - {fileID: 2325608}
   explosionParticles: {fileID: 19803252}
-  explosionMultiplierRange: {x: 0.3, y: 1}
   source: {fileID: 8288050}
   spawnClip: {fileID: 8300000, guid: aae872fdc56a444de8a6ca6d81a39b73, type: 3}
   deathClips:
@@ -355,7 +334,7 @@ MonoBehaviour:
   deathPitchMultiplier: 0.001
   junkPullerTag: JunkPuller
   junkDestroyerTag: JunkDestroyer
-  attractForceMagnitude: 11
+  attractForceMagnitude: 8
   gravityCurve:
     serializedVersion: 2
     m_Curve:
@@ -373,7 +352,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 0
   gravityCurveDuration: 0.35
-  rocketSpeedInfluence: 1.6
+  rocketSpeedInfluence: 2
   speedMultiplierRange: {x: 5, y: 40}
 --- !u!114 &11431462
 MonoBehaviour:
@@ -2357,11 +2336,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: rocketSpeedInfluence
-      value: 1.6
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: attractForceMagnitude
-      value: 11
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: deathPitchMultiplier

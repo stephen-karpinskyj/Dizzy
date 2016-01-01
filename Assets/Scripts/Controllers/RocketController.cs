@@ -1,8 +1,37 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using UnityEngine;
 
 public class RocketController : MonoBehaviour
 {
+    private enum ControlMode
+    {
+        /// <summary>
+        /// Tapping: thrust.
+        /// None: drift rotating in last direction.
+        /// </summary>
+        SpinCCW = 0,
+
+        /// <summary>
+        /// Tapping: thrust.
+        /// None: drift rotating in last direction.
+        /// </summary>
+        SpinCW,
+
+        /// <summary>
+        /// Tapping: rotate/thrust toward point.
+        /// None: drift without rotation.
+        /// </summary>
+        GoToPoint,
+
+        /// <summary>
+        /// Tapping left: thrust/change direction to ccw.
+        /// Tapping right: thrust/change direction to cw.
+        /// None: drift rotating in last direction.
+        /// </summary>
+        DualSpin,
+    }
+
+
     #region Inspector
 
 
@@ -37,7 +66,7 @@ public class RocketController : MonoBehaviour
     private Vector2 angularVelocityDecayRange = new Vector2(0.1f, 0.2f);
 
 
-    [Header("Yaw")]
+    [Header("Spin")]
 
     [SerializeField]
     private float maxAngularVelocity = 260f;
@@ -49,20 +78,34 @@ public class RocketController : MonoBehaviour
     private float torqueCurveDuration = 0.5f;
 
 
+    [Header("Aim")]
+
+    [SerializeField]
+    private AnimationCurve aimMaxAngularVelocityCurve;
+    [SerializeField]
+    private Vector2 aimMaxAngularVelocityRange = new Vector2(0f, 5f);
+    [SerializeField]
+    private float aimTorque = 300f;
+    [SerializeField]
+    private AnimationCurve aimVelocityDecayCurve;
+    [SerializeField]
+    private Vector2 aimVelocityDecayRange = new Vector2(0.8f, 0.9f);
+    [SerializeField]
+    private AnimationCurve aimBoostMultiplierCurve;
+    [SerializeField]
+    private Vector2 aimBoostMultiplierRange = new Vector2(0.8f, 1f);
+    [SerializeField]
+    private float dotProductLimitBeforeThrust = 0.01f;
+
+
     [Header("Roll")]
 
     [SerializeField]
     private Vector2 rotationXRange = new Vector2(-80f, 0f);
     [SerializeField]
-    private AnimationCurve rotationXCurve;
+    private float rotationXSpeed = 200f;
     [SerializeField]
-    private float rotationXStartTime = 0.02f;
-    [SerializeField]
-    private float rotationXStartDuration = 0.1f;
-    [SerializeField]
-    private float rotationXEndTime = 0.02f;
-    [SerializeField]
-    private float rotationXEndDuration = 0.1f;
+    private float rotationXStartTime = 0.05f;
 
     [SerializeField]
     private AnimationCurve barrelRollCurve;
@@ -73,6 +116,9 @@ public class RocketController : MonoBehaviour
 
 
     [Header("Other")]
+
+    [SerializeField]
+    private ControlMode controlMode = ControlMode.SpinCCW;
 
     [SerializeField]
     private Rigidbody2D rigidBody;
@@ -90,7 +136,16 @@ public class RocketController : MonoBehaviour
     private float baseTrailDuration = 0.1f;
 
     [SerializeField]
+    private float dotProductMinBeforeTrails = 0.9f;
+
+    [SerializeField]
     private float controlDelay = 0.5f;
+
+    [SerializeField]
+    private float doubleTapDuration = 0.2f;
+
+    [SerializeField]
+    private float minTimeBetweenDoubleTaps = 0.2f;
 
     [SerializeField]
     private float pitchIncreaseMultiplier = 0.3f;
@@ -102,33 +157,49 @@ public class RocketController : MonoBehaviour
     private bool inWinMode = false;
     private float timeHeld = 0f;
     private float timeReleased = 0f;
+    private bool isTapping = false;
     private bool wasTapping = false;
+    private float timeThrusting = 0f;
+    private bool isThrusting = false;
+    private bool wasThrusting = false;
 
     private float currentBarrelRoll;
     private float rotXOnInputChange;
 
     private float controlTime;
 
-    private DebugLine debugAimLine;
-    private DebugLine debugVelocityLine;
-    private DebugText debugDiffText;
-    private string debugString;
+    private float angularVelocityOnRelease = 0f;
 
-    private static int Count = 0;
+    private bool isCCW = true;
 
-    public static int CurrentCount
+    private DebugLine debugBlueLine;
+    private DebugLine debugYellowLine;
+    private DebugText debugText;
+    //private string debugString;
+
+    public Vector3 Position
     {
-        get { return Count; }
+        get { return this.transform.position; }
     }
 
-    public float MaxSpeed
+    public float SpeedPercentage
     {
-        get { return this.maxSpeed; }
+        get { return this.rigidBody.velocity.magnitude / this.maxSpeed; }
     }
 
-    public Rigidbody2D MainRigidbody
+    private bool HasControl
     {
-        get { return this.rigidBody; }
+        get { return Time.time < this.controlTime; }
+    }
+
+    public bool IsThrusting
+    { 
+        get { return this.isThrusting; }
+    }
+
+    public bool IsCCW
+    {
+        get { return this.isCCW; }
     }
 
     private static RocketController instance;
@@ -138,11 +209,6 @@ public class RocketController : MonoBehaviour
         get { return instance; }
     }
 
-    public bool HasControl
-    {
-        get { return Time.time < this.controlTime; }
-    }
-
     private void Awake()
     {
         RocketController.instance = this;
@@ -150,57 +216,182 @@ public class RocketController : MonoBehaviour
         Debug.Assert(this.rigidBody != null, this);
         Debug.Assert(this.source != null, this);
 
-        Count++;
+        Broadcast.SendMessage("TimeStart");
 
-        if (Count == 1)
-        {
-            Broadcast.SendMessage("TimeStart");
-        }
+        this.debugBlueLine = DebugLine.Draw(Vector3.zero, Vector3.zero, Color.blue);
+        this.debugYellowLine = DebugLine.Draw(Vector3.zero, Vector3.zero, Color.yellow);
+        this.debugText = DebugText.Draw(Vector3.zero, string.Empty);
 
-        this.debugAimLine = DebugLine.Draw(Vector3.zero, Vector3.zero, Color.blue);
-        this.debugVelocityLine = DebugLine.Draw(Vector3.zero, Vector3.zero, Color.yellow);
-        this.debugDiffText = DebugText.Draw(Vector3.zero, string.Empty, Color.blue);
-
-        this.StartCoroutine(this.RollCoroutine());
+        //this.StartCoroutine(this.RollCoroutine());
     }
 
     private void OnDestroy()
     {
-        Count--;
-
-        if (Count == 0 && !this.inWinMode)
+        if (!this.inWinMode)
         {
             Broadcast.SendMessage("LevelStart");
         }
 
-        if (this.debugAimLine)
+        if (this.debugBlueLine)
         {
-            Object.Destroy(this.debugAimLine.gameObject);
+            Object.Destroy(this.debugBlueLine.gameObject);
         }
 
-        if (this.debugVelocityLine)
+        if (this.debugYellowLine)
         {
-            Object.Destroy(this.debugVelocityLine.gameObject);
+            Object.Destroy(this.debugYellowLine.gameObject);
         }
 
-        if (this.debugDiffText)
+        if (this.debugText)
         {
-            Object.Destroy(this.debugDiffText);
+            Object.Destroy(this.debugText);
         }
     }
 
     private void Update()
     {
-        var aimDir = this.transform.right;
-        var velDir = (Vector3)this.rigidBody.velocity.normalized;
-        var dirDot = (Vector2.Dot(aimDir, velDir) + 1f) / 2f;
+        this.isTapping = Input.anyKey || this.HasControl;
 
-        var isTapping = Input.anyKey || this.HasControl;
-
-        if (isTapping)
+        if (this.isTapping)
         {
             this.timeReleased = 0f;
             this.timeHeld += Time.deltaTime;
+        }
+        else
+        {
+            this.timeHeld = 0f;
+            this.timeReleased += Time.deltaTime;
+        }
+
+        if (this.isThrusting)
+        {
+            this.timeThrusting += Time.deltaTime;
+        }
+        else
+        {
+            this.timeThrusting = 0f;
+        }
+
+        this.HandleControl();
+
+        // Trails
+        {
+            var trailDuration = 0f;
+            var aimDir = this.transform.right;
+            var velDir = (Vector3)this.rigidBody.velocity.normalized;
+            var dirDot = (Vector2.Dot(aimDir, velDir) + 1f) / 2f;
+
+            if (this.isThrusting && dirDot > this.dotProductMinBeforeTrails)
+            {
+                trailDuration = this.baseTrailDuration * this.SpeedPercentage;
+            }
+            else
+            {
+                trailDuration = 0f;
+            }
+
+            foreach (var t in this.trails)
+            {
+                t.time = trailDuration;
+            }
+        }
+
+        // Audio
+        {
+            this.source.pitch = 1f + this.timeThrusting * this.pitchIncreaseMultiplier;
+
+            if (this.wasThrusting && !this.isThrusting)
+            {
+                this.source.Stop();
+            }
+            else if (!this.wasThrusting && this.isThrusting)
+            {
+                this.source.Play();
+            }
+        }
+
+        this.wasTapping = this.isTapping;
+        this.wasThrusting = this.isThrusting;
+
+        //this.debugString = string.Format("{0:f2}", this.currentFullRoll);
+        //this.debugString = string.Empty;
+
+        this.debugText.Move(this.transform.position + Vector3.up * 1f);
+        //this.debugText.Text = this.debugString;
+    }
+
+    private void LevelWin()
+    {
+        this.inWinMode = true;
+        Object.Destroy(this.gameObject);
+    }
+
+    private void LevelStart()
+    {
+        this.inWinMode = false;
+        Object.Destroy(this.gameObject);
+    }
+
+    private void TimeStart()
+    {
+        this.controlTime = Time.time + this.controlDelay;
+    }
+
+    public void AddForce(Vector2 force)
+    {
+        this.rigidBody.AddForce(force, ForceMode2D.Impulse);
+
+        if (this.rigidBody.velocity.magnitude > this.maxSpeed)
+        {
+            this.rigidBody.velocity = this.rigidBody.velocity.normalized * this.maxSpeed;
+        }
+    }
+
+    private IEnumerator RollCoroutine()
+    {
+        yield return new WaitForSeconds(this.barrelRollDelay);
+
+        if (!this.isThrusting)
+        {
+            yield break;
+        }
+
+        var startTime = Time.time;
+        var timeSoFar = 0f;
+        var t = 0f;
+
+        do
+        {
+            timeSoFar = Time.time - startTime;
+            t = timeSoFar / this.barrelRollDuration;
+
+            var curveValue = this.barrelRollCurve.Evaluate(t);
+            this.currentBarrelRoll = Mathf.Lerp(0, -360f, curveValue);
+
+            yield return null;
+
+        }
+        while (t < 1f);
+    }
+
+    private void HandleControl()
+    {
+        switch (this.controlMode)
+        {
+            case ControlMode.SpinCCW: this.isCCW = true; this.ControlSpin(true); break;
+            case ControlMode.SpinCW: this.isCCW = false; this.ControlSpin(false); break;
+            case ControlMode.GoToPoint: this.ControlGoToPoint(); break;
+            case ControlMode.DualSpin: this.ControlDualSpin(); break;
+        }
+    }
+
+    private void ControlSpin(bool counterclockwise)
+    {
+        if (this.isTapping)
+        {
+            var aimDir = this.transform.right;
+            var velDir = (Vector3)this.rigidBody.velocity.normalized;
+            var dirDot = (Vector2.Dot(aimDir, velDir) + 1f) / 2f;
 
             // Decay previous linear velocity
             if (Input.anyKeyDown)
@@ -208,8 +399,6 @@ public class RocketController : MonoBehaviour
                 var curveValue = this.velocityDecayCurve.Evaluate(dirDot);
                 var multiplier = Mathf.Lerp(this.velocityDecayRange.x, this.velocityDecayRange.y, curveValue);
                 this.rigidBody.velocity = velDir * this.rigidBody.velocity.magnitude * multiplier;
-
-                this.source.Play();
             }
 
             // Add new linear velocity
@@ -232,148 +421,167 @@ public class RocketController : MonoBehaviour
             {
                 var curveValue = this.angularVelocityDecayCurve.Evaluate(timeHeld / this.angularVelocityDecayDuration);
                 var multiplier = Mathf.Lerp(this.angularVelocityDecayRange.x, this.angularVelocityDecayRange.y, curveValue);
-                var speedMultiplier = this.rigidBody.velocity.magnitude / this.maxSpeed;
-                this.rigidBody.angularVelocity *= multiplier * speedMultiplier;
+                this.rigidBody.angularVelocity *= multiplier * this.SpeedPercentage;
             }
 
-            this.source.pitch = 1f + this.timeHeld * this.pitchIncreaseMultiplier;
+            this.isThrusting = true;
         }
         else
         {
-            this.timeHeld = 0f;
-            this.timeReleased += Time.deltaTime;
+            var direction = counterclockwise ? 1 : -1;
 
             // Add angular velocity
             var curveValue = this.timeReleased / this.torqueCurveDuration;
             var multiplier = this.torqueCurve.Evaluate(curveValue);
-            this.rigidBody.AddTorque(this.torque * multiplier);
+            this.rigidBody.AddTorque(this.torque * multiplier * direction);
 
             // Cap angular velocity
-            if (this.rigidBody.angularVelocity > this.maxAngularVelocity)
+            if (Mathf.Abs(this.rigidBody.angularVelocity) > this.maxAngularVelocity)
             {
-                this.rigidBody.angularVelocity = this.maxAngularVelocity;
+                this.rigidBody.angularVelocity = this.maxAngularVelocity * direction;
             }
 
-            this.source.Pause();
+            this.isThrusting = false;
         }
 
         // Handle x-rotation
         {
-            var bodyEuler = this.bodyTransform.localEulerAngles;
-            if (isTapping != wasTapping)
+            var target = 0f;
+            if (this.isTapping && this.timeHeld >= rotationXStartTime)
             {
-                this.rotXOnInputChange = bodyEuler.x;
+                target = this.rotationXRange.x;
             }
-
-            var curveValue = 0f;
-            if (isTapping)
+            else if (this.isCCW)
             {
-                curveValue = 1f - (this.timeHeld - this.rotationXStartTime) / this.rotationXStartDuration;
+                target = this.rotationXRange.y;
             }
             else
             {
-                curveValue = (this.timeReleased - rotationXEndTime) / this.rotationXEndDuration;
+                target = -this.rotationXRange.y;
             }
 
-            var t = this.rotationXCurve.Evaluate(curveValue);
-            var min = isTapping ? this.rotationXRange.x : this.rotXOnInputChange;
-            var max = isTapping ? this.rotXOnInputChange : this.rotationXRange.y;
-
-            if (min > 180f)
+            if (Mathf.Abs(this.xRot - target) > 0.1f)
             {
-                min -= 360f;
+                var dir = Mathf.Sign(target - this.xRot);
+                this.xRot += dir * this.rotationXSpeed * Time.deltaTime;
+                var bodyEuler = new Vector3(this.xRot + this.currentBarrelRoll, -180f, -180f);
+                this.bodyTransform.localRotation = Quaternion.Euler(bodyEuler);
             }
+        }
+    }
 
-            if (max > 180f)
+    private float xRot = 0f;
+
+    private void ControlGoToPoint()
+    {
+        var worldInputPos = (Vector3)(Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition); // clear z
+        var worldPos = (Vector3)(Vector2)this.transform.position; // clear z
+        var inputDir = (worldInputPos - worldPos).normalized;
+        var aimDir = this.transform.right;
+        var velDir = (Vector3)this.rigidBody.velocity.normalized;
+        var dirDot = (Vector2.Dot(aimDir, velDir) + 1f) / 2f;
+        var inputInvDot = 1f - ((Vector2.Dot(aimDir, inputDir) + 1f) / 2f);
+        var angleDiff = aimDir.SignedAngle(inputDir);
+        var normAngleDiff = angleDiff / 180f;
+
+        this.isThrusting = false;
+
+        if (Input.GetMouseButton(0))
+        {
+            // Torque
             {
-                max -= 360f;
+                // Add
+                var newAngVel = normAngleDiff * this.aimTorque;
+                this.rigidBody.AddTorque(newAngVel, ForceMode2D.Force);
+
+                // Cap
+                {
+                    var maxAngVelDir = Mathf.Sign(angleDiff);
+                    var maxAngVel = Mathf.Lerp(this.aimMaxAngularVelocityRange.x, this.aimMaxAngularVelocityRange.y, this.aimMaxAngularVelocityCurve.Evaluate(inputInvDot)) * maxAngVelDir;
+
+                    if (Mathf.Abs(this.rigidBody.angularVelocity) > Mathf.Abs(maxAngVel))
+                    {
+                        this.rigidBody.angularVelocity = maxAngVel;
+                    }
+                }
             }
 
-            var angVelMultiplier = Mathf.Lerp(0f, 0.5f, this.rigidBody.angularVelocity / this.maxAngularVelocity);
-            var multiplier = Mathf.Max(angVelMultiplier, t);
-            var xRot = Mathf.Lerp(min, max, multiplier);
+            // Thrust
+            if (inputInvDot < this.dotProductLimitBeforeThrust)
+            {
+                this.isThrusting = true;
 
-            bodyEuler = new Vector3(xRot + this.currentBarrelRoll, -180f, -180f);
+                // Decay
+                if (!this.wasThrusting)
+                {
+                    var multiplier = Mathf.Lerp(this.aimVelocityDecayRange.x, this.aimVelocityDecayRange.y, this.aimVelocityDecayCurve.Evaluate(dirDot));
+                    this.rigidBody.velocity = velDir * this.rigidBody.velocity.magnitude * multiplier;
+                }
 
+                // Add
+                {
+                    var multiplier = Mathf.Lerp(this.aimBoostMultiplierRange.x, this.aimBoostMultiplierRange.y, this.aimBoostMultiplierCurve.Evaluate(dirDot));
+                    this.rigidBody.AddRelativeForce(this.boostForce * multiplier);
+                }
+
+                // Cap
+                if (this.rigidBody.velocity.magnitude > this.maxSpeed)
+                {
+                    this.rigidBody.velocity = this.rigidBody.velocity.normalized * this.maxSpeed;
+                }
+            }
+        }
+        else
+        {
+            if (Input.GetMouseButtonUp(0))
+            {
+                this.angularVelocityOnRelease = this.rigidBody.angularVelocity;
+            }
+
+            this.rigidBody.angularVelocity = this.angularVelocityOnRelease;
+
+            // Cap
+            if (Mathf.Abs(this.rigidBody.angularVelocity) > this.maxAngularVelocity)
+            {
+                this.rigidBody.angularVelocity = Mathf.Sign(this.rigidBody.angularVelocity) * this.maxAngularVelocity;
+            }
+        }
+
+        // Handle x-rotation
+        {
+            //var angVelPer = this.rotationXCurve.Evaluate(this.rigidBody.angularVelocity / this.maxAngularVelocity);
+            //var xRot = Mathf.Lerp(this.rotationXRange.x / 2f, this.rotationXRange.y / 2f, Mathf.Abs(angVelPer));
+            //xRot *= Mathf.Sign(angVelPer);
+
+            var bodyEuler = new Vector3(/*xRot + */this.currentBarrelRoll, -180f, -180f);
             this.bodyTransform.localRotation = Quaternion.Euler(bodyEuler);
         }
 
-        // Trails
+
+        //this.debugString = string.Format("{0:f2}/{1:f2} ({2:f2})", this.rigidBody.angularVelocity, maxAngVel, newAngVel);
+        //this.debugString = string.Format("{0:f2}/{1:f2} ({2:f2})", this.rigidBody.velocity.magnitude, this.maxSpeed, newForce.magnitude);
+        //this.debugString = string.Format("{0:f2}", dirDot);
+        //this.debugBlueLine.Move(this.transform.position, this.transform.position + velDir * 1f);
+        //this.debugYellowLine.Move(this.transform.position, this.transform.position + inputDir * 1f);
+    }
+
+    private float lastTapStartTime;
+    private float lastDoubleTapTime;
+    private void ControlDualSpin()
+    {
+        var canDoubleTap = (Time.time - this.lastDoubleTapTime) >= this.minTimeBetweenDoubleTaps;
+        if (canDoubleTap && this.isTapping && !this.wasTapping)
         {
-            var trailDuration = 0f;
-
-            if (isTapping)
+            var isDoubleTapping = (Time.time - this.lastTapStartTime) <= this.doubleTapDuration;
+            if (isDoubleTapping)
             {
-                trailDuration = this.baseTrailDuration * (this.rigidBody.velocity.magnitude / this.maxSpeed);
-            }
-            else
-            {
-                trailDuration = 0f;
+                this.isCCW = !this.isCCW;
+                this.lastDoubleTapTime = Time.time;
             }
 
-            foreach (var t in this.trails)
-            {
-                t.time = trailDuration;
-            }
+            this.lastTapStartTime = Time.time;
         }
 
-        //this.debugString = string.Format("{0:f2}", this.currentFullRoll);
-        this.debugString = string.Empty;
-
-        //this.debugAimLine.Move(this.transform.position, this.transform.position + aimDir * 0.45f);
-        //this.debugVelocityLine.Move(this.transform.position, this.transform.position + velDir * 0.45f);
-        this.debugDiffText.Move(this.transform.position + Vector3.up * 1f);
-        this.debugDiffText.Text = this.debugString;
-
-        this.wasTapping = isTapping;
-    }
-
-    private void LevelWin()
-    {
-        this.inWinMode = true;
-        Object.Destroy(this.gameObject);
-    }
-
-    private void LevelStart()
-    {
-        this.inWinMode = false;
-        Object.Destroy(this.gameObject);
-    }
-
-    private void TimeStart()
-    {
-        this.controlTime = Time.time + this.controlDelay;
-    }
-
-    public void Boost(Vector2 force)
-    {
-        this.rigidBody.AddForce(force, ForceMode2D.Impulse);
-    }
-
-    private IEnumerator RollCoroutine()
-    {
-        yield return new WaitForSeconds(this.barrelRollDelay);
-
-        if (!Input.anyKey)
-        {
-            yield break;
-        }
-
-        var startTime = Time.time;
-        var timeSoFar = 0f;
-        var t = 0f;
-
-        do
-        {
-            timeSoFar = Time.time - startTime;
-            t = timeSoFar / this.barrelRollDuration;
-
-            var curveValue = this.barrelRollCurve.Evaluate(t);
-            this.currentBarrelRoll = Mathf.Lerp(0, -360f, curveValue);
-
-            yield return null;
-
-        }
-        while (t < 1f);
+        this.ControlSpin(this.isCCW);
     }
 }

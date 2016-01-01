@@ -1,24 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.Linq;
 
 public class BombController : MonoBehaviour
 {
-    [SerializeField]
-    private float explosionMagnitude = 26f;
-    
-    [SerializeField]
-    private float otherSpeedDecayMultiplier = 0.85f;
-
-    [SerializeField]
-    private float angleDiffCorrectionTolerance = 20f;
-
-    [SerializeField]
-    private float correctionTorque = 10f;
-
-    [SerializeField]
-    private AnimationCurve correctionTorqueCurve;
-
     [SerializeField]
     private float explosionShakeMagnitude = 0.06f;
 
@@ -33,9 +17,6 @@ public class BombController : MonoBehaviour
 
     [SerializeField]
     private ParticleSystem explosionParticles;
-
-    [SerializeField]
-    private Vector2 explosionMultiplierRange = new Vector2(0.3f, 1f);
 
     [SerializeField]
     private AudioSource source;
@@ -81,7 +62,7 @@ public class BombController : MonoBehaviour
 
     private float startPullTime;
 
-    private bool isPulled = false;
+    private bool isPulling = false;
 
     private bool hasExploded = false;
 
@@ -112,15 +93,15 @@ public class BombController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!RocketController.Instance || !this.isPulled)
+        if (!RocketController.Instance || !this.isPulling)
         {
             return;
         }
 
-        var dir = (Vector2)(RocketController.Instance.transform.position - this.transform.position).normalized; // Ignore z
+        var dir = (Vector2)(RocketController.Instance.Position - this.transform.position).normalized; // Ignore z
 
         var curveValue = this.gravityCurve.Evaluate((Time.time - this.startPullTime) / this.gravityCurveDuration);
-        var rocketMultipler = 1f + (RocketController.Instance.MainRigidbody.velocity.magnitude / RocketController.Instance.MaxSpeed) * this.rocketSpeedInfluence;
+        var rocketMultipler = 1f + RocketController.Instance.SpeedPercentage * this.rocketSpeedInfluence;
         var multiplier = Mathf.Lerp(this.speedMultiplierRange.x, this.speedMultiplierRange.y, curveValue);
         var speed = multiplier * rocketMultipler * Time.fixedDeltaTime;
 
@@ -142,7 +123,7 @@ public class BombController : MonoBehaviour
         {
             this.Explode();
         }
-        else if (other.tag == this.junkPullerTag && !this.isPulled)
+        else if (other.tag == this.junkPullerTag && !this.isPulling)
         {
             this.StartPulling();
         }
@@ -161,16 +142,10 @@ public class BombController : MonoBehaviour
     private void StartPulling()
     {
         this.startPullTime = Time.time;
-        this.isPulled = true;
+        this.isPulling = true;
 
-        var rocket = RocketController.Instance;
-        var vel = (Vector2)(this.transform.position - rocket.transform.position).normalized;
-        rocket.MainRigidbody.AddForce(vel * this.attractForceMagnitude, ForceMode2D.Impulse);
-
-        if (rocket.MainRigidbody.velocity.magnitude > rocket.MaxSpeed)
-        {
-            rocket.MainRigidbody.velocity = rocket.MainRigidbody.velocity.normalized * rocket.MaxSpeed;
-        }
+        var vel = (Vector2)(this.transform.position - RocketController.Instance.Position).normalized;
+        RocketController.Instance.AddForce(vel * this.attractForceMagnitude);
 
         this.rotationAtAttraction = Vector2.down.SignedAngle(vel);
     }
@@ -182,40 +157,7 @@ public class BombController : MonoBehaviour
             return;
         }
 
-        var rocket = RocketController.Instance;
-
-        if (!rocket)
-        {
-            return;
-        }
-
         this.hasExploded = true;
-
-        /*
-        var angleInRadians = transform.eulerAngles.z * Mathf.Deg2Rad;
-        var aimDir = rocket.transform.right;
-        var forceDir = new Vector2(Mathf.Cos(angleInRadians), Mathf.Sin(angleInRadians)).normalized;
-        var velDir = rocket.MainRigidbody.velocity.normalized;
-        var diffAngle = aimDir.SignedAngle(forceDir);
-        var absDiffAngle = Mathf.Abs(diffAngle);
-        var diffDot = Vector2.Dot(velDir, forceDir);
-
-        if (Input.anyKey && absDiffAngle < this.angleDiffCorrectionTolerance)
-        {
-            var curveValue = this.correctionTorqueCurve.Evaluate(absDiffAngle / this.angleDiffCorrectionTolerance);
-            rocket.MainRigidbody.AddTorque(this.correctionTorque * Mathf.Sign(diffAngle) * curveValue, ForceMode2D.Impulse);
-        }
-         */
-
-        var explosionMultiplier = 1f; //Mathf.Lerp(this.explosionMultiplierRange.x, this.explosionMultiplierRange.y, diffDot);
-
-        /*rocket.MainRigidbody.velocity *= this.otherSpeedDecayMultiplier;
-        rocket.MainRigidbody.AddForce(forceDir * this.explosionMagnitude * explosionMultiplier, ForceMode2D.Impulse);
-
-        if (rocket.MainRigidbody.velocity.magnitude > rocket.MaxSpeed)
-        {
-            rocket.MainRigidbody.velocity = rocket.MainRigidbody.velocity.normalized * rocket.MaxSpeed;
-        }*/
 
         this.source.clip = this.deathClips[Random.Range(0, this.deathClips.Length)];
         this.source.volume = this.deathVolume;
@@ -227,11 +169,10 @@ public class BombController : MonoBehaviour
             r.enabled = false;
         }
 
-        CameraController.Instance.Shake(this.explosionShakeDuration, this.explosionShakeMagnitude * explosionMultiplier);
+        CameraController.Instance.Shake(this.explosionShakeDuration, this.explosionShakeMagnitude);
 
         this.transform.eulerAngles = Vector3.forward * this.rotationAtAttraction;
 
-        this.explosionParticles.startLifetime *= explosionMultiplier;
         this.explosionParticles.Play();
 
         MultiplierController.Instance.Increment();
@@ -246,13 +187,6 @@ public class BombController : MonoBehaviour
         while ((Time.time - startTime) < this.destroyDelay)
         {
             yield return null;
-
-            var bombs = Object.FindObjectsOfType<BombController>();
-
-            if (bombs.Length <= 1 || bombs.All(b => b.hasExploded))
-            {
-                break;
-            }
         }
 
         Object.Destroy(this.gameObject);
