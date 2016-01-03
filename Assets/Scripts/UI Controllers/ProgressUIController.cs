@@ -29,7 +29,7 @@ public class ProgressUIController : MonoBehaviour
     private MedalUIController proMedal;
 
     [SerializeField]
-    private int junkAddPerSecond = 100;
+    private Vector2 junkAddRateRange = new Vector2(295, 305);
     
     [SerializeField]
     private Color normalTimeColor;
@@ -142,7 +142,8 @@ public class ProgressUIController : MonoBehaviour
 
         while (change != 0)
         {
-            var changeThisFrame = Mathf.RoundToInt(Time.deltaTime * this.junkAddPerSecond * dir);
+            var r = Random.Range(this.junkAddRateRange.x, this.junkAddRateRange.y);
+            var changeThisFrame = Mathf.RoundToInt(Time.deltaTime * r * dir);
 
             if (changeThisFrame == 0)
             {
