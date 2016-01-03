@@ -2,7 +2,7 @@
 
 public abstract class BehaviourSingleton<T> : MonoBehaviour where T : MonoBehaviour
 {
-    protected static T instance;
+    private static T instance;
 
     public static T Instance
     {

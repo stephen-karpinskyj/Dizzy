@@ -74,9 +74,9 @@ public class BouncerController : MonoBehaviour
         this.StopAllCoroutines();
         this.StartCoroutine(this.FlashCoroutine());
 
-        CameraController.Instance.Shake(this.shakeDuration, this.shakeMagnitude);
+        CameraController.Shake(this.shakeDuration, this.shakeMagnitude);
 
-        this.source.Play();
+        AudioManager.Instance.Play(this.source);
     }
 
     private void OnTriggerExit2D() 
@@ -91,7 +91,11 @@ public class BouncerController : MonoBehaviour
         this.rend.sharedMaterial.color = defaultColour;
     }
 
-    private void LevelStart()
+
+    #region Broadcast
+
+
+    private void LevelStop()
     {
         this.StopAllCoroutines();
         this.rend.sharedMaterial.color = defaultColour;
@@ -99,11 +103,6 @@ public class BouncerController : MonoBehaviour
         this.hasExited = false;
     }
 
-    private void LevelWin()
-    {
-        this.StopAllCoroutines();
-        this.rend.sharedMaterial.color = defaultColour;
 
-        this.hasExited = false;
-    }
+    #endregion
 }

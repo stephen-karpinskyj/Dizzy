@@ -69,12 +69,27 @@ public class iTweenPathEditor : Editor
 		EditorGUI.indentLevel = 4;
 		for (int i = 0; i < _target.nodes.Count; i++) {
 			_target.nodes[i] = EditorGUILayout.Vector3Field("Node " + (i+1), _target.nodes[i]);
-		}
+        }
+
+        EditorGUILayout.Space();
+
+        EditorGUI.indentLevel = 0;
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.PrefixLabel("Trace Parent");
+        _target.traceResultParent = EditorGUILayout.ObjectField(_target.traceResultParent, typeof(Transform), true) as Transform;
+        EditorGUILayout.EndHorizontal();
 		
 		//update and redraw:
 		if(GUI.changed){
 			EditorUtility.SetDirty(_target);			
-		}
+        }
+
+        if (GUILayout.Button("Regenerate Dots"))
+        {
+            var points = iTweenPath.GetPath(this._target.pathName);
+            var args = iTween.Hash("path", points, "speed", this._target.traceSpeed, "onstart", "OnPathTraceStart", "onupdate", "OnPathTraceUpdate", "oncomplete", "OnPathTraceComplete");
+            iTween.MoveTo(this._target.gameObject, args);
+        }
 	}
 	
 	void OnSceneGUI(){

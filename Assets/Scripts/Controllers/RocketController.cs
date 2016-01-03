@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class RocketController : MonoBehaviour
 {
+    #region Types
+
+
     private enum ControlMode
     {
         /// <summary>
@@ -30,6 +33,9 @@ public class RocketController : MonoBehaviour
         /// </summary>
         DualSpin,
     }
+
+
+    #endregion
 
 
     #region Inspector
@@ -64,6 +70,9 @@ public class RocketController : MonoBehaviour
     private float angularVelocityDecayDuration = 0.1f;
     [SerializeField]
     private Vector2 angularVelocityDecayRange = new Vector2(0.1f, 0.2f);
+
+    [SerializeField]
+    private AudioClip thrustClip;
 
 
     [Header("Spin")]
@@ -115,6 +124,16 @@ public class RocketController : MonoBehaviour
     private float barrelRollDuration = 1f;
 
 
+    [Header("Launch")]
+
+    [SerializeField]
+    private float launchShakeDuration = 0.2f;
+    [SerializeField]
+    private float launchShakeMagnitude = 0.1f;
+    [SerializeField]
+    private Vector2 launchForce = new Vector2(0f, 120f);
+
+
     [Header("Other")]
 
     [SerializeField]
@@ -139,9 +158,6 @@ public class RocketController : MonoBehaviour
     private float dotProductMinBeforeTrails = 0.9f;
 
     [SerializeField]
-    private float controlDelay = 0.5f;
-
-    [SerializeField]
     private float doubleTapDuration = 0.2f;
 
     [SerializeField]
@@ -154,7 +170,12 @@ public class RocketController : MonoBehaviour
     #endregion
 
 
-    private bool inWinMode = false;
+    #region Fields
+
+
+    private Vector3 initialPos;
+    private Quaternion initialRot;
+
     private float timeHeld = 0f;
     private float timeReleased = 0f;
     private bool isTapping = false;
@@ -164,32 +185,32 @@ public class RocketController : MonoBehaviour
     private bool wasThrusting = false;
 
     private float currentBarrelRoll;
-    private float rotXOnInputChange;
-
-    private float controlTime;
 
     private float angularVelocityOnRelease = 0f;
 
-    private bool isCCW = true;
+    private bool isRunning = false;
+    private bool isCCW = false;
 
-    private DebugLine debugBlueLine;
-    private DebugLine debugYellowLine;
-    private DebugText debugText;
+    private float xRot = 0f;
+
+    private float lastTapStartTime;
+    private float lastDoubleTapTime;
+
+    //private DebugLine debugBlueLine;
+    //private DebugLine debugYellowLine;
+    //private DebugText debugText;
     //private string debugString;
 
-    public Vector3 Position
-    {
-        get { return this.transform.position; }
-    }
+
+    #endregion
+
+
+    #region Properties
+
 
     public float SpeedPercentage
     {
         get { return this.rigidBody.velocity.magnitude / this.maxSpeed; }
-    }
-
-    private bool HasControl
-    {
-        get { return Time.time < this.controlTime; }
     }
 
     public bool IsThrusting
@@ -202,55 +223,40 @@ public class RocketController : MonoBehaviour
         get { return this.isCCW; }
     }
 
-    private static RocketController instance;
 
-    public static RocketController Instance
-    {
-        get { return instance; }
-    }
+    #endregion
+
+
+    #region Unity
+
 
     private void Awake()
     {
-        RocketController.instance = this;
-        
         Debug.Assert(this.rigidBody != null, this);
         Debug.Assert(this.source != null, this);
 
-        Broadcast.SendMessage("TimeStart");
-
-        this.debugBlueLine = DebugLine.Draw(Vector3.zero, Vector3.zero, Color.blue);
-        this.debugYellowLine = DebugLine.Draw(Vector3.zero, Vector3.zero, Color.yellow);
-        this.debugText = DebugText.Draw(Vector3.zero, string.Empty);
+        //this.debugBlueLine = DebugLine.Draw(Vector3.zero, Vector3.zero, Color.blue);
+        //this.debugYellowLine = DebugLine.Draw(Vector3.zero, Vector3.zero, Color.yellow);
+        //this.debugText = DebugText.Draw(Vector3.zero, string.Empty);
 
         //this.StartCoroutine(this.RollCoroutine());
-    }
 
-    private void OnDestroy()
-    {
-        if (!this.inWinMode)
-        {
-            Broadcast.SendMessage("LevelStart");
-        }
+        this.initialPos = this.transform.position;
+        this.initialRot = this.transform.rotation;
 
-        if (this.debugBlueLine)
-        {
-            Object.Destroy(this.debugBlueLine.gameObject);
-        }
+        this.source.clip = this.thrustClip;
 
-        if (this.debugYellowLine)
-        {
-            Object.Destroy(this.debugYellowLine.gameObject);
-        }
-
-        if (this.debugText)
-        {
-            Object.Destroy(this.debugText);
-        }
+        this.StopRunning();
     }
 
     private void Update()
     {
-        this.isTapping = Input.anyKey || this.HasControl;
+        if (!this.isRunning)
+        {
+            return;
+        }
+        
+        this.isTapping = Input.anyKey;
 
         if (this.isTapping)
         {
@@ -302,11 +308,11 @@ public class RocketController : MonoBehaviour
 
             if (this.wasThrusting && !this.isThrusting)
             {
-                this.source.Stop();
+                AudioManager.Instance.Stop(this.source);
             }
             else if (!this.wasThrusting && this.isThrusting)
             {
-                this.source.Play();
+                AudioManager.Instance.Play(this.source);
             }
         }
 
@@ -316,29 +322,62 @@ public class RocketController : MonoBehaviour
         //this.debugString = string.Format("{0:f2}", this.currentFullRoll);
         //this.debugString = string.Empty;
 
-        this.debugText.Move(this.transform.position + Vector3.up * 1f);
+        //this.debugText.Move(this.transform.position + Vector3.up * 1f);
         //this.debugText.Text = this.debugString;
     }
 
-    private void LevelWin()
+
+    #endregion
+
+
+    #region Public
+
+
+    public void StopRunning()
     {
-        this.inWinMode = true;
-        Object.Destroy(this.gameObject);
+        this.isRunning = false;
+
+        AudioManager.Instance.Stop(this.source);
+
+        this.transform.position = this.initialPos;
+        this.transform.rotation = this.initialRot;
+
+        this.rigidBody.angularVelocity = 0f;
+        this.rigidBody.velocity = Vector2.zero;
+
+        foreach (var t in this.trails)
+        {
+            t.enabled = false;
+        }
     }
 
-    private void LevelStart()
+    public void StartRunning()
     {
-        this.inWinMode = false;
-        Object.Destroy(this.gameObject);
+        if (this.isRunning)
+        {
+            return;
+        }
+
+        this.isRunning = true;
+        this.isCCW = StateManager.Instance.SpinDirectionCCW;
+
+        CameraController.Shake(this.launchShakeDuration, this.launchShakeMagnitude);
+
+        this.AddImpulseForce(this.launchForce);
+
+        foreach (var t in this.trails)
+        {
+            t.enabled = true;
+        }
     }
 
-    private void TimeStart()
+    public void AddImpulseForce(Vector2 force)
     {
-        this.controlTime = Time.time + this.controlDelay;
-    }
+        if (!this.isRunning)
+        {
+            return;
+        }
 
-    public void AddForce(Vector2 force)
-    {
         this.rigidBody.AddForce(force, ForceMode2D.Impulse);
 
         if (this.rigidBody.velocity.magnitude > this.maxSpeed)
@@ -346,6 +385,13 @@ public class RocketController : MonoBehaviour
             this.rigidBody.velocity = this.rigidBody.velocity.normalized * this.maxSpeed;
         }
     }
+
+
+    #endregion
+
+
+    #region Coroutines
+
 
     private IEnumerator RollCoroutine()
     {
@@ -373,6 +419,13 @@ public class RocketController : MonoBehaviour
         }
         while (t < 1f);
     }
+
+
+    #endregion
+
+
+    #region Private
+
 
     private void HandleControl()
     {
@@ -470,8 +523,6 @@ public class RocketController : MonoBehaviour
         }
     }
 
-    private float xRot = 0f;
-
     private void ControlGoToPoint()
     {
         var worldInputPos = (Vector3)(Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition); // clear z
@@ -565,8 +616,6 @@ public class RocketController : MonoBehaviour
         //this.debugYellowLine.Move(this.transform.position, this.transform.position + inputDir * 1f);
     }
 
-    private float lastTapStartTime;
-    private float lastDoubleTapTime;
     private void ControlDualSpin()
     {
         var canDoubleTap = (Time.time - this.lastDoubleTapTime) >= this.minTimeBetweenDoubleTaps;
@@ -584,4 +633,7 @@ public class RocketController : MonoBehaviour
 
         this.ControlSpin(this.isCCW);
     }
+
+
+    #endregion
 }

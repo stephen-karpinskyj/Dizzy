@@ -43,6 +43,7 @@ using UnityEngine;
 /// <para>Author: Bob Berkebile (http://pixelplacement.com)</para>
 /// <para>Support: http://itween.pixelplacement.com</para>
 /// </summary>
+[ExecuteInEditMode]
 public class iTween : MonoBehaviour{
 	
 	#region Variables
@@ -85,7 +86,7 @@ public class iTween : MonoBehaviour{
 	private NamedValueColor namedcolorvalue;
 
     private float lastRealTime; // Added by PressPlay
-    private bool useRealTime; // Added by PressPlay
+    //private bool useRealTime; // Added by PressPlay
 
 	/// <summary>
 	/// The type of easing to use based on Robert Penner's open source easing equations (http://www.robertpenner.com/easing_terms_of_use.html).
@@ -4641,7 +4642,9 @@ public class iTween : MonoBehaviour{
 		if(type == "value"){
 			CallBack("onupdate"); //CallBack run for ValueTo since it only calculates and applies in the update callback
 		}
-		
+
+        CallBack("oncomplete");
+
 		//loop or dispose?
 		if(loopType==LoopType.none){
 			Dispose();
@@ -4649,7 +4652,6 @@ public class iTween : MonoBehaviour{
 			TweenLoop();
 		}
 		
-		CallBack("oncomplete");
 	}
 	
 	void TweenLoop(){
@@ -5995,7 +5997,7 @@ public class iTween : MonoBehaviour{
 	/// </summary>
 	public static void CameraFadeDestroy(){
 		if(cameraFade){
-			Destroy(cameraFade);
+            DestroyImmediate(cameraFade);
 		}
 	}
 	
@@ -6543,10 +6545,18 @@ public class iTween : MonoBehaviour{
 
 	#region Component Segments
 	
+    #if UNITY_EDITOR
 	void Awake(){
 		RetrieveArgs();
-        lastRealTime = Time.realtimeSinceStartup; // Added by PressPlay
+        lastRealTime = (float)UnityEditor.EditorApplication.timeSinceStartup; // Added by PressPlay
+
+        UnityEditor.EditorApplication.update += EditorUpdate;
 	}
+
+    void OnDestroy(){
+        UnityEditor.EditorApplication.update -= EditorUpdate;
+    }
+    #endif
 	
 	IEnumerator Start(){
 		if(delay > 0){
@@ -6556,7 +6566,7 @@ public class iTween : MonoBehaviour{
 	}	
 	
 	//non-physics
-	void Update(){
+	void EditorUpdate(){
 		if(isRunning && !physics){
 			if(!reverse){
 				if(percentage<1f){
@@ -6891,11 +6901,11 @@ public class iTween : MonoBehaviour{
         // Added by PressPlay
         if (tweenArguments.Contains("ignoretimescale"))
         {
-            useRealTime = (bool)tweenArguments["ignoretimescale"];
+            //useRealTime = (bool)tweenArguments["ignoretimescale"];
         }
         else
         {
-            useRealTime = Defaults.useRealTime;
+            //useRealTime = Defaults.useRealTime;
         }
 
 		//instantiates a cached ease equation reference:
@@ -7016,16 +7026,16 @@ public class iTween : MonoBehaviour{
 	
 	//calculate percentage of tween based on time:
 	void UpdatePercentage(){
-
+        #if UNITY_EDITOR
         // Added by PressPlay   
-        if (useRealTime)
+        //if (useRealTime)
         {
-            runningTime += (Time.realtimeSinceStartup - lastRealTime);      
+            runningTime += ((float)UnityEditor.EditorApplication.timeSinceStartup - lastRealTime);      
         }
-        else
+        /*else
         {
             runningTime += Time.deltaTime;
-        }
+        }*/
 
 		if(reverse){
 			percentage = 1 - runningTime/time;	
@@ -7033,7 +7043,8 @@ public class iTween : MonoBehaviour{
 			percentage = runningTime/time;	
 		}
 
-        lastRealTime = Time.realtimeSinceStartup; // Added by PressPlay
+        lastRealTime = (float)UnityEditor.EditorApplication.timeSinceStartup; // Added by PressPlay
+        #endif
 	}
 	
 	void CallBack(string callbackType){
@@ -7045,13 +7056,13 @@ public class iTween : MonoBehaviour{
 			}else{
 				target=gameObject;	
 			}
-			
+
 			//throw an error if a string wasn't passed for callback:
 			if (tweenArguments[callbackType].GetType() == typeof(System.String)) {
 				target.SendMessage((string)tweenArguments[callbackType],(object)tweenArguments[callbackType+"params"],SendMessageOptions.DontRequireReceiver);
 			}else{
 				Debug.LogError("iTween Error: Callback method references must be passed as a String!");
-				Destroy (this);
+				DestroyImmediate (this);
 			}
 		}
 	}
@@ -7064,7 +7075,7 @@ public class iTween : MonoBehaviour{
 				break;
 			}
 		}
-		Destroy(this);
+        DestroyImmediate(this);
 	}	
 	
 	void ConflictCheck(){//if a new iTween is about to run and is of the same type as an in progress iTween this will destroy the previous if the new one is NOT identical in every way or it will destroy the new iTween if they are:	

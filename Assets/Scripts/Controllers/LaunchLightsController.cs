@@ -82,18 +82,20 @@ public class LaunchLightsController : MonoBehaviour
         }
     }
 
+
+    #region Broadcast
+
+
+    private void LevelStop()
+    {
+        this.Light();
+    }
+
     private void LevelStart()
-    {
-        this.Light();
-    }
-
-    private void LevelWin()
-    {
-        this.Light();
-    }
-
-    private void TimeStart()
     {
         this.StartCoroutine(HideCoroutine());
     }
+
+
+    #endregion
 }

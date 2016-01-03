@@ -351,7 +351,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 178352}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07c19a03c481c42aeadf8795fcac6b96, type: 3}
+  m_Script: {fileID: 11500000, guid: e8150d869e8a34067b09f5d9f899f2b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   otherPrefixFilter: Rocket
@@ -363,7 +363,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 158716}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07c19a03c481c42aeadf8795fcac6b96, type: 3}
+  m_Script: {fileID: 11500000, guid: e8150d869e8a34067b09f5d9f899f2b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   otherPrefixFilter: Rocket
@@ -375,7 +375,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 144934}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07c19a03c481c42aeadf8795fcac6b96, type: 3}
+  m_Script: {fileID: 11500000, guid: e8150d869e8a34067b09f5d9f899f2b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   otherPrefixFilter: Rocket
@@ -387,7 +387,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 153798}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07c19a03c481c42aeadf8795fcac6b96, type: 3}
+  m_Script: {fileID: 11500000, guid: e8150d869e8a34067b09f5d9f899f2b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   otherPrefixFilter: Rocket

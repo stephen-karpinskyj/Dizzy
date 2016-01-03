@@ -31,22 +31,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!1 &174718
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 491458}
-  - 114: {fileID: 11489088}
-  m_Layer: 0
-  m_Name: Tracer
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
 --- !u!4 &433276
 Transform:
   m_ObjectHideFlags: 1
@@ -58,7 +42,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 445966}
-  m_RootOrder: 1
+  m_RootOrder: 0
 --- !u!4 &445966
 Transform:
   m_ObjectHideFlags: 1
@@ -69,21 +53,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 491458}
   - {fileID: 433276}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
---- !u!4 &491458
-Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 174718}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 445966}
   m_RootOrder: 0
 --- !u!114 &11479536
 MonoBehaviour:
@@ -112,21 +83,9 @@ MonoBehaviour:
   nodeCount: 10
   initialized: 1
   initialName: New Path 1
---- !u!114 &11489088
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 174718}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d10c20eb0d27441b5a38c13b711a9e2c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  traceSpeed: 20
-  traceDistance: 0.6
-  tracePointInterval: 0.05
-  tracerPrefab: {fileID: 170168, guid: 786555c8cb0a74b33a9d93099ab1a0a4, type: 2}
+  traceResultParent: {fileID: 0}
+  traceSpeed: 10
+  traceDistance: 0.52
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

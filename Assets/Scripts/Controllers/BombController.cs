@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class BombController : MonoBehaviour
 {
+    #region Inspector
+
+
     [SerializeField]
     private float explosionShakeMagnitude = 0.06f;
 
@@ -10,10 +12,10 @@ public class BombController : MonoBehaviour
     private float explosionShakeDuration = 0.2f;
 
     [SerializeField]
-    private float destroyDelay = 0.2f;
+    private Collider2D coll;
 
     [SerializeField]
-    private Renderer[] renderers;
+    private RandomJunkElement[] randomElements;
 
     [SerializeField]
     private ParticleSystem explosionParticles;
@@ -22,16 +24,7 @@ public class BombController : MonoBehaviour
     private AudioSource source;
 
     [SerializeField]
-    private AudioClip spawnClip;
-
-    [SerializeField]
     private AudioClip[] deathClips;
-
-    [SerializeField]
-    private float spawnVolume = 0.05f;
-
-    [SerializeField]
-    private Vector2 spawnPitchRange = new Vector2(0.95f, 1.1f);
 
     [SerializeField]
     private float deathVolume = 0.1f;
@@ -60,48 +53,66 @@ public class BombController : MonoBehaviour
     [SerializeField]
     private Vector2 speedMultiplierRange = new Vector2(20f, 80f);
 
+
+    #endregion
+
+
+    #region Fields
+
+
+
+    private Vector3 initialPos;
+
+    private RandomJunkElement chosenElement;
+
     private float startPullTime;
 
+    private bool isRunning = false;
     private bool isPulling = false;
-
-    private bool hasExploded = false;
+    private bool isExploded = false;
 
     private float rotationAtAttraction;
 
-    public bool HasExploded
+
+    #endregion
+
+
+    #region Properties
+
+
+    public RandomJunkElement ChosenElement
     {
-        get { return this.hasExploded; }
+        get { return this.chosenElement; }
     }
+
+
+    #endregion
+
+
+    #region Unity
+
 
     private void Awake()
     {
         Debug.Assert(this.explosionParticles, this);
         Debug.Assert(this.source, this);
-        Debug.Assert(this.spawnClip, this);
 
-        this.source.clip = this.spawnClip;
-        this.source.volume = this.spawnVolume;
-        this.source.pitch = Random.Range(this.spawnPitchRange.x, this.spawnPitchRange.y);
-        this.source.Play();
+        this.initialPos = this.transform.position;
 
-        var index = Random.Range(0, this.renderers.Length);
-        for (int i = 0; i < this.renderers.Length; i++)
-        {
-            this.renderers[i].enabled = index == i;
-        }
+        this.StopRunning();
     }
 
     private void FixedUpdate()
     {
-        if (!RocketController.Instance || !this.isPulling)
+        if (!this.isRunning || !this.isPulling)
         {
             return;
         }
 
-        var dir = (Vector2)(RocketController.Instance.Position - this.transform.position).normalized; // Ignore z
+        var dir = (Vector2)(LevelManager.Instance.Rocket.transform.position - this.transform.position).normalized; // Ignore z
 
         var curveValue = this.gravityCurve.Evaluate((Time.time - this.startPullTime) / this.gravityCurveDuration);
-        var rocketMultipler = 1f + RocketController.Instance.SpeedPercentage * this.rocketSpeedInfluence;
+        var rocketMultipler = 1f + LevelManager.Instance.Rocket.SpeedPercentage * this.rocketSpeedInfluence;
         var multiplier = Mathf.Lerp(this.speedMultiplierRange.x, this.speedMultiplierRange.y, curveValue);
         var speed = multiplier * rocketMultipler * Time.fixedDeltaTime;
 
@@ -114,14 +125,15 @@ public class BombController : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D other)
     {
-        if (this.hasExploded)
+        if (!this.isRunning || this.isExploded)
         {
             return;
         }
 
-        if (other.tag == this.junkDestroyerTag && !this.hasExploded)
+        if (other.tag == this.junkDestroyerTag && !this.isExploded)
         {
             this.Explode();
+            LevelManager.Instance.HandlePickup(this);
         }
         else if (other.tag == this.junkPullerTag && !this.isPulling)
         {
@@ -129,66 +141,114 @@ public class BombController : MonoBehaviour
         }
     }
 
-    private void LevelStart()
+
+    #endregion
+
+
+    #region Public
+
+
+    public void StopRunning()
     {
-        Object.Destroy(this.gameObject);
+        this.isRunning = false;
+
+        this.isExploded = false;
+        this.startPullTime = 0f;
+
+        this.isPulling = false;
+        this.coll.enabled = true;
+
+        this.transform.position = this.initialPos;
+        this.transform.eulerAngles = new Vector3(Random.Range(0, 360f), Random.Range(0, 360f), Random.Range(0, 360f));
+
+        this.Randomize();
     }
 
-    private void LevelWin()
+    public void StartRunning()
     {
-        Object.Destroy(this.gameObject);
+        if (this.isRunning)
+        {
+            return;
+        }
+
+        this.isRunning = true;
+    }
+
+
+    #endregion
+
+
+    #region Private
+
+
+    private void Randomize()
+    {
+        var totalOdds = 0;
+
+        foreach (var e in this.randomElements)
+        {
+            totalOdds += e.OddsRatio;
+        }
+
+        var r = Random.Range(0, totalOdds);
+        var prev = 0;
+        var curr = 0;
+
+        foreach (var e in this.randomElements)
+        {
+            curr += e.OddsRatio;
+
+            if (r >= prev && r < curr)
+            {
+                this.chosenElement = e;
+                break;
+            }
+
+            prev = curr;
+        }
+
+        foreach (var e in this.randomElements)
+        {
+            e.SetEnabled(e == this.chosenElement);
+        }
     }
 
     private void StartPulling()
     {
-        this.startPullTime = Time.time;
-        this.isPulling = true;
+        Debug.Assert(!this.isPulling);
 
-        var vel = (Vector2)(this.transform.position - RocketController.Instance.Position).normalized;
-        RocketController.Instance.AddForce(vel * this.attractForceMagnitude);
+        this.isPulling = true;
+        this.startPullTime = Time.time;
+
+        var vel = (Vector2)(this.transform.position - LevelManager.Instance.Rocket.transform.position).normalized;
+        LevelManager.Instance.Rocket.AddImpulseForce(vel * this.attractForceMagnitude);
 
         this.rotationAtAttraction = Vector2.down.SignedAngle(vel);
     }
 
     private void Explode()
     {
-        if (this.hasExploded)
-        {
-            return;
-        }
+        Debug.Assert(!this.isExploded);
 
-        this.hasExploded = true;
+        this.isExploded = true;
+        this.coll.enabled = false;
 
         this.source.clip = this.deathClips[Random.Range(0, this.deathClips.Length)];
         this.source.volume = this.deathVolume;
         this.source.pitch = 1f + this.deathPitchMultiplier * MultiplierController.Instance.CurrentMultiplier;
-        this.source.Play();
+        AudioManager.Instance.Play(this.source);
 
-        foreach (var r in this.renderers)
-        {
-            r.enabled = false;
-        }
+        this.chosenElement.SetEnabled(false);
 
-        CameraController.Instance.Shake(this.explosionShakeDuration, this.explosionShakeMagnitude);
+        CameraController.Shake(this.explosionShakeDuration, this.explosionShakeMagnitude);
 
         this.transform.eulerAngles = Vector3.forward * this.rotationAtAttraction;
 
         this.explosionParticles.Play();
 
         MultiplierController.Instance.Increment();
-
-        this.StartCoroutine(this.DestroyCoroutine());
     }
 
-    private IEnumerator DestroyCoroutine()
-    {
-        var startTime = Time.time;
 
-        while ((Time.time - startTime) < this.destroyDelay)
-        {
-            yield return null;
-        }
-
-        Object.Destroy(this.gameObject);
-    }
+    #endregion
 }

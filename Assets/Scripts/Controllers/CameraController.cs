@@ -1,16 +1,17 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class CameraController : BehaviourSingleton<CameraController>
+public class CameraController : MonoBehaviour
 {
     private Vector3 originalCamPos;
     private Vector3 boostPos;
     private Vector3 shakePos;
-    
-    protected override void Awake()
+
+    private static CameraController instance;
+
+    private void Awake()
     {
         Object.DontDestroyOnLoad(this.transform.root.gameObject);
-
         instance = this;
 
         this.originalCamPos = this.transform.position;
@@ -24,9 +25,9 @@ public class CameraController : BehaviourSingleton<CameraController>
         this.transform.position = this.originalCamPos + this.shakePos + this.boostPos;
     }
 
-    public void Shake(float duration, float magnitude)
+    public static void Shake(float duration, float magnitude)
     {
-        this.StartCoroutine(this.ShakeCoroutine(duration, magnitude));
+        instance.StartCoroutine(instance.ShakeCoroutine(duration, magnitude));
     }
 
     /// <remarks>Based on: http://unitytipsandtricks.blogspot.co.nz/2013/05/camera-shake.html</remarks>

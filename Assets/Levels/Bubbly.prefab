@@ -268,22 +268,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!1 &177376
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 448566}
-  - 114: {fileID: 11440978}
-  m_Layer: 0
-  m_Name: Tracer
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
 --- !u!1 &181016
 GameObject:
   m_ObjectHideFlags: 0
@@ -421,7 +405,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 428336}
-  m_RootOrder: 1
+  m_RootOrder: 0
 --- !u!4 &411298
 Transform:
   m_ObjectHideFlags: 1
@@ -445,7 +429,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 428336}
-  m_RootOrder: 2
+  m_RootOrder: 1
 --- !u!4 &417040
 Transform:
   m_ObjectHideFlags: 1
@@ -484,7 +468,7 @@ Transform:
   - {fileID: 444408}
   - {fileID: 492034}
   m_Father: {fileID: 428336}
-  m_RootOrder: 7
+  m_RootOrder: 6
 --- !u!4 &428336
 Transform:
   m_ObjectHideFlags: 1
@@ -495,7 +479,6 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 448566}
   - {fileID: 410820}
   - {fileID: 415724}
   - {fileID: 477238}
@@ -543,7 +526,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 428336}
-  m_RootOrder: 4
+  m_RootOrder: 3
 --- !u!4 &431090
 Transform:
   m_ObjectHideFlags: 1
@@ -573,7 +556,7 @@ Transform:
   - {fileID: 431090}
   - {fileID: 478838}
   m_Father: {fileID: 428336}
-  m_RootOrder: 10
+  m_RootOrder: 9
 --- !u!4 &444408
 Transform:
   m_ObjectHideFlags: 1
@@ -586,18 +569,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 420722}
   m_RootOrder: 1
---- !u!4 &448566
-Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 177376}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 428336}
-  m_RootOrder: 0
 --- !u!4 &448998
 Transform:
   m_ObjectHideFlags: 1
@@ -624,7 +595,7 @@ Transform:
   - {fileID: 485426}
   - {fileID: 428622}
   m_Father: {fileID: 428336}
-  m_RootOrder: 8
+  m_RootOrder: 7
 --- !u!4 &474484
 Transform:
   m_ObjectHideFlags: 1
@@ -637,7 +608,7 @@ Transform:
   m_Children:
   - {fileID: 411298}
   m_Father: {fileID: 428336}
-  m_RootOrder: 6
+  m_RootOrder: 5
 --- !u!4 &477238
 Transform:
   m_ObjectHideFlags: 1
@@ -649,7 +620,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 428336}
-  m_RootOrder: 3
+  m_RootOrder: 2
 --- !u!4 &478838
 Transform:
   m_ObjectHideFlags: 1
@@ -674,7 +645,7 @@ Transform:
   m_Children:
   - {fileID: 428664}
   m_Father: {fileID: 428336}
-  m_RootOrder: 9
+  m_RootOrder: 8
 --- !u!4 &485426
 Transform:
   m_ObjectHideFlags: 1
@@ -698,7 +669,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 428336}
-  m_RootOrder: 5
+  m_RootOrder: 4
 --- !u!4 &490814
 Transform:
   m_ObjectHideFlags: 1
@@ -813,21 +784,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b90fbe5b943441abad2bca5d8fc194e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &11440978
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 177376}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d10c20eb0d27441b5a38c13b711a9e2c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  traceSpeed: 20
-  traceDistance: 0.55
-  tracePointInterval: 0.05
-  tracerPrefab: {fileID: 170168, guid: 786555c8cb0a74b33a9d93099ab1a0a4, type: 2}
 --- !u!114 &11445472
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -864,6 +820,9 @@ MonoBehaviour:
   nodeCount: 8
   initialized: 1
   initialName: New Path 1
+  traceResultParent: {fileID: 0}
+  traceSpeed: 20
+  traceDistance: 0.52
 --- !u!114 &11451652
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -909,6 +868,9 @@ MonoBehaviour:
   nodeCount: 6
   initialized: 1
   initialName: New Path 1
+  traceResultParent: {fileID: 0}
+  traceSpeed: 20
+  traceDistance: 0.52
 --- !u!114 &11458468
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -953,6 +915,9 @@ MonoBehaviour:
   nodeCount: 5
   initialized: 1
   initialName: New Path 1
+  traceResultParent: {fileID: 0}
+  traceSpeed: 20
+  traceDistance: 0.52
 --- !u!114 &11486102
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -978,6 +943,9 @@ MonoBehaviour:
   nodeCount: 8
   initialized: 1
   initialName: New Path 1
+  traceResultParent: {fileID: 0}
+  traceSpeed: 20
+  traceDistance: 0.52
 --- !u!114 &11486476
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1023,6 +991,9 @@ MonoBehaviour:
   nodeCount: 6
   initialized: 1
   initialName: New Path 1
+  traceResultParent: {fileID: 0}
+  traceSpeed: 20
+  traceDistance: 0.52
 --- !u!114 &11499334
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1056,6 +1027,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: traceDistance
       value: 0.55
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

@@ -15,22 +15,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!1 &153742
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 459128}
-  - 114: {fileID: 11432560}
-  m_Layer: 0
-  m_Name: Tracer
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
 --- !u!1 &170874
 GameObject:
   m_ObjectHideFlags: 0
@@ -74,19 +58,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 491324}
-  m_RootOrder: 2
---- !u!4 &459128
-Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 153742}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 491324}
-  m_RootOrder: 0
+  m_RootOrder: 1
 --- !u!4 &477848
 Transform:
   m_ObjectHideFlags: 1
@@ -98,7 +70,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 491324}
-  m_RootOrder: 1
+  m_RootOrder: 0
 --- !u!4 &491324
 Transform:
   m_ObjectHideFlags: 1
@@ -109,7 +81,6 @@ Transform:
   m_LocalPosition: {x: 0.46, y: -0.09, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 459128}
   - {fileID: 477848}
   - {fileID: 437006}
   m_Father: {fileID: 0}
@@ -141,21 +112,9 @@ MonoBehaviour:
   nodeCount: 10
   initialized: 1
   initialName: New Path 1
---- !u!114 &11432560
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 153742}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d10c20eb0d27441b5a38c13b711a9e2c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  traceSpeed: 20
+  traceResultParent: {fileID: 0}
+  traceSpeed: 10
   traceDistance: 0.52
-  tracePointInterval: 0.05
-  tracerPrefab: {fileID: 170168, guid: 786555c8cb0a74b33a9d93099ab1a0a4, type: 2}
 --- !u!114 &11486102
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -178,6 +137,9 @@ MonoBehaviour:
   nodeCount: 5
   initialized: 1
   initialName: New Path 1
+  traceResultParent: {fileID: 0}
+  traceSpeed: 10
+  traceDistance: 0.52
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

@@ -13,6 +13,9 @@ public class RocketBoostController : MonoBehaviour
     private float boostColliderDisableDelay = 4 / 60f;
 
     [SerializeField]
+    private RocketController rocket;
+
+    [SerializeField]
     private ParticleSystem boostParticles;
 
     [SerializeField]
@@ -37,33 +40,33 @@ public class RocketBoostController : MonoBehaviour
     private string materialColorPropertyName = "_TintColor";
 
     [SerializeField]
-    private Light light;
+    private Light boostLight;
 
     private bool wasCCW = true;
 
     private void Update()
     {
-        var isCCW = RocketController.Instance.IsCCW;
+        var isCCW = this.rocket.IsCCW;
         if (isCCW != this.wasCCW)
         {
             this.boostParticleRenderer.material.SetColor(this.materialColorPropertyName, isCCW ? this.ccwColor : this.cwColor);
-            this.light.color = isCCW ? this.ccwLightColor : this.cwLightColor;
+            this.boostLight.color = isCCW ? this.ccwLightColor : this.cwLightColor;
             this.wasCCW = isCCW;
         }
 
-        if (RocketController.Instance.IsThrusting)
+        if (this.rocket.IsThrusting)
         {
             //this.StopCoroutine("DelayColliderDisable");
 
             this.boostParticles.Play();
-            this.light.enabled = true;
+            this.boostLight.enabled = true;
             //this.boostCollider.enabled = true;
-            CameraController.Instance.Shake(this.shakeDuration, this.shakeMagnitude);
+            CameraController.Shake(this.shakeDuration, this.shakeMagnitude);
         }
         else
         {
             this.boostParticles.Stop();
-            this.light.enabled = false;
+            this.boostLight.enabled = false;
             //this.StartCoroutine("DelayColliderDisable");
         }
     }

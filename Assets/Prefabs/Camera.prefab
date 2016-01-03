@@ -27,7 +27,6 @@ GameObject:
   - 114: {fileID: 11495164}
   - 20: {fileID: 2002034}
   - 81: {fileID: 8113578}
-  - 114: {fileID: 11458078}
   m_Layer: 0
   m_Name: Main
   m_TagString: MainCamera
@@ -226,23 +225,6 @@ AudioListener:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 149006}
   m_Enabled: 1
---- !u!114 &11458078
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 149006}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4975a6e437fc3b149a8cd508ce5bdd69, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  threshold: 0.85
-  intensity: 1.6
-  blurSize: 1
-  blurIterations: 2
-  blurType: 0
-  fastBloomShader: {fileID: 4800000, guid: 68a00c837b82e4c6d92e7da765dc5f1d, type: 3}
 --- !u!114 &11495164
 MonoBehaviour:
   m_ObjectHideFlags: 1

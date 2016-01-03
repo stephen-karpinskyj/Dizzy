@@ -30,15 +30,16 @@ public class MultiplierController : BehaviourSingleton<MultiplierController>
         this.lastExplosionTime = Time.time;
     }
 
-    private void LevelStart()
+
+    #region Broadcast
+
+
+    private void LevelStop()
     {
         this.currentMultiplier = 0;
         this.lastExplosionTime = 0f;
     }
 
-    private void LevelWin()
-    {
-        this.currentMultiplier = 0;
-        this.lastExplosionTime = 0f;
-    }
+
+    #endregion
 }
