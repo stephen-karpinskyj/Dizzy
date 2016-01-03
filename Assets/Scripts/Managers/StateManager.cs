@@ -23,6 +23,11 @@ public class StateManager : BehaviourSingleton<StateManager>
         return string.Format("{0:00.000}", time);
     }
 
+    public static string TimeDiffToString(float time)
+    {
+        return string.Format("{0:+0.000;-0.000;0.000}", time);
+    }
+
     private static float ClampTime(float time)
     {
         return Mathf.Clamp(time, MinTime, MaxTime);
@@ -84,19 +89,20 @@ public class StateManager : BehaviourSingleton<StateManager>
     #region Progress
 
 
-    public Action<float> OnBestTimeChange;
+    public Action<float, float> OnBestTimeChange;
 
     public float BestTime
     {
         get { return PlayerPrefs.GetFloat("State.BestTime", DefaultTime); }
         private set
         {
+            var prev = this.BestTime;
             var time = ClampTime(value);
             PlayerPrefs.SetFloat("State.BestTime", time);
 
             if (this.OnBestTimeChange != null)
             {
-                this.OnBestTimeChange(time);
+                this.OnBestTimeChange(time, time - prev);
             }
         }
     }
@@ -135,19 +141,20 @@ public class StateManager : BehaviourSingleton<StateManager>
         }
     }
 
-    public Action<int> OnJunkCountChange;
+    public Action<int, int> OnJunkCountChange;
 
     public int JunkCount
     {
         get { return PlayerPrefs.GetInt("State.JunkCount", DefaultJunkCount); }
         private set
         {
+            var prev = this.JunkCount;
             var count = ClampJunkCount(value);
             PlayerPrefs.SetInt("State.JunkCount", count);
 
             if (this.OnJunkCountChange != null)
             {
-                this.OnJunkCountChange(count);
+                this.OnJunkCountChange(count, count - prev);
             }
         }
     }
@@ -196,11 +203,13 @@ public class StateManager : BehaviourSingleton<StateManager>
         Save();
     }
 
-    public void HandleRunComplete(float time, float noviceTime, float proTime)
+    public bool HandleRunComplete(float time, float noviceTime, float proTime)
     {
         time = ClampTime(time);
 
-        if (time < this.BestTime)
+        var newBestTime = time < this.BestTime;
+
+        if (newBestTime)
         {
             this.BestTime = time;
         }
@@ -225,6 +234,8 @@ public class StateManager : BehaviourSingleton<StateManager>
         }
         
         Save();
+
+        return newBestTime;
     }
 
     public void HandleNewJunk(int count)

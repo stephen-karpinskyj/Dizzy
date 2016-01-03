@@ -9,6 +9,9 @@ public class CanvasUIController : MonoBehaviour
     private AudioClip winClip;
 
     [SerializeField]
+    private AudioClip newBestClip;
+
+    [SerializeField]
     private AudioClip clickClip;
 
     [SerializeField]
@@ -31,9 +34,9 @@ public class CanvasUIController : MonoBehaviour
     #region Broadcast
 
 
-    private void LevelWin()
+    private void LevelWin(bool newBestTime)
     {
-        this.source.clip = this.winClip;
+        this.source.clip = newBestTime ? this.newBestClip : this.winClip;
         AudioManager.Instance.Play(this.source);
     }
 

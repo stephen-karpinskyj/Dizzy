@@ -147,9 +147,9 @@ public class LevelManager : BehaviourSingleton<LevelManager>
         if (onWin)
         {
             var runTime = Time.time - this.startTime;
-            StateManager.Instance.HandleRunComplete(runTime, NoviceMedalTime, ProMedalTime);
+            var newBestTime = StateManager.Instance.HandleRunComplete(runTime, NoviceMedalTime, ProMedalTime);
 
-            Broadcast.SendMessage("LevelWin");
+            Broadcast.SendMessage("LevelWin", newBestTime);
         }
         else
         {

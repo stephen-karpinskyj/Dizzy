@@ -25,7 +25,7 @@ public class MedalUIController : MonoBehaviour
         Debug.Assert(this.earntSprite);
     }
 
-    public void SetEarnt(bool earnt)
+    public void SetEarnt(bool earnt, bool instant)
     {
         this.image.sprite = earnt ? this.earntSprite : this.missingSprite;
         this.image.color = earnt ? this.earntColor : this.missingColor;

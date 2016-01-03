@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 public class BombController : MonoBehaviour
 {
@@ -53,6 +54,21 @@ public class BombController : MonoBehaviour
     [SerializeField]
     private Vector2 speedMultiplierRange = new Vector2(20f, 80f);
 
+    [SerializeField]
+    private Vector2 showPositionRange = new Vector2(-4f, 4f);
+
+    [SerializeField]
+    private float maxShowDuration = 0.25f;
+
+    [SerializeField]
+    private Vector2 showDurationOffset = new Vector2(0f, 0.25f);
+
+    [SerializeField]
+    private AnimationCurve scaleCurve;
+
+    [SerializeField]
+    private float scaleDuration = 0.1f;
+
 
     #endregion
 
@@ -62,6 +78,7 @@ public class BombController : MonoBehaviour
 
 
     private Vector3 initialPos;
+    private Vector3 initialScale;
 
     private RandomJunkElement chosenElement;
 
@@ -98,6 +115,7 @@ public class BombController : MonoBehaviour
         Debug.Assert(this.source, this);
 
         this.initialPos = this.transform.position;
+        this.initialScale = this.transform.localScale;
 
         this.StopRunning();
     }
@@ -162,6 +180,7 @@ public class BombController : MonoBehaviour
         this.transform.eulerAngles = new Vector3(Random.Range(0, 360f), Random.Range(0, 360f), Random.Range(0, 360f));
 
         this.Randomize();
+        this.StartCoroutine(this.ShowCoroutine());
     }
 
     public void StartRunning()
@@ -209,7 +228,7 @@ public class BombController : MonoBehaviour
 
         foreach (var e in this.randomElements)
         {
-            e.SetEnabled(e == this.chosenElement);
+            e.SetEnabled(false);
         }
     }
 
@@ -247,6 +266,34 @@ public class BombController : MonoBehaviour
         this.explosionParticles.Play();
 
         MultiplierController.Instance.Increment();
+    }
+
+
+    #endregion
+
+
+    #region Coroutines
+
+
+    private IEnumerator ShowCoroutine()
+    {
+        var x = this.transform.position.x - this.showPositionRange.x;
+        var t = x / (this.showPositionRange.y - this.showPositionRange.x);
+
+        yield return new WaitForSeconds(this.maxShowDuration * t + Random.Range(this.showDurationOffset.x, this.showDurationOffset.y));
+
+        this.transform.localScale = this.initialScale;
+        this.chosenElement.SetEnabled(true);
+
+        var time = Time.time;
+        var progress = 0f;
+
+        while (progress < 1f) 
+        {
+            progress = Mathf.Clamp01((Time.time - time) / this.scaleDuration);
+            this.transform.localScale = this.initialScale * this.scaleCurve.Evaluate(progress);
+            yield return null;
+        }
     }
 
 

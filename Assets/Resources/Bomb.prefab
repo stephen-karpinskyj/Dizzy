@@ -421,6 +421,26 @@ MonoBehaviour:
   gravityCurveDuration: 0.35
   rocketSpeedInfluence: 2
   speedMultiplierRange: {x: 5, y: 40}
+  showPositionRange: {x: -4, y: 4}
+  maxShowDuration: 0.1
+  showDurationOffset: {x: 0, y: 0.05}
+  scaleCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 1
+      value: 1
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  scaleDuration: 0.1
 --- !u!114 &11431462
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1986,6 +2006,10 @@ Prefab:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 0}
+      propertyPath: scaleCurve.m_Curve.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
       propertyPath: gravityCurve.m_Curve.Array.size
       value: 2
       objectReference: {fileID: 0}
@@ -2440,6 +2464,22 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: randomElements.Array.data[2].junkValue
       value: 250
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: showDurationRange.y
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: showDurationOffset.y
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: maxShowDuration
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: scaleCurve.m_RotationOrder
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
