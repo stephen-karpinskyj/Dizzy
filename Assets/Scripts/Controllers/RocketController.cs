@@ -434,7 +434,7 @@ public class RocketController : MonoBehaviour
             case ControlMode.SpinCCW: this.isCCW = true; this.ControlSpin(true); break;
             case ControlMode.SpinCW: this.isCCW = false; this.ControlSpin(false); break;
             case ControlMode.GoToPoint: this.ControlGoToPoint(); break;
-            case ControlMode.DualSpin: this.ControlDualSpin(); break;
+            case ControlMode.DualSpin: this.ControlWithDoubleTap(); break;
         }
     }
 
@@ -616,7 +616,7 @@ public class RocketController : MonoBehaviour
         //this.debugYellowLine.Move(this.transform.position, this.transform.position + inputDir * 1f);
     }
 
-    private void ControlDualSpin()
+    private void ControlWithDoubleTap()
     {
         var canDoubleTap = (Time.time - this.lastDoubleTapTime) >= this.minTimeBetweenDoubleTaps;
         if (canDoubleTap && this.isTapping && !this.wasTapping)
@@ -624,7 +624,7 @@ public class RocketController : MonoBehaviour
             var isDoubleTapping = (Time.time - this.lastTapStartTime) <= this.doubleTapDuration;
             if (isDoubleTapping)
             {
-                this.isCCW = !this.isCCW;
+                // TODO: Do special action with double tap
                 this.lastDoubleTapTime = Time.time;
             }
 

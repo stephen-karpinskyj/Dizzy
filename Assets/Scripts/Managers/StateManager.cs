@@ -163,7 +163,7 @@ public class StateManager : BehaviourSingleton<StateManager>
 
     public bool NoviceMedalEarnt
     {
-        get { return PlayerPrefs.GetInt("State.NoviceMedalEarnt", 0) == 0; }
+        get { return PlayerPrefs.GetInt("State.NoviceMedalEarnt", 1) == 0; }
         private set
         {
             PlayerPrefs.SetInt("State.NoviceMedalEarnt", value ? 0 : 1);
@@ -179,7 +179,7 @@ public class StateManager : BehaviourSingleton<StateManager>
 
     public bool ProMedalEarnt
     {
-        get { return PlayerPrefs.GetInt("State.ProMedalEarnt", 0) == 0; }
+        get { return PlayerPrefs.GetInt("State.ProMedalEarnt", 1) == 0; }
         private set
         {
             PlayerPrefs.SetInt("State.ProMedalEarnt", value ? 0 : 1);

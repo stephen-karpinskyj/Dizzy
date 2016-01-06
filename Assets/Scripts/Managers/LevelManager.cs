@@ -8,8 +8,8 @@ public class LevelManager : BehaviourSingleton<LevelManager>
     #region Constants
 
 
-    private const float NoviceMedalTime = 22f;
-    private const float ProMedalTime = 9.5f;
+    private const float NoviceMedalTime = 20f;
+    private const float ProMedalTime = 8f;
 
 
     #endregion

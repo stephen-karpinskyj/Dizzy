@@ -440,7 +440,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
-  scaleDuration: 0.1
+  scaleDuration: 0.15
 --- !u!114 &11431462
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2480,6 +2480,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: scaleCurve.m_RotationOrder
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: scaleDuration
+      value: 0.15
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

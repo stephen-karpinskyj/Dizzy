@@ -136,7 +136,7 @@ Camera:
   far clip plane: 200
   field of view: 20
   orthographic: 1
-  orthographic size: 6.32
+  orthographic size: 6.22
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -236,6 +236,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48d54a23323a54d7d9692b9b952b130e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cam: {fileID: 2002034}
+  sizeOffsetCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 1
+      value: 1
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  sizeOffsetRange: {x: 0.4, y: 1}
+  maxSizeOffset: 0.08
+  sizeOffsetToMultiplier: 1.2
+  sizeOffsetFromMultiplier: 2.5
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

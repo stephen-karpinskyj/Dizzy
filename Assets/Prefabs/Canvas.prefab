@@ -1702,7 +1702,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 9.500
+  m_Text: 8.000
 --- !u!114 &11421374
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2228,7 +2228,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'INITIAL SPIN: CCW'
+  m_Text: 'SPIN: CCW'
 --- !u!114 &11444628
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2431,7 +2431,7 @@ MonoBehaviour:
   addedJunkCountText: {fileID: 11437522}
   noviceMedal: {fileID: 11425370}
   proMedal: {fileID: 11438884}
-  junkAddPerSecond: 300
+  junkAddRateRange: {x: 295, y: 305}
   normalTimeColor: {r: 0.8156863, g: 0.8156863, b: 0.8156863, a: 1}
   newTimeColor: {r: 0.99215686, g: 0.64705884, b: 0.21568628, a: 1}
   timeChangeHalfFlashDuration: 0.25
@@ -2726,7 +2726,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 22.00
+  m_Text: 20.00
 --- !u!114 &11466648
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3312,7 +3312,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: DOUBLE TAP REVERSES SPIN
+  m_Text: DOUBLE TAP DOES NOTHING
 --- !u!114 &11492940
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3871,7 +3871,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -53, y: 76}
-  m_SizeDelta: {x: 57, y: 1}
+  m_SizeDelta: {x: 60, y: 1}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!224 &22401546
 RectTransform:
@@ -4090,7 +4090,7 @@ RectTransform:
   m_RootOrder: 4
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 7, y: 77}
+  m_AnchoredPosition: {x: 10, y: 77}
   m_SizeDelta: {x: 120, y: 20}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!224 &22422716
@@ -4894,7 +4894,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: -15, y: -20}
-  m_SizeDelta: {x: 160, y: 20}
+  m_SizeDelta: {x: 100, y: 20}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!224 &22488622
 RectTransform:
@@ -5053,7 +5053,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -53, y: 78}
-  m_SizeDelta: {x: 57, y: 1}
+  m_SizeDelta: {x: 60, y: 1}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!225 &22576550
 CanvasGroup:
