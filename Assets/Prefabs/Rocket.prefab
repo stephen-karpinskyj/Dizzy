@@ -314,7 +314,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 120724}
   m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071067}
-  m_LocalPosition: {x: 0, y: -7.2, z: 0}
+  m_LocalPosition: {x: 0, y: -7.1, z: 0}
   m_LocalScale: {x: 1.2, y: 1.2, z: 0.8}
   m_Children:
   - {fileID: 415140}
@@ -393,7 +393,7 @@ PolygonCollider2D:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 150920}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
@@ -401,13 +401,13 @@ PolygonCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Points:
     m_Paths:
-    - - {x: -0.115124516, y: 0.32302138}
-      - {x: 0.0017431413, y: 0.518963}
-      - {x: 0.10678788, y: 0.32352066}
-      - {x: 0.10654941, y: 0.18647902}
-      - {x: 0.05644304, y: 0.07202047}
-      - {x: -0.056292813, y: 0.07055543}
-      - {x: -0.115109116, y: 0.18880695}
+    - - {x: -0.047698446, y: 0.29600134}
+      - {x: 0.000507989, y: 0.3908345}
+      - {x: 0.04597245, y: 0.2973467}
+      - {x: 0.046061333, y: 0.22041127}
+      - {x: 0.04625944, y: 0.06983833}
+      - {x: -0.0461092, y: 0.068373196}
+      - {x: -0.047058918, y: 0.22333331}
 --- !u!60 &6044854
 PolygonCollider2D:
   m_ObjectHideFlags: 1
@@ -741,7 +741,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55a4c5e285aa142b7b54a0d7c0b6e849, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSpeed: 8
+  maxSpeed: 7.7
   boostMultiplierCurve:
     serializedVersion: 2
     m_Curve:
@@ -763,20 +763,15 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
-  boostForce: {x: 320, y: 0}
+  boostForce: {x: 360, y: 0}
   boostMultiplierRange: {x: 0.82, y: 1}
   boostTimeMultiplierCurve:
     serializedVersion: 2
     m_Curve:
     - time: 0
       value: 0
-      inSlope: -0.022119245
-      outSlope: -0.022119245
-      tangentMode: 0
-    - time: 0.09950604
-      value: 0.101230904
-      inSlope: 1.9462407
-      outSlope: 1.9462407
+      inSlope: 1.2236178
+      outSlope: 1.2236178
       tangentMode: 0
     - time: 1
       value: 1
@@ -786,7 +781,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
-  boostTimeMultiplierDuration: 0.3
+  boostTimeMultiplierDuration: 0.2
   boostTimeMultiplierRange: {x: 0.85, y: 1}
   velocityDecayCurve:
     serializedVersion: 2
@@ -804,7 +799,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
-  velocityDecayRange: {x: 0.5, y: 0.7}
+  velocityDecayRange: {x: 0.575, y: 0.675}
   angularVelocityDecayCurve:
     serializedVersion: 2
     m_Curve:
@@ -911,7 +906,7 @@ MonoBehaviour:
     m_RotationOrder: 0
   aimBoostMultiplierRange: {x: 0.8, y: 1}
   dotProductLimitBeforeThrust: 0.005
-  rotationXRange: {x: 0, y: -35}
+  rotationXRange: {x: 0, y: -25}
   rotationXSpeed: 200
   rotationXStartTime: 0.08
   barrelRollCurve:
@@ -932,6 +927,7 @@ MonoBehaviour:
     m_RotationOrder: 0
   barrelRollDelay: 0
   barrelRollDuration: 0.4
+  maxRollAimVelDiff: -15
   launchShakeDuration: 0.2
   launchShakeMagnitude: 0.1
   launchForce: {x: 0, y: 120}

@@ -123,6 +123,9 @@ public class RocketController : MonoBehaviour
     [SerializeField]
     private float barrelRollDuration = 1f;
 
+    [SerializeField]
+    private float maxRollAimVelDiff = 10f;
+
 
     [Header("Launch")]
 
@@ -239,7 +242,7 @@ public class RocketController : MonoBehaviour
         //this.debugYellowLine = DebugLine.Draw(Vector3.zero, Vector3.zero, Color.yellow);
         //this.debugText = DebugText.Draw(Vector3.zero, string.Empty);
 
-        //this.StartCoroutine(this.RollCoroutine());
+        this.StartCoroutine(this.RollCoroutine());
 
         this.initialPos = this.transform.position;
         this.initialRot = this.transform.rotation;
@@ -440,12 +443,12 @@ public class RocketController : MonoBehaviour
 
     private void ControlSpin(bool counterclockwise)
     {
+        var aimDir = this.transform.right;
+        var velDir = (Vector3)this.rigidBody.velocity.normalized;
+        var dirDot = (Vector2.Dot(aimDir, velDir) + 1f) / 2f;
+
         if (this.isTapping)
         {
-            var aimDir = this.transform.right;
-            var velDir = (Vector3)this.rigidBody.velocity.normalized;
-            var dirDot = (Vector2.Dot(aimDir, velDir) + 1f) / 2f;
-
             // Decay previous linear velocity
             if (Input.anyKeyDown)
             {
@@ -500,6 +503,7 @@ public class RocketController : MonoBehaviour
         // Handle x-rotation
         {
             var target = 0f;
+
             if (this.isTapping && this.timeHeld >= rotationXStartTime)
             {
                 target = this.rotationXRange.x;
@@ -513,14 +517,30 @@ public class RocketController : MonoBehaviour
                 target = -this.rotationXRange.y;
             }
 
+            var velAimDiffRot = (1f - dirDot) * this.maxRollAimVelDiff;
+                
+            if (this.isCCW)
+            {
+                target += velAimDiffRot;
+            }
+            else
+            {
+                target -= velAimDiffRot;
+            }
+
             if (Mathf.Abs(this.xRot - target) > 0.1f)
             {
                 var dir = Mathf.Sign(target - this.xRot);
-                this.xRot += dir * this.rotationXSpeed * Time.deltaTime;
-                var bodyEuler = new Vector3(this.xRot + this.currentBarrelRoll, -180f, -180f);
+                this.xRot += dir * this.rotationXSpeed * Time.smoothDeltaTime;
+                var bodyEuler = new Vector3(this.xRot, -180f, -180f);
                 this.bodyTransform.localRotation = Quaternion.Euler(bodyEuler);
             }
         }
+
+        //this.debugString = string.Format("{0:f2}", dirDot);
+        //this.debugBlueLine.Move(this.transform.position, this.transform.position + aimDir * 1f);
+        //this.debugYellowLine.Move(this.transform.position, this.transform.position + velDir * 1f);
+        //this.debugText.Text = this.debugString;
     }
 
     private void ControlGoToPoint()
@@ -607,13 +627,6 @@ public class RocketController : MonoBehaviour
             var bodyEuler = new Vector3(/*xRot + */this.currentBarrelRoll, -180f, -180f);
             this.bodyTransform.localRotation = Quaternion.Euler(bodyEuler);
         }
-
-
-        //this.debugString = string.Format("{0:f2}/{1:f2} ({2:f2})", this.rigidBody.angularVelocity, maxAngVel, newAngVel);
-        //this.debugString = string.Format("{0:f2}/{1:f2} ({2:f2})", this.rigidBody.velocity.magnitude, this.maxSpeed, newForce.magnitude);
-        //this.debugString = string.Format("{0:f2}", dirDot);
-        //this.debugBlueLine.Move(this.transform.position, this.transform.position + velDir * 1f);
-        //this.debugYellowLine.Move(this.transform.position, this.transform.position + inputDir * 1f);
     }
 
     private void ControlWithDoubleTap()
