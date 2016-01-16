@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class RocketController : MonoBehaviour
+public class ShipController : MonoBehaviour
 {
     #region Types
 
@@ -165,7 +165,7 @@ public class RocketController : MonoBehaviour
     private TrailRenderer[] trails;
 
     [SerializeField]
-    private RocketShieldController shieldController;
+    private ShipShieldController shieldController;
 
     [SerializeField]
     private float baseTrailDuration = 0.1f;

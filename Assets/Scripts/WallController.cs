@@ -1,14 +1,14 @@
 ﻿using UnityEngine;
 
 [RequireComponent(typeof(Collider2D))]
-public class LevelRestartOnTrigger : MonoBehaviour
+public class WallController : MonoBehaviour
 {
     [SerializeField]
-    private string otherPrefixFilter;
+    private string destroyerTag = "Player";
     
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (!other.name.StartsWith(this.otherPrefixFilter))
+        if (other.tag == destroyerTag)
         {
             return;
         }

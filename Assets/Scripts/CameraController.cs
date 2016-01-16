@@ -45,7 +45,7 @@ public class CameraController : MonoBehaviour
     {
         this.transform.position = this.originalCamPos + this.shakeOffset;
 
-        var speedPercentage = LevelManager.Instance.Rocket.SpeedPercentage;
+        var speedPercentage = LevelManager.Instance.Ship.SpeedPercentage;
         var curveValue = (speedPercentage - this.sizeOffsetRange.x) / (this.sizeOffsetRange.y - this.sizeOffsetRange.x);
         this.targetHeight = this.originalSize + (this.sizeOffsetCurve.Evaluate(curveValue) * this.maxSizeOffset);
         var offsetMultiplier = this.targetHeight < this.cam.orthographicSize ? this.sizeOffsetFromMultiplier : this.sizeOffsetToMultiplier;

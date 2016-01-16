@@ -62,7 +62,7 @@ GameObject:
   - 199: {fileID: 19904420}
   - 198: {fileID: 19803252}
   m_Layer: 11
-  m_Name: Explosion
+  m_Name: Spark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -80,7 +80,7 @@ GameObject:
   - 58: {fileID: 5843728}
   - 82: {fileID: 8288050}
   m_Layer: 11
-  m_Name: Bomb
+  m_Name: Junk
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -378,8 +378,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43b7ebdb7a8a04a4ab250b84e3f0ba46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  explosionShakeMagnitude: 0.02
-  explosionShakeDuration: 0.2
   coll: {fileID: 5843728}
   randomElements:
   - rend: {fileID: 2320446}
@@ -419,7 +417,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 0
   gravityCurveDuration: 0.35
-  rocketSpeedInfluence: 2
+  shipSpeedInfluence: 2
   speedMultiplierRange: {x: 5, y: 40}
   showPositionRange: {x: -4, y: 4}
   maxShowDuration: 0.1

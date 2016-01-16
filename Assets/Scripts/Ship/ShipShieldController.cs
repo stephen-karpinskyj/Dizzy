@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class RocketShieldController : MonoBehaviour
+public class ShipShieldController : MonoBehaviour
 {
     [SerializeField]
     private Renderer rend;

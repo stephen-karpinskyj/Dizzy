@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 
-public class Dot : MonoBehaviour
+/// <summary>
+/// Initial settings to instantiate a <c>JunkController</c>.
+/// </summary>
+public class JunkNode : LevelObjectNode
 {
     private void OnDrawGizmos()
     {

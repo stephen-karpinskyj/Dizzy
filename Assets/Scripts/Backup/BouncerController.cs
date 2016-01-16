@@ -51,7 +51,7 @@ public class BouncerController : MonoBehaviour
             return;
         }
 
-        if (!other.name.StartsWith("Rocket"))
+        if (!other.name.StartsWith("Ship"))
         {
             return;
         }

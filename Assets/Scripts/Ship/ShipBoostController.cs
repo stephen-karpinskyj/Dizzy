@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class RocketBoostController : MonoBehaviour
+public class ShipBoostController : MonoBehaviour
 {
     [SerializeField]
     private float shakeDuration = 0f;
@@ -13,7 +13,7 @@ public class RocketBoostController : MonoBehaviour
     private float boostColliderDisableDelay = 4 / 60f;
 
     [SerializeField]
-    private RocketController rocket;
+    private ShipController ship;
 
     [SerializeField]
     private ParticleSystem boostParticles;
@@ -46,7 +46,7 @@ public class RocketBoostController : MonoBehaviour
 
     private void Update()
     {
-        var isCCW = this.rocket.IsCCW;
+        var isCCW = this.ship.IsCCW;
         if (isCCW != this.wasCCW)
         {
             this.boostParticleRenderer.material.SetColor(this.materialColorPropertyName, isCCW ? this.ccwColor : this.cwColor);
@@ -54,7 +54,7 @@ public class RocketBoostController : MonoBehaviour
             this.wasCCW = isCCW;
         }
 
-        if (this.rocket.IsThrusting)
+        if (this.ship.IsThrusting)
         {
             //this.StopCoroutine("DelayColliderDisable");
 

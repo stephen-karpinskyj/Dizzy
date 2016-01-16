@@ -1,13 +1,10 @@
-//by Bob Berkebile : Pixelplacement : http://www.pixelplacement.com
-
 using UnityEngine;
 using UnityEditor;
-using System.Collections;
 
-[CustomEditor(typeof(iTweenPath))]
-public class iTweenPathEditor : Editor
+[CustomEditor(typeof(LevelPath))]
+public class LevelPathEditor : Editor
 {
-	iTweenPath _target;
+	LevelPath _target;
 	GUIStyle style = new GUIStyle();
 	public static int count = 0;
 	
@@ -15,7 +12,7 @@ public class iTweenPathEditor : Editor
 		//i like bold handle labels since I'm getting old:
 		style.fontStyle = FontStyle.Bold;
 		style.normal.textColor = Color.white;
-		_target = (iTweenPath)target;
+		_target = (LevelPath)target;
 		
 		//lock in a default path name:
 		if(!_target.initialized){
@@ -73,22 +70,34 @@ public class iTweenPathEditor : Editor
 
         EditorGUILayout.Space();
 
-        EditorGUI.indentLevel = 0;
-        EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.PrefixLabel("Trace Parent");
-        _target.traceResultParent = EditorGUILayout.ObjectField(_target.traceResultParent, typeof(Transform), true) as Transform;
-        EditorGUILayout.EndHorizontal();
-		
-		//update and redraw:
-		if(GUI.changed){
-			EditorUtility.SetDirty(_target);			
-        }
-
-        if (GUILayout.Button("Regenerate Dots"))
+        // Trace
         {
-            var points = iTweenPath.GetPath(this._target.pathName);
-            var args = iTween.Hash("path", points, "speed", this._target.traceSpeed, "onstart", "OnPathTraceStart", "onupdate", "OnPathTraceUpdate", "oncomplete", "OnPathTraceComplete");
-            iTween.MoveTo(this._target.gameObject, args);
+            EditorGUI.indentLevel = 0;
+            EditorGUILayout.BeginHorizontal();
+
+            if (GUILayout.Button("Trace", EditorStyles.miniButton, GUILayout.Width(40f)))
+            {
+                var points = LevelPath.GetPath(this._target.pathName);
+                var args = iTween.Hash("path", points, "speed", this._target.traceSpeed, "onstart", "OnPathTraceStart", "onupdate", "OnPathTraceUpdate", "oncomplete", "OnPathTraceComplete");
+                iTween.MoveTo(this._target.gameObject, args);
+            }
+            
+            GUILayout.Space(8f);
+            
+            GUILayout.Label("Target");
+            _target.traceOutputParent = EditorGUILayout.ObjectField(_target.traceOutputParent, typeof(Transform), true) as Transform;
+            
+            GUILayout.Space(8f);
+            
+            GUILayout.Label("Type");
+            _target.traceOutputNode = EditorGUILayout.ObjectField(_target.traceOutputNode, typeof(LevelObjectNode), false) as LevelObjectNode;
+                        
+            EditorGUILayout.EndHorizontal();
+        }
+        
+        //update and redraw:
+        if(GUI.changed){
+            EditorUtility.SetDirty(_target);			
         }
 	}
 	

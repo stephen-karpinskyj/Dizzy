@@ -18,10 +18,10 @@ public class LevelManager : BehaviourSingleton<LevelManager>
     #region Fields
 
 
-    private List<BombController> junk;
-    private List<BombController> uncollectedJunk;
+    private List<JunkController> junk;
+    private List<JunkController> uncollectedJunk;
 
-    private RocketController rocket;
+    private ShipController ship;
 
     private bool hasInitialised = false;
     private bool isRunning = false;
@@ -37,9 +37,9 @@ public class LevelManager : BehaviourSingleton<LevelManager>
     #region Properties
 
 
-    public RocketController Rocket
+    public ShipController Ship
     {
-        get { return this.rocket; }
+        get { return this.ship; }
     }
 
 
@@ -87,24 +87,24 @@ public class LevelManager : BehaviourSingleton<LevelManager>
 
         this.hasInitialised = true;
         
-        this.junk = new List<BombController>();
-        this.uncollectedJunk = new List<BombController>();
+        this.junk = new List<JunkController>();
+        this.uncollectedJunk = new List<JunkController>();
 
-        var prefab = Resources.Load<BombController>("Bomb");
+        var prefab = Data.Instance.JunkPrefab;
         Debug.Assert(prefab);
 
-        foreach (var dot in Object.FindObjectsOfType<Dot>())
+        foreach (var dot in Object.FindObjectsOfType<JunkNode>())
         {
-            this.junk.Add(Object.Instantiate(prefab, dot.transform.position, dot.transform.rotation) as BombController);
+            this.junk.Add(Object.Instantiate(prefab, dot.transform.position, dot.transform.rotation) as JunkController);
         }
 
-        this.rocket = Object.FindObjectOfType<RocketController>();
-        Debug.Assert(this.rocket);
+        this.ship = Object.FindObjectOfType<ShipController>();
+        Debug.Assert(this.ship);
 
         this.StopRunning(false);
     }
 
-    public void HandlePickup(BombController j)
+    public void HandlePickup(JunkController j)
     {
         Debug.Assert(this.isRunning);
 
@@ -139,7 +139,7 @@ public class LevelManager : BehaviourSingleton<LevelManager>
             j.StopRunning();
         }
 
-        this.rocket.StopRunning();
+        this.ship.StopRunning();
 
         Broadcast.SendMessage("LevelStop");
         this.StartCoroutine(this.BlockRunStart());
@@ -167,7 +167,7 @@ public class LevelManager : BehaviourSingleton<LevelManager>
 
         this.isRunning = true;
 
-        this.Rocket.StartRunning();
+        this.Ship.StartRunning();
 
         this.uncollectedJunk.Clear();
 

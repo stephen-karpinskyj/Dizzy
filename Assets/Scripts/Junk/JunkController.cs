@@ -1,16 +1,13 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using UnityEngine;
 
-public class BombController : MonoBehaviour
+/// <summary>
+/// Conrols a junk element at run-time.
+/// </summary>
+public class JunkController : MonoBehaviour
 {
     #region Inspector
 
-
-    [SerializeField]
-    private float explosionShakeMagnitude = 0.06f;
-
-    [SerializeField]
-    private float explosionShakeDuration = 0.2f;
 
     [SerializeField]
     private Collider2D coll;
@@ -49,7 +46,7 @@ public class BombController : MonoBehaviour
     private float gravityCurveDuration = 0.2f;
 
     [SerializeField]
-    private float rocketSpeedInfluence = 3f;
+    private float shipSpeedInfluence = 2f;
 
     [SerializeField]
     private Vector2 speedMultiplierRange = new Vector2(20f, 80f);
@@ -127,12 +124,12 @@ public class BombController : MonoBehaviour
             return;
         }
 
-        var dir = (Vector2)(LevelManager.Instance.Rocket.transform.position - this.transform.position).normalized; // Ignore z
+        var dir = (Vector2)(LevelManager.Instance.Ship.transform.position - this.transform.position).normalized; // Ignore z
 
         var curveValue = this.gravityCurve.Evaluate((Time.time - this.startPullTime) / this.gravityCurveDuration);
-        var rocketMultipler = 1f + LevelManager.Instance.Rocket.SpeedPercentage * this.rocketSpeedInfluence;
+        var shipMultipler = 1f + LevelManager.Instance.Ship.SpeedPercentage * this.shipSpeedInfluence;
         var multiplier = Mathf.Lerp(this.speedMultiplierRange.x, this.speedMultiplierRange.y, curveValue);
-        var speed = multiplier * rocketMultipler * Time.fixedDeltaTime;
+        var speed = multiplier * shipMultipler * Time.fixedDeltaTime;
 
         var velocity = (Vector3)dir * speed;
 
@@ -239,8 +236,8 @@ public class BombController : MonoBehaviour
         this.isPulling = true;
         this.startPullTime = Time.time;
 
-        var vel = (Vector2)(this.transform.position - LevelManager.Instance.Rocket.transform.position).normalized;
-        LevelManager.Instance.Rocket.AddImpulseForce(vel * this.attractForceMagnitude);
+        var vel = (Vector2)(this.transform.position - LevelManager.Instance.Ship.transform.position).normalized;
+        LevelManager.Instance.Ship.AddImpulseForce(vel * this.attractForceMagnitude);
 
         this.rotationAtAttraction = Vector2.down.SignedAngle(vel);
     }
@@ -258,8 +255,6 @@ public class BombController : MonoBehaviour
         AudioManager.Instance.Play(this.source);
 
         this.chosenElement.SetEnabled(false);
-
-        CameraController.Shake(this.explosionShakeDuration, this.explosionShakeMagnitude);
 
         this.transform.eulerAngles = Vector3.forward * this.rotationAtAttraction;
 

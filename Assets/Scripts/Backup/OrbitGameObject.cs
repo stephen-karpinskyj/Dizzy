@@ -43,29 +43,10 @@ public class OrbitGameObject : MonoBehaviour
             {
                 angle -= 360f;
             }
-            var dot = Vector2.Dot(currDir, targetDir);
 
             var euler = this.transform.localEulerAngles;
             euler.z += Mathf.Sign(angle) * Time.deltaTime * this.angularSpeed;
             this.transform.localEulerAngles = euler;
         }
-        
-        
-        
-        /*var euler = this.transform.localEulerAngles;
-        euler.z += this.angularSpeed * Time.deltaTime;
-
-        if (euler.z < -360f)
-        {
-            euler.z += 720f;
-        }
-        else if (euler.z > 360f)
-        {
-            euler.z -= 720f;
-        }*/
-
-
-        //var destRot = Quaternion.LookRotation(this.target.position - this.transform.position);
-        //this.transform.rotation = Quaternion.Slerp(this.transform.rotation, destRot, 0.1f);
     }
 }

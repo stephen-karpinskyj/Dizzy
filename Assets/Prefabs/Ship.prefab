@@ -30,8 +30,8 @@ GameObject:
   - 60: {fileID: 6068634}
   - 82: {fileID: 8238344}
   m_Layer: 9
-  m_Name: Rocket
-  m_TagString: Untagged
+  m_Name: Ship
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -809,7 +809,7 @@ MonoBehaviour:
   shakeDuration: 0
   shakeMagnitude: 0
   boostColliderDisableDelay: 0.083
-  rocket: {fileID: 11488308}
+  ship: {fileID: 11488308}
   boostParticles: {fileID: 19832922}
   boostParticleRenderer: {fileID: 19988430}
   boostCollider: {fileID: 6010048}

@@ -1,19 +1,18 @@
-//by Bob Berkebile : Pixelplacement : http://www.pixelplacement.com
-
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
 [ExecuteInEditMode]
-public class iTweenPath : MonoBehaviour
+public class LevelPath : MonoBehaviour
 {
 	public string pathName ="";
 	public Color pathColor = Color.cyan;
 	public List<Vector3> nodes = new List<Vector3>(){Vector3.zero, Vector3.zero};
 	public int nodeCount;
-	public static Dictionary<string, iTweenPath> paths = new Dictionary<string, iTweenPath>();
+	public static Dictionary<string, LevelPath> paths = new Dictionary<string, LevelPath>();
 	public bool initialized = false;
 	public string initialName = "";
-    public Transform traceResultParent;
+    public Transform traceOutputParent;
+    public LevelObjectNode traceOutputNode;
 	
 	void OnEnable(){
 		paths[pathName.ToLower()] = this;
@@ -37,9 +36,9 @@ public class iTweenPath : MonoBehaviour
 
     private void OnPathTraceStart()
     {
-        for (int i = 0; i < this.traceResultParent.childCount; i++)
+        for (int i = 0; i < this.traceOutputParent.childCount; i++)
         {
-            Object.DestroyImmediate(this.traceResultParent.GetChild(i).gameObject);
+            Object.DestroyImmediate(this.traceOutputParent.GetChild(i).gameObject);
         }
 
         this.transform.position = this.nodes[0];
@@ -52,11 +51,11 @@ public class iTweenPath : MonoBehaviour
         {
             this.lastPointTraced = this.transform.position;
 
-            var go = new GameObject("Dot");
-            go.AddComponent<Dot>();
-            go.transform.position = this.transform.position;
-            go.transform.rotation = this.transform.rotation;
-            go.transform.SetParent(this.traceResultParent, true);
+            var obj = Object.Instantiate(this.traceOutputNode);
+            obj.name = this.traceOutputNode.GetType().Name;
+            obj.transform.position = this.transform.position;
+            obj.transform.rotation = this.transform.rotation;
+            obj.transform.SetParent(this.traceOutputParent, true);
         }
     }
 
