@@ -1702,7 +1702,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 8.000
+  m_Text: 7.000
 --- !u!114 &11421374
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2569,8 +2569,8 @@ MonoBehaviour:
   resetProgressDisabledButtonColor: {r: 0.8156863, g: 0.8156863, b: 0.8156863, a: 1}
   soundEnabledText: 'SOUND: ON'
   soundDisabledText: 'SOUND: OFF'
-  spinDirectionCCWText: 'INITIAL SPIN: CCW'
-  spinDirectionCWText: 'INITIAL SPIN: CW'
+  spinDirectionCCWText: 'SPIN: CCW'
+  spinDirectionCWText: 'SPIN: CW'
 --- !u!114 &11458298
 MonoBehaviour:
   m_ObjectHideFlags: 1

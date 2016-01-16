@@ -34,6 +34,13 @@ public class RocketController : MonoBehaviour
         DualSpin,
     }
 
+    private enum DoubleTapMode
+    {
+        Nothing = 0,
+
+        Shield,
+    }
+
 
     #endregion
 
@@ -143,6 +150,9 @@ public class RocketController : MonoBehaviour
     private ControlMode controlMode = ControlMode.SpinCCW;
 
     [SerializeField]
+    private DoubleTapMode doubleTapMode = DoubleTapMode.Nothing;
+
+    [SerializeField]
     private Rigidbody2D rigidBody;
 
     [SerializeField]
@@ -153,6 +163,9 @@ public class RocketController : MonoBehaviour
 
     [SerializeField]
     private TrailRenderer[] trails;
+
+    [SerializeField]
+    private RocketShieldController shieldController;
 
     [SerializeField]
     private float baseTrailDuration = 0.1f;
@@ -186,6 +199,7 @@ public class RocketController : MonoBehaviour
     private float timeThrusting = 0f;
     private bool isThrusting = false;
     private bool wasThrusting = false;
+    private bool isDoubleTapping = false;
 
     private float currentBarrelRoll;
 
@@ -634,17 +648,41 @@ public class RocketController : MonoBehaviour
         var canDoubleTap = (Time.time - this.lastDoubleTapTime) >= this.minTimeBetweenDoubleTaps;
         if (canDoubleTap && this.isTapping && !this.wasTapping)
         {
-            var isDoubleTapping = (Time.time - this.lastTapStartTime) <= this.doubleTapDuration;
-            if (isDoubleTapping)
+            var doubleTapped = (Time.time - this.lastTapStartTime) <= this.doubleTapDuration;
+            if (doubleTapped)
             {
                 // TODO: Do special action with double tap
                 this.lastDoubleTapTime = Time.time;
+                this.isDoubleTapping = true;
+                this.OnStartDoubleTap();
             }
 
             this.lastTapStartTime = Time.time;
         }
 
         this.ControlSpin(this.isCCW);
+
+        if (this.isDoubleTapping && !this.isTapping)
+        {
+            this.isDoubleTapping = false;
+            this.OnStopDoubleTap();
+        }
+    }
+
+    private void OnStartDoubleTap()
+    {
+        switch (this.doubleTapMode)
+        {
+            case DoubleTapMode.Shield: this.shieldController.Show(true); break;
+        }
+    }
+
+    private void OnStopDoubleTap()
+    {
+        switch (this.doubleTapMode)
+        {
+            case DoubleTapMode.Shield: this.shieldController.Show(false); break;
+        }
     }
 
 

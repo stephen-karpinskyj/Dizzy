@@ -9,7 +9,7 @@ public class LevelManager : BehaviourSingleton<LevelManager>
 
 
     private const float NoviceMedalTime = 20f;
-    private const float ProMedalTime = 8f;
+    private const float ProMedalTime = 7f;
 
 
     #endregion

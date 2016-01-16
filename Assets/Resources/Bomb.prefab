@@ -378,8 +378,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43b7ebdb7a8a04a4ab250b84e3f0ba46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  explosionShakeMagnitude: 0.04
-  explosionShakeDuration: 0.1
+  explosionShakeMagnitude: 0.02
+  explosionShakeDuration: 0.2
   coll: {fileID: 5843728}
   randomElements:
   - rend: {fileID: 2320446}
@@ -2091,7 +2091,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: explosionShakeMagnitude
-      value: 0.06
+      value: 0.02
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_Enabled
@@ -2211,7 +2211,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: explosionShakeDuration
-      value: 0.12
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: EmissionModule.rate.scalar

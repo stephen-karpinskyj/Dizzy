@@ -147,6 +147,25 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &178362
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 481854}
+  - 114: {fileID: 11474800}
+  - 33: {fileID: 3326106}
+  - 23: {fileID: 2309410}
+  - 60: {fileID: 6054942}
+  m_Layer: 0
+  m_Name: Shield
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &184120
 GameObject:
   m_ObjectHideFlags: 1
@@ -321,8 +340,47 @@ Transform:
   - {fileID: 475666}
   - {fileID: 466182}
   - {fileID: 440366}
+  - {fileID: 481854}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+--- !u!4 &481854
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 178362}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.1, y: -0, z: -0}
+  m_LocalScale: {x: 1.25, y: 1, z: 0.625}
+  m_Children: []
+  m_Father: {fileID: 479540}
+  m_RootOrder: 4
+--- !u!23 &2309410
+MeshRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 178362}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_Materials:
+  - {fileID: 2100000, guid: 1f9231e3d82fc4c1982dce16ce34b53e, type: 2}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 1
+  m_ReflectionProbeUsage: 1
+  m_ProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_PreserveUVs: 1
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
 --- !u!23 &2379130
 MeshRenderer:
   m_ObjectHideFlags: 1
@@ -349,6 +407,13 @@ MeshRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 0
+--- !u!33 &3326106
+MeshFilter:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 178362}
+  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!33 &3328736
 MeshFilter:
   m_ObjectHideFlags: 1
@@ -365,7 +430,7 @@ Rigidbody2D:
   m_GameObject: {fileID: 120724}
   m_UseAutoMass: 0
   m_Mass: 18.5
-  m_LinearDrag: 0.53
+  m_LinearDrag: 0.54
   m_AngularDrag: 0.65
   m_GravityScale: 0
   m_IsKinematic: 0
@@ -428,6 +493,30 @@ PolygonCollider2D:
       - {x: 0.44321147, y: -0.09213054}
       - {x: -0.18194874, y: -0.23127684}
       - {x: -0.4856956, y: -0.1849977}
+--- !u!60 &6054942
+PolygonCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 178362}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_Offset: {x: 0, y: 0}
+  m_Points:
+    m_Paths:
+    - - {x: -0.2681763, y: 0.4538552}
+      - {x: 0.01059919, y: 0.5264976}
+      - {x: 0.29940864, y: 0.4387657}
+      - {x: 0.5073256, y: 0.15450844}
+      - {x: 0.48830086, y: -0.18843435}
+      - {x: 0.29389256, y: -0.43100613}
+      - {x: -0.003079958, y: -0.52045876}
+      - {x: -0.31509075, y: -0.41775724}
+      - {x: -0.48558554, y: -0.17228295}
+      - {x: -0.48612735, y: 0.16775739}
 --- !u!60 &6068634
 PolygonCollider2D:
   m_ObjectHideFlags: 1
@@ -730,6 +819,37 @@ MonoBehaviour:
   cwLightColor: {r: 1, g: 0.39310336, b: 0, a: 1}
   materialColorPropertyName: _TintColor
   boostLight: {fileID: 10871904}
+--- !u!114 &11474800
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 178362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 053aaa42f13924ae0bfe6bfa1a7374ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rend: {fileID: 2309410}
+  showSpeed: 7
+  hideSpeed: 4
+  tweenCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+    - time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  shaderParameterName: _Strength
 --- !u!114 &11488308
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -741,7 +861,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55a4c5e285aa142b7b54a0d7c0b6e849, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSpeed: 7.7
+  maxSpeed: 7.6
   boostMultiplierCurve:
     serializedVersion: 2
     m_Curve:
@@ -773,6 +893,16 @@ MonoBehaviour:
       inSlope: 1.2236178
       outSlope: 1.2236178
       tangentMode: 0
+    - time: 0.020543274
+      value: 0.8254523
+      inSlope: 8.372374
+      outSlope: 8.372374
+      tangentMode: 0
+    - time: 0.040305376
+      value: 0.9071412
+      inSlope: 0.25970587
+      outSlope: 0.25970587
+      tangentMode: 0
     - time: 1
       value: 1
       inSlope: 0
@@ -781,7 +911,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
-  boostTimeMultiplierDuration: 0.2
+  boostTimeMultiplierDuration: 3
   boostTimeMultiplierRange: {x: 0.85, y: 1}
   velocityDecayCurve:
     serializedVersion: 2
@@ -932,12 +1062,14 @@ MonoBehaviour:
   launchShakeMagnitude: 0.1
   launchForce: {x: 0, y: 120}
   controlMode: 3
+  doubleTapMode: 1
   rigidBody: {fileID: 5071878}
   bodyTransform: {fileID: 415140}
   source: {fileID: 8238344}
   trails:
   - {fileID: 9605134}
   - {fileID: 9607078}
+  shieldController: {fileID: 11474800}
   baseTrailDuration: 0.08
   dotProductMinBeforeTrails: 0.9
   doubleTapDuration: 0.22

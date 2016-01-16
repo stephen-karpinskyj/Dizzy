@@ -6,11 +6,11 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: ShipMetal
-  m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
-  m_ShaderKeywords: _EMISSION
-  m_LightmapFlags: 0
-  m_CustomRenderQueue: -1
+  m_Name: ShipShield
+  m_Shader: {fileID: 4800000, guid: b8af11ba4d04c4a7d89449a507e07350, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 5
+  m_CustomRenderQueue: 3000
   stringTagMap: {}
   m_SavedProperties:
     serializedVersion: 2
@@ -80,9 +80,23 @@ Material:
           m_Offset: {x: 0, y: 0}
       data:
         first:
-          name: _SpecGlossMap
+          name: _Texture
         second:
-          m_Texture: {fileID: 0}
+          m_Texture: {fileID: 2800000, guid: cebb9686409b2499a924ef2707c4745f, type: 3}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0.5, y: 0.5}
+      data:
+        first:
+          name: _RampTex
+        second:
+          m_Texture: {fileID: 2800000, guid: af7621ab44211497fa4ecdc2a9df28e4, type: 3}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _SurfaceTex
+        second:
+          m_Texture: {fileID: 2800000, guid: af7621ab44211497fa4ecdc2a9df28e4, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
     m_Floats:
@@ -109,7 +123,7 @@ Material:
       data:
         first:
           name: _Glossiness
-        second: 0.3
+        second: 0.5
       data:
         first:
           name: _BumpScale
@@ -133,17 +147,45 @@ Material:
       data:
         first:
           name: _Metallic
+        second: 0
+      data:
+        first:
+          name: _InvFade
+        second: 1
+      data:
+        first:
+          name: _Strength
+        second: 2
+      data:
+        first:
+          name: _Inside
+        second: 0
+      data:
+        first:
+          name: _Rim
         second: 0.5
+      data:
+        first:
+          name: _Speed
+        second: 5
+      data:
+        first:
+          name: _Tile
+        second: 1
+      data:
+        first:
+          name: _Offset
+        second: 0
     m_Colors:
       data:
         first:
           name: _EmissionColor
-        second: {r: 0.03, g: 0.03, b: 0.03, a: 1}
+        second: {r: 0, g: 0, b: 0, a: 1}
       data:
         first:
           name: _Color
-        second: {r: 0.3923551, g: 0.41151634, b: 0.43382353, a: 1}
+        second: {r: 0.3795415, g: 0.65687877, b: 0.7941176, a: 1}
       data:
         first:
-          name: _SpecColor
-        second: {r: 0.49264705, g: 0.49264705, b: 0.49264705, a: 1}
+          name: _TintColor
+        second: {r: 1, g: 1, b: 1, a: 0.097}
