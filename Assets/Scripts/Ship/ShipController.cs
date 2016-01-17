@@ -263,7 +263,7 @@ public class ShipController : MonoBehaviour
 
         this.source.clip = this.thrustClip;
 
-        this.StopRunning();
+        this.OnLevelStop();
     }
 
     private void Update()
@@ -347,10 +347,10 @@ public class ShipController : MonoBehaviour
     #endregion
 
 
-    #region Public
+    #region Level events
 
 
-    public void StopRunning()
+    public void OnLevelStop()
     {
         this.isRunning = false;
 
@@ -368,7 +368,7 @@ public class ShipController : MonoBehaviour
         }
     }
 
-    public void StartRunning()
+    public void OnLevelStart()
     {
         if (this.isRunning)
         {
@@ -387,6 +387,13 @@ public class ShipController : MonoBehaviour
             t.enabled = true;
         }
     }
+    
+    
+    #endregion
+    
+    
+    #region Public
+    
 
     public void AddImpulseForce(Vector2 force)
     {

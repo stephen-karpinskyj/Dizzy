@@ -70,7 +70,7 @@ public class SettingsUIController : MonoBehaviour
 
     public void OnResetProgressConfirm()
     {
-        StateManager.Instance.ResetProgress();
+        GameManager.Instance.ResetProgress();
 
         this.UpdateResetProgressConfirm(false);
     }

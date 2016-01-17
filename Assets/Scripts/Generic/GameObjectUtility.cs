@@ -41,7 +41,7 @@ public static class GameObjectUtility
         {
             t.transform.parent = parent;
         }
-
+        
         return t;
     }
 
@@ -73,7 +73,7 @@ public static class GameObjectUtility
     #region Transform
 
 
-    public static void ResetTransform(Transform t)
+    public static void ResetLocalTransform(Transform t, bool includeScale)
     {
         if (!t)
         {
@@ -82,7 +82,11 @@ public static class GameObjectUtility
 
         t.localPosition = Vector3.zero;
         t.localRotation = Quaternion.identity;
-        t.localScale = Vector3.one;
+        
+        if (includeScale)
+        {
+            t.localScale = Vector3.one;
+        }
     }
 
 

@@ -43,6 +43,10 @@ public class ProgressUIController : MonoBehaviour
     [SerializeField]
     private float timeChangeFlashCount = 2;
 
+
+    #region Unity
+
+
     private void Awake()
     {
         Debug.Assert(this.bestTimeText);
@@ -52,64 +56,77 @@ public class ProgressUIController : MonoBehaviour
         Debug.Assert(this.addedJunkCountText);
         Debug.Assert(this.noviceMedal);
         Debug.Assert(this.proMedal);
-
-        this.ForceUpdateAll();
-
-        StateManager.Instance.OnBestTimeChange += this.HandleBestTimeChange;
-        StateManager.Instance.OnLastTimeChange += this.HandleLastTimeChange;
-        StateManager.Instance.OnRunCountChange += this.HandleRunCountChange;
-        StateManager.Instance.OnJunkCountChange += this.HandleJunkCountChange;
-        StateManager.Instance.OnNoviceMedalEarntChange += this.HandleNoviceMedalEarntChange;
-        StateManager.Instance.OnProMedalEarntChange += this.HandleProMedalEarntChange;
     }
 
     private void OnDisable()
     {
         this.StopAllCoroutines();
-
-        if (!StateManager.Exists)
-        {
-            return;
-        }
-
-        this.ForceUpdateAll();
     }
+    
+    
+    #endregion
 
-    private void HandleBestTimeChange(float time, float diff)
+
+    #region Public
+
+
+    public void UpdateBestTime(float time, float diff)
     {
         this.StartCoroutine(this.TimeChangeCoroutine(this.bestTimeText, time));
         this.bestTimeDiffText.gameObject.SetActive(true);
-        this.bestTimeDiffText.text = StateManager.TimeDiffToString(diff);
+        this.bestTimeDiffText.text = LevelState.TimeDiffToString(diff);
     }
 
-    private void HandleLastTimeChange(float time)
+    public void UpdateLastTime(float time)
     {
         this.StartCoroutine(this.TimeChangeCoroutine(this.lastTimeText, time));
     }
 
-    private void HandleRunCountChange(int count)
+    public void UpdateRunCount(int count)
     {
-        this.runCountText.text = StateManager.RunCountToString(count);
+        this.runCountText.text = LevelState.RunCountToString(count);
     }
 
-    private void HandleJunkCountChange(int count, int change)
+    public void UpdateJunkCount(int count, int change)
     {
         this.StartCoroutine(this.JunkChangeCoroutine(count, change));
     }
 
-    private void HandleNoviceMedalEarntChange(bool earnt)
+    public void UpdateNoviceMedalEarnt(bool earnt)
     {
         this.noviceMedal.SetEarnt(earnt, false);
     }
 
-    private void HandleProMedalEarntChange(bool earnt)
+    public void UpdateProMedalEarnt(bool earnt)
     {
         this.proMedal.SetEarnt(earnt, false);
     }
 
+    public void ForceUpdateAll(LevelState level, int junkCount)
+    {
+        this.bestTimeText.text = LevelState.TimeToString(level.BestTime);
+        this.bestTimeText.color = this.normalTimeColor;
+        this.bestTimeDiffText.gameObject.SetActive(false);
+        this.lastTimeText.text = LevelState.TimeToString(level.LastTime);
+        this.lastTimeText.color = this.normalTimeColor;
+        this.runCountText.text = LevelState.RunCountToString(level.RunCount);
+        this.noviceMedal.SetEarnt(level.NoviceMedalEarnt, true);
+        this.proMedal.SetEarnt(level.ProMedalEarnt, true);
+        
+        this.junkCountText.text = StateManager.JunkCountToString(junkCount);
+        this.addedJunkCountText.gameObject.SetActive(false);
+    }
+    
+    
+    #endregion
+
+
+    #region Coroutines
+    
+
     private IEnumerator TimeChangeCoroutine(Text text, float time)
     {
-        text.text = StateManager.TimeToString(time);
+        text.text = LevelState.TimeToString(time);
 
         for (int i = 0; i < this.timeChangeFlashCount; i++)
         {
@@ -158,18 +175,7 @@ public class ProgressUIController : MonoBehaviour
             yield return null;
         }
     }
-
-    private void ForceUpdateAll()
-    {
-        this.bestTimeText.text = StateManager.TimeToString(StateManager.Instance.BestTime);
-        this.bestTimeText.color = this.normalTimeColor;
-        this.bestTimeDiffText.gameObject.SetActive(false);
-        this.lastTimeText.text = StateManager.TimeToString(StateManager.Instance.LastTime);
-        this.lastTimeText.color = this.normalTimeColor;
-        this.runCountText.text = StateManager.RunCountToString(StateManager.Instance.RunCount);
-        this.junkCountText.text = StateManager.JunkCountToString(StateManager.Instance.JunkCount);
-        this.addedJunkCountText.gameObject.SetActive(false);
-        this.noviceMedal.SetEarnt(StateManager.Instance.NoviceMedalEarnt, true);
-        this.proMedal.SetEarnt(StateManager.Instance.ProMedalEarnt, true);
-    }
+    
+    
+    #endregion
 }

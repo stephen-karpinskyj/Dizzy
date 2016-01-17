@@ -1,10 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
+
+using Random = UnityEngine.Random;
 
 /// <summary>
 /// Conrols a junk element at run-time.
 /// </summary>
-public class JunkController : MonoBehaviour
+public class JunkController : LevelObjectController
 {
     #region Inspector
 
@@ -16,7 +19,7 @@ public class JunkController : MonoBehaviour
     private RandomJunkElement[] randomElements;
 
     [SerializeField]
-    private ParticleSystem explosionParticles;
+    private ParticleSystem sparkParticles;
 
     [SerializeField]
     private AudioSource source;
@@ -73,8 +76,6 @@ public class JunkController : MonoBehaviour
     #region Fields
 
 
-
-    private Vector3 initialPos;
     private Vector3 initialScale;
 
     private RandomJunkElement chosenElement;
@@ -82,8 +83,8 @@ public class JunkController : MonoBehaviour
     private float startPullTime;
 
     private bool isRunning = false;
-    private bool isPulling = false;
-    private bool isExploded = false;
+    private bool isAttracted = false;
+    private bool isCollected = false;
 
     private float rotationAtAttraction;
 
@@ -108,26 +109,23 @@ public class JunkController : MonoBehaviour
 
     private void Awake()
     {
-        Debug.Assert(this.explosionParticles, this);
+        Debug.Assert(this.sparkParticles, this);
         Debug.Assert(this.source, this);
 
-        this.initialPos = this.transform.position;
         this.initialScale = this.transform.localScale;
-
-        this.StopRunning();
     }
 
     private void FixedUpdate()
     {
-        if (!this.isRunning || !this.isPulling)
+        if (!this.isRunning || !this.isAttracted)
         {
             return;
         }
 
-        var dir = (Vector2)(LevelManager.Instance.Ship.transform.position - this.transform.position).normalized; // Ignore z
+        var dir = (Vector2)(GameManager.Instance.Ship.transform.position - this.transform.position).normalized; // Ignore z
 
         var curveValue = this.gravityCurve.Evaluate((Time.time - this.startPullTime) / this.gravityCurveDuration);
-        var shipMultipler = 1f + LevelManager.Instance.Ship.SpeedPercentage * this.shipSpeedInfluence;
+        var shipMultipler = 1f + GameManager.Instance.Ship.SpeedPercentage * this.shipSpeedInfluence;
         var multiplier = Mathf.Lerp(this.speedMultiplierRange.x, this.speedMultiplierRange.y, curveValue);
         var speed = multiplier * shipMultipler * Time.fixedDeltaTime;
 
@@ -140,17 +138,17 @@ public class JunkController : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D other)
     {
-        if (!this.isRunning || this.isExploded)
+        if (!this.isRunning || this.isCollected)
         {
             return;
         }
 
-        if (other.tag == this.junkDestroyerTag && !this.isExploded)
+        if (other.tag == this.junkDestroyerTag && !this.isCollected)
         {
-            this.Explode();
-            LevelManager.Instance.HandlePickup(this);
+            this.BecomeCollected();
+            this.OnPickup(this);
         }
-        else if (other.tag == this.junkPullerTag && !this.isPulling)
+        else if (other.tag == this.junkPullerTag && !this.isAttracted)
         {
             this.StartPulling();
         }
@@ -160,33 +158,31 @@ public class JunkController : MonoBehaviour
     #endregion
 
 
-    #region Public
+    #region LeveObjectController
 
 
-    public void StopRunning()
-    {
+    public override void OnLevelStop(OnLevelObjectPickup onPickup)
+    {        
+        base.OnLevelStop(onPickup);
+        
         this.isRunning = false;
 
-        this.isExploded = false;
+        this.isCollected = false;
         this.startPullTime = 0f;
 
-        this.isPulling = false;
+        this.isAttracted = false;
         this.coll.enabled = true;
 
-        this.transform.position = this.initialPos;
         this.transform.eulerAngles = new Vector3(Random.Range(0, 360f), Random.Range(0, 360f), Random.Range(0, 360f));
 
         this.Randomize();
         this.StartCoroutine(this.ShowCoroutine());
     }
 
-    public void StartRunning()
+    public override void OnLevelStart()
     {
-        if (this.isRunning)
-        {
-            return;
-        }
-
+        base.OnLevelStart();
+        
         this.isRunning = true;
     }
 
@@ -231,36 +227,36 @@ public class JunkController : MonoBehaviour
 
     private void StartPulling()
     {
-        Debug.Assert(!this.isPulling);
+        Debug.Assert(!this.isAttracted);
 
-        this.isPulling = true;
+        this.isAttracted = true;
         this.startPullTime = Time.time;
 
-        var vel = (Vector2)(this.transform.position - LevelManager.Instance.Ship.transform.position).normalized;
-        LevelManager.Instance.Ship.AddImpulseForce(vel * this.attractForceMagnitude);
+        var vel = (Vector2)(this.transform.position - GameManager.Instance.Ship.transform.position).normalized;
+        GameManager.Instance.Ship.AddImpulseForce(vel * this.attractForceMagnitude);
 
         this.rotationAtAttraction = Vector2.down.SignedAngle(vel);
     }
 
-    private void Explode()
+    private void BecomeCollected()
     {
-        Debug.Assert(!this.isExploded);
+        Debug.Assert(!this.isCollected);
 
-        this.isExploded = true;
+        this.isCollected = true;
         this.coll.enabled = false;
 
         this.source.clip = this.deathClips[Random.Range(0, this.deathClips.Length)];
         this.source.volume = this.deathVolume;
-        this.source.pitch = 1f + this.deathPitchMultiplier * MultiplierController.Instance.CurrentMultiplier;
+        this.source.pitch = 1f + this.deathPitchMultiplier * GameManager.Instance.Multiplier.CurrentMultiplier;
         AudioManager.Instance.Play(this.source);
 
         this.chosenElement.SetEnabled(false);
 
         this.transform.eulerAngles = Vector3.forward * this.rotationAtAttraction;
 
-        this.explosionParticles.Play();
+        this.sparkParticles.Play();
 
-        MultiplierController.Instance.Increment();
+        GameManager.Instance.Multiplier.Increment();
     }
 
 

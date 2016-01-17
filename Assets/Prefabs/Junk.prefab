@@ -389,7 +389,7 @@ MonoBehaviour:
   - rend: {fileID: 2325608}
     oddsRatio: 1
     junkValue: 250
-  explosionParticles: {fileID: 19803252}
+  sparkParticles: {fileID: 19803252}
   source: {fileID: 8288050}
   deathClips:
   - {fileID: 8300000, guid: b2011f0f621784b00a4e09861aeab48b, type: 3}
@@ -2483,6 +2483,10 @@ Prefab:
       propertyPath: scaleDuration
       value: 0.15
       objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: sparkParticles
+      value: 
+      objectReference: {fileID: 19803252}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 170168}

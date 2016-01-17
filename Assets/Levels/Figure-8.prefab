@@ -707,6 +707,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 473356}
+  - 114: {fileID: 11472990}
   m_Layer: 0
   m_Name: Figure-8
   m_TagString: Untagged
@@ -2805,6 +2806,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b90fbe5b943441abad2bca5d8fc194e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &11472990
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 152254}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a23b74cfd457c483e8548ab453a646c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: lvl_figure8
+  displayName: FIGURE8
+  noviceTime: 20
+  proTime: 7
 --- !u!114 &11474524
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3098,7 +3114,23 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: id
+      value: lvl_figure8
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: displayName
+      value: FIGURE8
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: noviceTime
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: proTime
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 152254}

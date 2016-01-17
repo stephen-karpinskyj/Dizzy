@@ -8,11 +8,11 @@ public class WallController : MonoBehaviour
     
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.tag == destroyerTag)
+        if (other.tag != destroyerTag)
         {
             return;
         }
 
-        LevelManager.Instance.HandleOutOfBounds();
+        GameManager.Instance.HandleOutOfBounds();
     }
 }

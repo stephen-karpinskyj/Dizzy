@@ -580,7 +580,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8150d869e8a34067b09f5d9f899f2b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  destroyerTag: Ship
+  destroyerTag: Player
 --- !u!114 &11439258
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -592,7 +592,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8150d869e8a34067b09f5d9f899f2b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  destroyerTag: Ship
+  destroyerTag: Player
 --- !u!114 &11452194
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -604,7 +604,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8150d869e8a34067b09f5d9f899f2b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  destroyerTag: Ship
+  destroyerTag: Player
 --- !u!114 &11495164
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -648,7 +648,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8150d869e8a34067b09f5d9f899f2b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  destroyerTag: Ship
+  destroyerTag: Player
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

@@ -31,7 +31,7 @@ public class LaunchLightsController : MonoBehaviour
         }
     }
 
-    private void Light()
+    private void LightUp()
     {
         if (this.isRunning)
         {
@@ -83,15 +83,15 @@ public class LaunchLightsController : MonoBehaviour
     }
 
 
-    #region Broadcast
+    #region Level events
 
 
-    private void LevelStop()
+    public void OnLevelStop()
     {
-        this.Light();
+        this.LightUp();
     }
 
-    private void LevelStart()
+    public void OnLevelStart()
     {
         this.StartCoroutine(HideCoroutine());
     }

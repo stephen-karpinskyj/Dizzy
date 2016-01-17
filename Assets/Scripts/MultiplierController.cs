@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class MultiplierController : BehaviourSingleton<MultiplierController>
+public class MultiplierController : MonoBehaviour
 {
     const float SecondsUntilExpire = 1f;
 
@@ -31,10 +31,10 @@ public class MultiplierController : BehaviourSingleton<MultiplierController>
     }
 
 
-    #region Broadcast
+    #region Level events
 
 
-    private void LevelStop()
+    public void OnLevelStop()
     {
         this.currentMultiplier = 0;
         this.lastExplosionTime = 0f;

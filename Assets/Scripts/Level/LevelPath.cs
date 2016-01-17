@@ -51,11 +51,8 @@ public class LevelPath : MonoBehaviour
         {
             this.lastPointTraced = this.transform.position;
 
-            var obj = Object.Instantiate(this.traceOutputNode);
+            var obj = GameObjectUtility.InstantiatePrefab(this.traceOutputNode, this.traceOutputParent);
             obj.name = this.traceOutputNode.GetType().Name;
-            obj.transform.position = this.transform.position;
-            obj.transform.rotation = this.transform.rotation;
-            obj.transform.SetParent(this.traceOutputParent, true);
         }
     }
 
