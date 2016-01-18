@@ -109,7 +109,16 @@ public class GameManager : BehaviourSingleton<GameManager>
     public void ResetProgress()
     {
         StateManager.Instance.ResetProgress();
-        this.canvas.ForceUpdateAll(this.levelManager.CurrentLevelState, StateManager.Instance.JunkCount);
+        this.canvas.ForceUpdateAll(this.levelManager.CurrentLevel, this.levelManager.CurrentLevelState, StateManager.Instance.JunkCount);
+    }
+    
+    public void LoadNextLevel(bool forward)
+    {
+        var currLevel = this.levelManager.CurrentLevel;
+        var nextLevel = Data.Instance.GetNextLevel(currLevel, forward);
+        
+        this.OnLevelLoad(nextLevel);
+        this.OnLevelStop(false);
     }
 
 
@@ -157,13 +166,13 @@ public class GameManager : BehaviourSingleton<GameManager>
         this.launchLights.OnLevelStart();
 
         this.levelManager.OnLevelStart();
-        this.canvas.OnLevelStart(this.levelManager.CurrentLevelState, StateManager.Instance.JunkCount);
+        this.canvas.OnLevelStart(this.levelManager.CurrentLevel, this.levelManager.CurrentLevelState, StateManager.Instance.JunkCount);
     }
     
     private void OnLevelLoad(LevelData level)
     {
         this.levelManager.OnLevelLoad(this.canvas, level, () => this.OnLevelStop(true));
-        this.canvas.OnLevelLoad(this.levelManager.CurrentLevelState, StateManager.Instance.JunkCount);
+        this.canvas.OnLevelLoad(this.levelManager.CurrentLevel, this.levelManager.CurrentLevelState, StateManager.Instance.JunkCount);
     }
 
 

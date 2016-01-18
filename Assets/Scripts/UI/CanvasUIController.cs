@@ -6,6 +6,9 @@ public class CanvasUIController : MonoBehaviour
     
     
     [SerializeField]
+    private HeaderUIController header;
+    
+    [SerializeField]
     private ProgressUIController progress;
     
     [SerializeField]
@@ -74,9 +77,10 @@ public class CanvasUIController : MonoBehaviour
         AudioManager.Instance.Play(this.source);
     }
     
-    public void ForceUpdateAll(LevelState level, int junkCount)
+    public void ForceUpdateAll(LevelData data, LevelState state, int junkCount)
     {
-        this.progress.ForceUpdateAll(level, junkCount);
+        this.header.UpdateLevelTitleText(data.DisplayName);
+        this.progress.ForceUpdateAll(state, junkCount);
     }
 
     public void PlayClickSound()
@@ -92,19 +96,19 @@ public class CanvasUIController : MonoBehaviour
     #region Events
     
 
-    public void OnLevelStart(LevelState level, int junkCount)
+    public void OnLevelStart(LevelData data, LevelState state, int junkCount)
     {
         this.Show(false);
 
-        this.ForceUpdateAll(level, junkCount);
+        this.ForceUpdateAll(data, state, junkCount);
 
         this.source.clip = this.launchClip;
         AudioManager.Instance.Play(this.source);
     }
     
-    public void OnLevelLoad(LevelState level, int junkCount)
+    public void OnLevelLoad(LevelData data, LevelState state, int junkCount)
     {
-        this.ForceUpdateAll(level, junkCount);
+        this.ForceUpdateAll(data, state, junkCount);
     }
 
 

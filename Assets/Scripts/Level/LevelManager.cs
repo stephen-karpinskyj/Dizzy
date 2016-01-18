@@ -61,6 +61,8 @@ public class LevelManager : MonoBehaviour
             {
                 this.objectPool.Return(kv.Value);
             }
+         
+            this.objectDic.Clear();
             
             Object.Destroy(this.CurrentLevel.gameObject);
         }
@@ -68,6 +70,9 @@ public class LevelManager : MonoBehaviour
         this.CurrentLevel = Object.Instantiate(levelPrefab);
         this.CurrentLevelState = StateManager.Instance.GetLevel(this.CurrentLevel.Id);
         this.onLevelWin = onLevelWin;
+        
+        this.canvas.Progress.NoviceMedal.UpdateTime(this.CurrentLevel.NoviceTime);
+        this.canvas.Progress.ProMedal.UpdateTime(this.CurrentLevel.ProTime);
                 
         foreach (var n in this.CurrentLevel.GetComponentsInChildren<JunkNode>())
         {
@@ -111,7 +116,7 @@ public class LevelManager : MonoBehaviour
         var currPro = this.CurrentLevelState.ProMedalEarnt;
 
         this.canvas.HandleLevelWin(isNewTimeRecord);
-                
+
         if (isNewTimeRecord)
         {
             this.canvas.Progress.UpdateBestTime(currBest, currBest - prevBest);
@@ -129,12 +134,12 @@ public class LevelManager : MonoBehaviour
         
         if (prevNovice != currNovice)
         {
-            this.canvas.Progress.UpdateNoviceMedalEarnt(currNovice);
+            this.canvas.Progress.NoviceMedal.UpdateEarnt(currNovice);
         }
         
         if (prevPro != currPro)
         {
-            this.canvas.Progress.UpdateProMedalEarnt(currPro);
+            this.canvas.Progress.ProMedal.UpdateEarnt(currPro);
         }
     }
     

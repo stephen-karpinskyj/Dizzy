@@ -4,6 +4,9 @@ using UnityEngine.UI;
 
 public class ProgressUIController : MonoBehaviour
 {
+    #region Inspector
+    
+    
     [SerializeField]
     private Text bestTimeText;
 
@@ -42,6 +45,26 @@ public class ProgressUIController : MonoBehaviour
 
     [SerializeField]
     private float timeChangeFlashCount = 2;
+
+
+    #endregion
+    
+    
+    #region Properties
+    
+    
+    public MedalUIController NoviceMedal
+    {
+        get { return this.noviceMedal; }
+    }
+    
+    public MedalUIController ProMedal
+    {
+        get { return this.proMedal; }
+    }
+    
+    
+    #endregion
 
 
     #region Unity
@@ -92,26 +115,16 @@ public class ProgressUIController : MonoBehaviour
         this.StartCoroutine(this.JunkChangeCoroutine(count, change));
     }
 
-    public void UpdateNoviceMedalEarnt(bool earnt)
+    public void ForceUpdateAll(LevelState state, int junkCount)
     {
-        this.noviceMedal.SetEarnt(earnt, false);
-    }
-
-    public void UpdateProMedalEarnt(bool earnt)
-    {
-        this.proMedal.SetEarnt(earnt, false);
-    }
-
-    public void ForceUpdateAll(LevelState level, int junkCount)
-    {
-        this.bestTimeText.text = LevelState.TimeToString(level.BestTime);
+        this.bestTimeText.text = LevelState.TimeToString(state.BestTime);
         this.bestTimeText.color = this.normalTimeColor;
         this.bestTimeDiffText.gameObject.SetActive(false);
-        this.lastTimeText.text = LevelState.TimeToString(level.LastTime);
+        this.lastTimeText.text = LevelState.TimeToString(state.LastTime);
         this.lastTimeText.color = this.normalTimeColor;
-        this.runCountText.text = LevelState.RunCountToString(level.RunCount);
-        this.noviceMedal.SetEarnt(level.NoviceMedalEarnt, true);
-        this.proMedal.SetEarnt(level.ProMedalEarnt, true);
+        this.runCountText.text = LevelState.RunCountToString(state.RunCount);
+        this.noviceMedal.UpdateEarnt(state.NoviceMedalEarnt);
+        this.proMedal.UpdateEarnt(state.ProMedalEarnt);
         
         this.junkCountText.text = StateManager.JunkCountToString(junkCount);
         this.addedJunkCountText.gameObject.SetActive(false);

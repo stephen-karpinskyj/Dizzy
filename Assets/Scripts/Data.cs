@@ -30,7 +30,7 @@ public class Data : DataAsset<Data>
 
     public LevelData GetNextLevel(LevelData level, bool forward)
     {
-        var index = this.levels.IndexOf(level) + (forward ? 1 : -1);
+        var index = this.levels.FindIndex(l => l.Id == level.Id) + (forward ? 1 : -1);
         
         if (index < 0)
         {

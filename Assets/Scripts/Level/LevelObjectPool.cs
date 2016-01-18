@@ -15,20 +15,28 @@ public class LevelObjectPool : MonoBehaviour
     {
         var t = typeof(T);
         var queue = GetQueue(t);
-                
+        
+        T obj;
+        
         switch (queue.Count)
         {
-            case 0: return InstantiateLevelObject<T>();
-            default: return queue.Dequeue() as T;
+            case 0: obj = InstantiateLevelObject<T>(); break;
+            default: obj = queue.Dequeue() as T; break;
         }
+        
+        obj.gameObject.SetActive(true);
+        
+        return obj;
     }
     
-    public void Return<T>(T obj) where T : LevelObjectController
+    public void Return(LevelObjectController obj)
     {
         Debug.Assert(obj != null);
         
-        var t = typeof(T);
+        var t = obj.GetType();
         var queue = GetQueue(t);
+        
+        obj.gameObject.SetActive(false);
         
         queue.Enqueue(obj);
     }

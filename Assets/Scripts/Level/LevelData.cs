@@ -11,15 +11,20 @@ public class LevelData : MonoBehaviour
     [SerializeField]
     private string displayName;
     
-    [SerializeField]
+    [SerializeField, Range(1, 128)]
     private float noviceTime;
     
-    [SerializeField]
+    [SerializeField, Range(1, 128)]
     private float proTime;
     
     public string Id
     {
         get { return this.id; }
+    }
+    
+    public string DisplayName
+    {
+        get { return this.displayName; }
     }
     
     public float NoviceTime

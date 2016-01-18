@@ -4,6 +4,9 @@ using UnityEngine.UI;
 public class MedalUIController : MonoBehaviour
 {
     [SerializeField]
+    private Text timeText;
+    
+    [SerializeField]
     private Image image;
 
     [SerializeField]
@@ -20,12 +23,23 @@ public class MedalUIController : MonoBehaviour
 
     private void Awake()
     {
+        Debug.Assert(this.timeText);
         Debug.Assert(this.image);
         Debug.Assert(this.missingSprite);
         Debug.Assert(this.earntSprite);
     }
 
-    public void SetEarnt(bool earnt, bool instant)
+    public void UpdateTime(float time)
+    {
+        Debug.Assert(time < 1000);
+        
+        const int MaxDigits = 4;
+        var numDp = MaxDigits - ((int)time).ToString().Length;
+        
+        this.timeText.text = time.ToString("F" + numDp);
+    }
+
+    public void UpdateEarnt(bool earnt)
     {
         this.image.sprite = earnt ? this.earntSprite : this.missingSprite;
         this.image.color = earnt ? this.earntColor : this.missingColor;
