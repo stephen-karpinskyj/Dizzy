@@ -171,6 +171,8 @@ public class GameManager : BehaviourSingleton<GameManager>
     
     private void OnLevelLoad(LevelData level)
     {
+        Debug.LogFormat("[{0}] Loading level={1}", this.GetType().Name, level.Id);
+        
         this.levelManager.OnLevelLoad(this.canvas, level, () => this.OnLevelStop(true));
         this.canvas.OnLevelLoad(this.levelManager.CurrentLevel, this.levelManager.CurrentLevelState, StateManager.Instance.JunkCount);
     }

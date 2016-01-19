@@ -399,7 +399,7 @@ MonoBehaviour:
   deathPitchMultiplier: 0.001
   junkPullerTag: JunkPuller
   junkDestroyerTag: JunkDestroyer
-  attractForceMagnitude: 8
+  attractForceMagnitude: 10
   gravityCurve:
     serializedVersion: 2
     m_Curve:
@@ -416,9 +416,9 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
-  gravityCurveDuration: 0.35
-  shipSpeedInfluence: 2
-  speedMultiplierRange: {x: 5, y: 40}
+  gravityCurveDuration: 0.25
+  shipSpeedInfluence: 3
+  speedMultiplierRange: {x: 5, y: 60}
   showPositionRange: {x: -4, y: 4}
   maxShowDuration: 0.1
   showDurationOffset: {x: 0, y: 0.05}
@@ -2393,7 +2393,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: gravityCurveDuration
-      value: 0.4
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_Radius
@@ -2425,7 +2425,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: speedMultiplierRange.y
-      value: 40
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: rocketSpeedInfluence
@@ -2433,7 +2433,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: attractForceMagnitude
-      value: 8
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: deathPitchMultiplier
@@ -2487,6 +2487,10 @@ Prefab:
       propertyPath: sparkParticles
       value: 
       objectReference: {fileID: 19803252}
+    - target: {fileID: 0}
+      propertyPath: shipSpeedInfluence
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 170168}

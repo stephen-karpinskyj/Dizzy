@@ -87,8 +87,9 @@ public class LevelManager : MonoBehaviour
         
         foreach (var kv in this.objectDic)
         {
-            kv.Value.transform.position = kv.Key.transform.position;
-            kv.Value.transform.rotation = kv.Key.transform.rotation;
+            kv.Value.transform.parent = kv.Key.transform;
+            kv.Value.transform.localPosition = Vector3.zero;
+            kv.Value.transform.localRotation = Quaternion.identity;
             kv.Value.OnLevelStop(this.PickupObject);
             
             var junk = kv.Value as JunkController;

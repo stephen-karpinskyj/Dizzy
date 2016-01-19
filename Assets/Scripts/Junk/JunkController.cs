@@ -124,8 +124,8 @@ public class JunkController : LevelObjectController
 
         var dir = (Vector2)(GameManager.Instance.Ship.transform.position - this.transform.position).normalized; // Ignore z
 
-        var curveValue = this.gravityCurve.Evaluate((Time.time - this.startPullTime) / this.gravityCurveDuration);
         var shipMultipler = 1f + GameManager.Instance.Ship.SpeedPercentage * this.shipSpeedInfluence;
+        var curveValue = this.gravityCurve.Evaluate((Time.time - this.startPullTime) / this.gravityCurveDuration);
         var multiplier = Mathf.Lerp(this.speedMultiplierRange.x, this.speedMultiplierRange.y, curveValue);
         var speed = multiplier * shipMultipler * Time.fixedDeltaTime;
 
@@ -234,6 +234,8 @@ public class JunkController : LevelObjectController
 
         var vel = (Vector2)(this.transform.position - GameManager.Instance.Ship.transform.position).normalized;
         GameManager.Instance.Ship.AddImpulseForce(vel * this.attractForceMagnitude);
+        
+        this.transform.parent = null;
 
         this.rotationAtAttraction = Vector2.down.SignedAngle(vel);
     }

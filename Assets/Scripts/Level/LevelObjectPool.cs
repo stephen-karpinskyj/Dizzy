@@ -37,6 +37,7 @@ public class LevelObjectPool : MonoBehaviour
         var queue = GetQueue(t);
         
         obj.gameObject.SetActive(false);
+        obj.transform.parent = this.transform;
         
         queue.Enqueue(obj);
     }
