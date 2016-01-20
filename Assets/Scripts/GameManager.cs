@@ -60,7 +60,8 @@ public class GameManager : BehaviourSingleton<GameManager>
         }
         else
         {
-            shouldRun = Input.anyKeyDown && (!EventSystem.current || !EventSystem.current.IsPointerOverGameObject());
+            shouldRun = Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space) ||
+                (Input.GetMouseButtonDown(0) && (!EventSystem.current || !EventSystem.current.IsPointerOverGameObject()));
         }
         
         if (shouldRun)
