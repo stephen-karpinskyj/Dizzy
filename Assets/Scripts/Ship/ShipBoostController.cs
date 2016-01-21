@@ -58,15 +58,22 @@ public class ShipBoostController : MonoBehaviour
         {
             //this.StopCoroutine("DelayColliderDisable");
 
-            this.boostParticles.Play();
-            this.boostLight.enabled = true;
+            if (!this.boostParticles.isPlaying)
+            {
+                this.boostParticles.Play();
+                this.boostLight.enabled = true;
+            }
             //this.boostCollider.enabled = true;
             CameraController.Shake(this.shakeDuration, this.shakeMagnitude);
         }
         else
         {
-            this.boostParticles.Stop();
-            this.boostLight.enabled = false;
+            if (this.boostParticles.isPlaying)
+            {
+                this.boostParticles.Stop();
+                this.boostLight.enabled = false;
+            }
+            
             //this.StartCoroutine("DelayColliderDisable");
         }
     }

@@ -97,9 +97,8 @@ public class GameManager : BehaviourSingleton<GameManager>
         this.launchLights = Object.FindObjectOfType<LaunchLightsController>();
         Debug.Assert(this.launchLights);
         
+        this.OnGameStart();
         this.OnLevelLoad(Data.Instance.GetDefaultLevel());
-
-        this.OnLevelStop(false);
     }
 
     public void HandleOutOfBounds()
@@ -119,7 +118,6 @@ public class GameManager : BehaviourSingleton<GameManager>
         var nextLevel = Data.Instance.GetNextLevel(currLevel, forward);
         
         this.OnLevelLoad(nextLevel);
-        this.OnLevelStop(false);
     }
 
 
@@ -129,6 +127,22 @@ public class GameManager : BehaviourSingleton<GameManager>
     #region Private
 
 
+    private void OnGameStart()
+    {
+        this.levelManager.OnGameStart(this.canvas);
+    }
+
+    private void OnLevelLoad(LevelData level)
+    {
+        Debug.LogFormat("[{0}] Loading level={1}", this.GetType().Name, level.Id);
+        
+        this.levelManager.OnLeveUnload();
+        this.levelManager.OnLevelLoad(level, () => this.OnLevelStop(true));
+        this.OnLevelStop(false);
+        
+        this.canvas.OnLevelLoad(this.levelManager.CurrentLevel, this.levelManager.CurrentLevelState, StateManager.Instance.JunkCount);
+    }
+    
     private void OnLevelStop(bool won)
     {
         Debug.LogFormat("[{0}] Stopping level, won={1}", this.GetType().Name, won);
@@ -168,14 +182,6 @@ public class GameManager : BehaviourSingleton<GameManager>
 
         this.levelManager.OnLevelStart();
         this.canvas.OnLevelStart(this.levelManager.CurrentLevel, this.levelManager.CurrentLevelState, StateManager.Instance.JunkCount);
-    }
-    
-    private void OnLevelLoad(LevelData level)
-    {
-        Debug.LogFormat("[{0}] Loading level={1}", this.GetType().Name, level.Id);
-        
-        this.levelManager.OnLevelLoad(this.canvas, level, () => this.OnLevelStop(true));
-        this.canvas.OnLevelLoad(this.levelManager.CurrentLevel, this.levelManager.CurrentLevelState, StateManager.Instance.JunkCount);
     }
 
 

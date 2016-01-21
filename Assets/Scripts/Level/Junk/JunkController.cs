@@ -87,6 +87,8 @@ public class JunkController : LevelObjectController
     private bool isCollected = false;
 
     private float rotationAtAttraction;
+    
+    private Action<JunkController> onCollect;
 
 
     #endregion
@@ -146,7 +148,7 @@ public class JunkController : LevelObjectController
         if (other.tag == this.junkDestroyerTag && !this.isCollected)
         {
             this.BecomeCollected();
-            this.OnPickup(this);
+            this.onCollect(this);
         }
         else if (other.tag == this.junkPullerTag && !this.isAttracted)
         {
@@ -161,9 +163,9 @@ public class JunkController : LevelObjectController
     #region LeveObjectController
 
 
-    public override void OnLevelStop(OnLevelObjectPickup onPickup)
+    public override void OnLevelStop()
     {        
-        base.OnLevelStop(onPickup);
+        base.OnLevelStop();
         
         this.isRunning = false;
 
@@ -187,6 +189,18 @@ public class JunkController : LevelObjectController
     }
 
 
+    #endregion
+    
+    
+    #region Public
+    
+    
+    public void Initialize(Action<JunkController> onCollect)
+    {
+        this.onCollect = onCollect;
+    }
+    
+    
     #endregion
 
 

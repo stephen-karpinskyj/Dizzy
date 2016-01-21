@@ -10,15 +10,16 @@ public class LevelManager : MonoBehaviour
     
     
     private CanvasUIController canvas;
-    
-    private List<JunkController> uncollectedJunk;
-    private Dictionary<LevelObjectNode, LevelObjectController> objectDic;
+        
+    private HashSet<LevelObjectNode> nodes;
     private LevelObjectPool objectPool;
     
-    private float startTime;
+    private HashSet<JunkController> allJunk;
+    private HashSet<JunkController> uncollectedJunk;
+    private int totalCollectedJunkValue;
     
+    private float startTime;
     private Action onLevelWin;
-    private int earntJunk;
     
     
     #endregion
@@ -39,9 +40,11 @@ public class LevelManager : MonoBehaviour
     
     private void Awake()
     {
-        this.uncollectedJunk = new List<JunkController>();
-        this.objectDic = new Dictionary<LevelObjectNode, LevelObjectController>();
+        this.nodes = new HashSet<LevelObjectNode>();
         this.objectPool = this.gameObject.AddComponent<LevelObjectPool>();
+        
+        this.allJunk = new HashSet<JunkController>();
+        this.uncollectedJunk = new HashSet<JunkController>();
     }
     
     
@@ -51,21 +54,33 @@ public class LevelManager : MonoBehaviour
     #region Events
     
     
-    public void OnLevelLoad(CanvasUIController canvas, LevelData levelPrefab, Action onLevelWin)
+    public void OnGameStart(CanvasUIController canvas)
     {
         this.canvas = canvas;
-        
-        if (this.CurrentLevel)
+    }
+    
+    public void OnLeveUnload()
+    {
+        if (!this.CurrentLevel)
         {
-            foreach (var kv in this.objectDic)
-            {
-                this.objectPool.Return(kv.Value);
-            }
-         
-            this.objectDic.Clear();
-            
-            Object.Destroy(this.CurrentLevel.gameObject);
+            return;
         }
+        
+        foreach (var n in this.nodes)
+        {
+            n.OnLevelUnload(this.objectPool);
+        }
+        
+        this.nodes.Clear();
+        this.allJunk.Clear();
+        
+        Object.Destroy(this.CurrentLevel.gameObject);
+        this.CurrentLevel = null;
+    }
+    
+    public void OnLevelLoad(LevelData levelPrefab, Action onLevelWin)
+    {
+        Debug.Assert(!this.CurrentLevel);
         
         this.CurrentLevel = Object.Instantiate(levelPrefab);
         this.CurrentLevelState = StateManager.Instance.GetLevel(this.CurrentLevel.Id);
@@ -74,31 +89,35 @@ public class LevelManager : MonoBehaviour
         this.canvas.Progress.NoviceMedal.UpdateTime(this.CurrentLevel.NoviceTime);
         this.canvas.Progress.ProMedal.UpdateTime(this.CurrentLevel.ProTime);
                 
-        foreach (var n in this.CurrentLevel.GetComponentsInChildren<JunkNode>())
+        foreach (var n in this.CurrentLevel.GetComponentsInChildren<LevelObjectNode>())
         {
-            this.objectDic[n] = this.objectPool.Get<JunkController>();
+            var result = n.OnLevelLoad(this.objectPool);
+            
+            if (result.Junk != null)
+            {
+                this.allJunk.UnionWith(result.Junk);
+            }
+            
+            this.nodes.Add(n);
+        }
+        
+        foreach (var j in this.allJunk)
+        {
+            j.Initialize(this.OnJunkCollect);
         }
     }
     
     public void OnLevelStop()
     {
         this.EarnCollectedJunk();
-        this.uncollectedJunk.Clear();
         
-        foreach (var kv in this.objectDic)
+        foreach (var n in this.nodes)
         {
-            kv.Value.transform.parent = kv.Key.transform;
-            kv.Value.transform.localPosition = Vector3.zero;
-            kv.Value.transform.localRotation = Quaternion.identity;
-            kv.Value.OnLevelStop(this.PickupObject);
-            
-            var junk = kv.Value as JunkController;
-                
-            if (junk)
-            {
-                this.uncollectedJunk.Add(junk);
-            }
+            n.OnLevelStop();
         }
+        
+        this.uncollectedJunk.Clear();
+        this.uncollectedJunk.UnionWith(allJunk);
     }
     
     public void OnLevelWin()
@@ -146,9 +165,9 @@ public class LevelManager : MonoBehaviour
     
     public void OnLevelStart()
     {
-        foreach (var kv in this.objectDic)
+        foreach (var n in this.nodes)
         {
-            kv.Value.OnLevelStart();
+            n.OnLevelStart();
         }
 
         this.startTime = Time.time;
@@ -161,35 +180,28 @@ public class LevelManager : MonoBehaviour
     #region Private
     
     
-    private void PickupObject(LevelObjectController obj)
+    private void OnJunkCollect(JunkController junk)
     {
-        var junk = obj as JunkController;
-            
-        if (junk)
+        Debug.Assert(junk);
+        
+        this.totalCollectedJunkValue += junk.ChosenElement.JunkValue;
+        this.uncollectedJunk.Remove(junk);
+        
+        if (this.uncollectedJunk.Count <= 0)
         {
-            this.uncollectedJunk.Remove(junk);
-            this.earntJunk += junk.ChosenElement.JunkValue;
-
-            if (this.uncollectedJunk.Count <= 0)
-            {
-                this.onLevelWin();
-            }
-        }
-        else
-        {
-            throw new NotImplementedException();
+            this.onLevelWin();
         }
     }
     
     private void EarnCollectedJunk()
     {
-        if (this.earntJunk == 0)
+        if (this.totalCollectedJunkValue == 0)
         {
             return;
         }
         
         var prev = StateManager.Instance.JunkCount;
-        var curr = StateManager.Instance.HandleNewJunk(this.earntJunk);
+        var curr = StateManager.Instance.HandleNewJunk(this.totalCollectedJunkValue);
         var diff = curr - prev;
         
         if (diff != 0)
@@ -197,7 +209,7 @@ public class LevelManager : MonoBehaviour
             this.canvas.Progress.UpdateJunkCount(curr, curr - prev);
         }
         
-        this.earntJunk = 0;
+        this.totalCollectedJunkValue = 0;
     }
     
     

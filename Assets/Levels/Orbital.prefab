@@ -3144,7 +3144,7 @@ MonoBehaviour:
   id: lvl_orbital
   displayName: ORBITAL
   noviceTime: 16
-  proTime: 5.5
+  proTime: 6
 --- !u!114 &11439498
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3508,7 +3508,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 034e72c617d8a4965b42c0293707360d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mode: 0
   magnitude: {x: 0, y: 0, z: 11}
 --- !u!114 &11479390
 MonoBehaviour:
@@ -3783,7 +3782,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 034e72c617d8a4965b42c0293707360d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mode: 0
   magnitude: {x: 0, y: 0, z: -7}
 --- !u!114 &11493682
 MonoBehaviour:
@@ -3890,7 +3888,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: proTime
-      value: 5.5
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

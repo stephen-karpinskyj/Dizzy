@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-[RequireComponent(typeof(SpinGameObject))]
+[RequireComponent(typeof(SpinningGameObject))]
 public class RandomizeSpin : MonoBehaviour
 {
     [SerializeField]
@@ -11,7 +11,7 @@ public class RandomizeSpin : MonoBehaviour
         
     private void Awake()
     {
-        var spin = this.GetComponent<SpinGameObject>();
+        var spin = this.GetComponent<SpinningGameObject>();
 
         var x = Random.Range(this.minimum.x, this.maximum.x) * (Random.value < 0.5f ? -1f : 1f);
         var y = Random.Range(this.minimum.y, this.maximum.y) * (Random.value < 0.5f ? -1f : 1f);
