@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Name: Data
   m_EditorClassIdentifier: 
   junk: {fileID: 11414836, guid: 786555c8cb0a74b33a9d93099ab1a0a4, type: 2}
+  mine: {fileID: 11433182, guid: 2021cdf6579d944ff8eddaf9afcf566d, type: 2}
   levels:
   - {fileID: 11472990, guid: 0d6741bd7594f4b9e82c5e93474a3903, type: 2}
   - {fileID: 11438494, guid: f8ad7cef1397f4e2da3f4fe1c1b97e0c, type: 2}
+  - {fileID: 11441606, guid: 14fbff0f4afa6408f85d014076d65261, type: 2}

@@ -43,8 +43,13 @@ public class CameraController : MonoBehaviour
 
     private void Update()
     {
-        this.transform.position = this.originalCamPos + this.shakeOffset;
+        this.shakeOffset = Vector3.zero;
+    }
 
+    private void LateUpdate()
+    {
+        this.transform.position = this.originalCamPos + this.shakeOffset;
+        
         var speedPercentage = GameManager.Instance.Ship.SpeedPercentage;
         var curveValue = (speedPercentage - this.sizeOffsetRange.x) / (this.sizeOffsetRange.y - this.sizeOffsetRange.x);
         this.targetHeight = this.originalSize + (this.sizeOffsetCurve.Evaluate(curveValue) * this.maxSizeOffset);
@@ -75,11 +80,9 @@ public class CameraController : MonoBehaviour
             var damper = 1f - Mathf.Clamp(4f * percentComplete - 3f, 0f, 1f);
 
             var circle = Random.insideUnitCircle * magnitude * damper;
-            this.shakeOffset = new Vector3(circle.x, circle.y, this.originalCamPos.z);
+            this.shakeOffset += new Vector3(circle.x, circle.y, 0f);
 
             yield return null;
         }
-
-        this.shakeOffset = Vector3.zero;
     }
 }

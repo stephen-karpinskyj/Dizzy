@@ -6,6 +6,7 @@ TagManager:
   tags:
   - JunkPuller
   - JunkDestroyer
+  - MineActivator
   layers:
   - Default
   - TransparentFX

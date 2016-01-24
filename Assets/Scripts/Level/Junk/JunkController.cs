@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using UnityEngine;
 
 using Random = UnityEngine.Random;
@@ -54,21 +53,6 @@ public class JunkController : LevelObjectController
     [SerializeField]
     private Vector2 speedMultiplierRange = new Vector2(20f, 80f);
 
-    [SerializeField]
-    private Vector2 showPositionRange = new Vector2(-4f, 4f);
-
-    [SerializeField]
-    private float maxShowDuration = 0.25f;
-
-    [SerializeField]
-    private Vector2 showDurationOffset = new Vector2(0f, 0.25f);
-
-    [SerializeField]
-    private AnimationCurve scaleCurve;
-
-    [SerializeField]
-    private float scaleDuration = 0.1f;
-
 
     #endregion
 
@@ -76,14 +60,11 @@ public class JunkController : LevelObjectController
     #region Fields
 
 
-    private Vector3 initialScale;
-
     private RandomJunkElement chosenElement;
 
     private float startPullTime;
 
     private bool isRunning = false;
-    private bool isAttracted = false;
     private bool isCollected = false;
 
     private float rotationAtAttraction;
@@ -97,6 +78,10 @@ public class JunkController : LevelObjectController
     #region Properties
 
 
+    public bool IsAttracted { get; private set; }
+
+    public bool IsAttractable { get; set; }
+
     public RandomJunkElement ChosenElement
     {
         get { return this.chosenElement; }
@@ -109,17 +94,17 @@ public class JunkController : LevelObjectController
     #region Unity
 
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
+        
         Debug.Assert(this.sparkParticles, this);
         Debug.Assert(this.source, this);
-
-        this.initialScale = this.transform.localScale;
     }
 
     private void FixedUpdate()
     {
-        if (!this.isRunning || !this.isAttracted)
+        if (!this.isRunning || !this.IsAttracted)
         {
             return;
         }
@@ -140,7 +125,7 @@ public class JunkController : LevelObjectController
 
     private void OnTriggerStay2D(Collider2D other)
     {
-        if (!this.isRunning || this.isCollected)
+        if (!this.isRunning || this.isCollected || !this.IsAttractable)
         {
             return;
         }
@@ -150,7 +135,7 @@ public class JunkController : LevelObjectController
             this.BecomeCollected();
             this.onCollect(this);
         }
-        else if (other.tag == this.junkPullerTag && !this.isAttracted)
+        else if (other.tag == this.junkPullerTag && !this.IsAttracted)
         {
             this.StartPulling();
         }
@@ -172,13 +157,14 @@ public class JunkController : LevelObjectController
         this.isCollected = false;
         this.startPullTime = 0f;
 
-        this.isAttracted = false;
+        this.IsAttracted = false;
         this.coll.enabled = true;
-
+        
+        this.transform.localPosition = Vector3.zero;
         this.transform.eulerAngles = new Vector3(Random.Range(0, 360f), Random.Range(0, 360f), Random.Range(0, 360f));
-
+        
         this.Randomize();
-        this.StartCoroutine(this.ShowCoroutine());
+        this.StartCoroutine(this.ShowCoroutine(this.chosenElement.Rend));
     }
 
     public override void OnLevelStart()
@@ -235,15 +221,15 @@ public class JunkController : LevelObjectController
 
         foreach (var e in this.randomElements)
         {
-            e.SetEnabled(false);
+            e.Rend.enabled = false;
         }
     }
 
     private void StartPulling()
     {
-        Debug.Assert(!this.isAttracted);
+        Debug.Assert(!this.IsAttracted);
 
-        this.isAttracted = true;
+        this.IsAttracted = true;
         this.startPullTime = Time.time;
 
         var vel = (Vector2)(this.transform.position - GameManager.Instance.Ship.transform.position).normalized;
@@ -266,41 +252,13 @@ public class JunkController : LevelObjectController
         this.source.pitch = 1f + this.deathPitchMultiplier * GameManager.Instance.Multiplier.CurrentMultiplier;
         AudioManager.Instance.Play(this.source);
 
-        this.chosenElement.SetEnabled(false);
+        this.chosenElement.Rend.enabled = false;
 
         this.transform.eulerAngles = Vector3.forward * this.rotationAtAttraction;
 
         this.sparkParticles.Play();
 
         GameManager.Instance.Multiplier.Increment();
-    }
-
-
-    #endregion
-
-
-    #region Coroutines
-
-
-    private IEnumerator ShowCoroutine()
-    {
-        var x = this.transform.position.x - this.showPositionRange.x;
-        var t = x / (this.showPositionRange.y - this.showPositionRange.x);
-
-        yield return new WaitForSeconds(this.maxShowDuration * t + Random.Range(this.showDurationOffset.x, this.showDurationOffset.y));
-
-        this.transform.localScale = this.initialScale;
-        this.chosenElement.SetEnabled(true);
-
-        var time = Time.time;
-        var progress = 0f;
-
-        while (progress < 1f) 
-        {
-            progress = Mathf.Clamp01((Time.time - time) / this.scaleDuration);
-            this.transform.localScale = this.initialScale * this.scaleCurve.Evaluate(progress);
-            yield return null;
-        }
     }
 
 

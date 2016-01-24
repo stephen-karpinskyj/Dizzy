@@ -6,16 +6,16 @@
 public class LevelData : MonoBehaviour
 {
     [SerializeField]
-    private string id;
+    private string id = "lvl_";
     
     [SerializeField]
     private string displayName;
     
     [SerializeField, Range(1, 128)]
-    private float noviceTime;
+    private float noviceTime = 25f;
     
     [SerializeField, Range(1, 128)]
-    private float proTime;
+    private float proTime = 10f;
     
     public string Id
     {

@@ -53,9 +53,15 @@ public class ShipController : MonoBehaviour
     [SerializeField]
     private float maxSpeed = 7f;
     [SerializeField]
+    private float maxOverdriveSpeed = 8.5f;
+    [SerializeField]
+    private float maxSpeedDecayRate = 0.1f;
+    [SerializeField]
     private AnimationCurve boostMultiplierCurve;
     [SerializeField]
     private Vector2 boostForce = new Vector2(300f, 0f);
+    [SerializeField]
+    private Vector2 boostOverdriveForce = new Vector2(300f, 0f);
     [SerializeField]
     private Vector2 boostMultiplierRange = new Vector2(0f, 1f);
 
@@ -212,6 +218,8 @@ public class ShipController : MonoBehaviour
 
     private float lastTapStartTime;
     private float lastDoubleTapTime;
+    
+    private float currMaxSpeed;
 
     //private DebugLine debugBlueLine;
     //private DebugLine debugYellowLine;
@@ -230,6 +238,11 @@ public class ShipController : MonoBehaviour
         get { return this.rigidBody.velocity.magnitude / this.maxSpeed; }
     }
 
+    public bool InOverdrive
+    {
+        get { return this.currMaxSpeed > this.maxSpeed; }
+    }
+
     public bool IsThrusting
     { 
         get { return this.isThrusting; }
@@ -239,12 +252,17 @@ public class ShipController : MonoBehaviour
     {
         get { return this.isCCW; }
     }
+    
+    public Vector2 Direction
+    {
+        get { return this.transform.right; }
+    }
 
 
     #endregion
 
 
-    #region Unity
+    #region MonoBehaviour
 
 
     private void Awake()
@@ -262,6 +280,8 @@ public class ShipController : MonoBehaviour
         this.initialRot = this.transform.rotation;
 
         this.source.clip = this.thrustClip;
+
+        this.currMaxSpeed = this.maxSpeed;
 
         this.OnLevelStop();
     }
@@ -366,6 +386,8 @@ public class ShipController : MonoBehaviour
         {
             t.enabled = false;
         }
+        
+        this.currMaxSpeed = this.maxSpeed;
     }
 
     public void OnLevelStart()
@@ -395,7 +417,7 @@ public class ShipController : MonoBehaviour
     #region Public
     
 
-    public void AddImpulseForce(Vector2 force)
+    public void AddImpulseForce(Vector2 force, bool overdrive = false)
     {
         if (!this.isRunning)
         {
@@ -403,10 +425,15 @@ public class ShipController : MonoBehaviour
         }
 
         this.rigidBody.AddForce(force, ForceMode2D.Impulse);
-
-        if (this.rigidBody.velocity.magnitude > this.maxSpeed)
+        
+        if (overdrive)
         {
-            this.rigidBody.velocity = this.rigidBody.velocity.normalized * this.maxSpeed;
+            this.currMaxSpeed = this.maxOverdriveSpeed;
+        }
+
+        if (this.rigidBody.velocity.magnitude > this.currMaxSpeed)
+        {
+            this.rigidBody.velocity = this.rigidBody.velocity.normalized * this.currMaxSpeed;
         }
     }
 
@@ -467,7 +494,14 @@ public class ShipController : MonoBehaviour
         var aimDir = this.transform.right;
         var velDir = (Vector3)this.rigidBody.velocity.normalized;
         var dirDot = (Vector2.Dot(aimDir, velDir) + 1f) / 2f;
-
+    
+        // Decay max speed
+        if (this.currMaxSpeed > this.maxSpeed)
+        {
+            var decay = this.maxSpeedDecayRate * Time.smoothDeltaTime;
+            this.currMaxSpeed = Mathf.Clamp(this.currMaxSpeed - decay, this.maxSpeed, this.maxOverdriveSpeed);
+        }
+            
         if (this.isTapping)
         {
             // Decay previous linear velocity
@@ -484,14 +518,15 @@ public class ShipController : MonoBehaviour
                 var multiplier = Mathf.Lerp(this.boostMultiplierRange.x, this.boostMultiplierRange.y, curveValue);
                 var timeCurveValue = this.boostTimeMultiplierCurve.Evaluate(this.timeReleased / this.boostTimeMultiplierDuration);
                 var timeMultiplier = Mathf.Lerp(this.boostTimeMultiplierRange.x, this.boostTimeMultiplierRange.y, timeCurveValue);
-                this.rigidBody.AddRelativeForce(this.boostForce * multiplier * timeMultiplier);
+                var force = this.InOverdrive ? this.boostOverdriveForce : this.boostForce;
+                this.rigidBody.AddRelativeForce(force * multiplier * timeMultiplier);
             }
 
             // Cap linear velocity
-            if (this.rigidBody.velocity.magnitude > this.maxSpeed)
+            if (this.rigidBody.velocity.magnitude > this.currMaxSpeed)
             {
                 var unitVel = this.rigidBody.velocity.normalized;
-                this.rigidBody.velocity = unitVel * this.maxSpeed;
+                this.rigidBody.velocity = unitVel * this.currMaxSpeed;
             }
 
             // Decay angular velocity
@@ -549,7 +584,7 @@ public class ShipController : MonoBehaviour
                 target -= velAimDiffRot;
             }
 
-            if (Mathf.Abs(this.xRot - target) > 0.1f)
+            if (Mathf.Abs(this.xRot - target) > 0.2f)
             {
                 var dir = Mathf.Sign(target - this.xRot);
                 this.xRot += dir * this.rotationXSpeed * Time.smoothDeltaTime;
@@ -617,9 +652,9 @@ public class ShipController : MonoBehaviour
                 }
 
                 // Cap
-                if (this.rigidBody.velocity.magnitude > this.maxSpeed)
+                if (this.rigidBody.velocity.magnitude > this.currMaxSpeed)
                 {
-                    this.rigidBody.velocity = this.rigidBody.velocity.normalized * this.maxSpeed;
+                    this.rigidBody.velocity = this.rigidBody.velocity.normalized * this.currMaxSpeed;
                 }
             }
         }

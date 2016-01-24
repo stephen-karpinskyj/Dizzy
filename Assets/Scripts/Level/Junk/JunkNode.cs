@@ -40,11 +40,9 @@ public class JunkNode : LevelObjectNode
     public override void OnLevelStop()
     {
         base.OnLevelStop();
-        
-        this.junk.transform.parent = this.transform;
-        this.junk.transform.localPosition = Vector3.zero;
-        this.junk.transform.localRotation = Quaternion.identity;
 
+        this.junk.transform.parent = this.transform;
+        this.junk.IsAttractable = true;
         this.junk.OnLevelStop();
     }
     

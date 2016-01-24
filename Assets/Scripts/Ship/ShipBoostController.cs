@@ -4,13 +4,16 @@ using UnityEngine;
 public class ShipBoostController : MonoBehaviour
 {
     [SerializeField]
-    private float shakeDuration = 0f;
+    private float shakeDuration = 1 / 60f;
 
     [SerializeField]
     private float shakeMagnitude = 0f;
 
     [SerializeField]
     private float boostColliderDisableDelay = 4 / 60f;
+
+    [SerializeField]
+    private Collider2D smallBoostCollider;
 
     [SerializeField]
     private ShipController ship;
@@ -25,16 +28,16 @@ public class ShipBoostController : MonoBehaviour
     private Collider2D boostCollider;
 
     [SerializeField]
-    private Color ccwColor;
+    private Color normalColor;
 
     [SerializeField]
-    private Color cwColor;
+    private Color overdriveColor;
 
     [SerializeField]
-    private Color ccwLightColor;
+    private Color normalLightColor;
 
     [SerializeField]
-    private Color cwLightColor;
+    private Color overdriveLightColor;
 
     [SerializeField]
     private string materialColorPropertyName = "_TintColor";
@@ -42,45 +45,57 @@ public class ShipBoostController : MonoBehaviour
     [SerializeField]
     private Light boostLight;
 
-    private bool wasCCW = true;
-
+    private bool isOverdrive = true;
+    
+    private void ChangeColour(bool isOverdrive)
+    {
+        if (this.isOverdrive == isOverdrive)
+        {
+            return;
+        }
+        
+        this.boostParticleRenderer.material.SetColor(this.materialColorPropertyName, isOverdrive ? this.normalColor : this.overdriveColor);
+        this.boostLight.color = isOverdrive ? this.normalLightColor : this.overdriveLightColor;
+        
+        this.isOverdrive = isOverdrive;
+    }
+    
     private void Update()
     {
-        var isCCW = this.ship.IsCCW;
-        if (isCCW != this.wasCCW)
-        {
-            this.boostParticleRenderer.material.SetColor(this.materialColorPropertyName, isCCW ? this.ccwColor : this.cwColor);
-            this.boostLight.color = isCCW ? this.ccwLightColor : this.cwLightColor;
-            this.wasCCW = isCCW;
-        }
+        this.ChangeColour(!this.ship.InOverdrive);
 
         if (this.ship.IsThrusting)
         {
-            //this.StopCoroutine("DelayColliderDisable");
+            this.StopCoroutine("DelayColliderDisable");
 
             if (!this.boostParticles.isPlaying)
             {
                 this.boostParticles.Play();
                 this.boostLight.enabled = true;
             }
-            //this.boostCollider.enabled = true;
-            CameraController.Shake(this.shakeDuration, this.shakeMagnitude);
+            this.smallBoostCollider.enabled = true;
+            
+            if (this.ship.InOverdrive)
+            {
+                CameraController.Shake(this.shakeDuration, this.shakeMagnitude);
+            }
         }
         else
         {
             if (this.boostParticles.isPlaying)
             {
                 this.boostParticles.Stop();
-                this.boostLight.enabled = false;
             }
             
-            //this.StartCoroutine("DelayColliderDisable");
+            this.StartCoroutine("DelayColliderDisable");
         }
     }
 
     private IEnumerator DelayColliderDisable()
     {
+        this.boostLight.enabled = false;
+        
         yield return new WaitForSeconds(this.boostColliderDisableDelay);
-        this.boostCollider.enabled = false; 
+        this.smallBoostCollider.enabled = false;
     }
 }

@@ -12,6 +12,9 @@ public class Data : DataAsset<Data>
     private JunkController junk;
     
     [SerializeField]
+    private MineController mine;
+    
+    [SerializeField]
     private List<LevelData> levels;
 
 
@@ -22,6 +25,8 @@ public class Data : DataAsset<Data>
 
 
     public JunkController JunkPrefab { get { return this.junk; } }
+    
+    public MineController MinePrefab { get { return this.mine; } }
 
     public LevelData GetDefaultLevel()
     {

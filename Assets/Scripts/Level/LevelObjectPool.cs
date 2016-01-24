@@ -60,10 +60,15 @@ public class LevelObjectPool : MonoBehaviour
     private T InstantiateLevelObject<T>() where T : LevelObjectController
     {
         T prefab;
+        Type t = typeof(T); 
         
-        if (typeof(T) == typeof(JunkController))
+        if (t == typeof(JunkController))
         {
             prefab = Data.Instance.JunkPrefab as T;
+        }
+        else if (t == typeof(MineController))
+        {
+            prefab = Data.Instance.MinePrefab as T;
         }
         else
         {

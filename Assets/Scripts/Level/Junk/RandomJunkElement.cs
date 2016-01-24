@@ -13,9 +13,9 @@ public class RandomJunkElement
     [SerializeField]
     private int junkValue = 1;
 
-    public void SetEnabled(bool enabled)
+    public Renderer Rend
     {
-        this.rend.enabled = enabled;
+        get { return this.rend; }
     }
 
     public int OddsRatio
