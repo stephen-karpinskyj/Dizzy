@@ -96,7 +96,7 @@ PlayerSettings:
   xboxOneDisableKinectGpuReservation: 0
   virtualRealitySupported: 0
   productGUID: 6cfa7a187a6474a4189f508ffe4d4884
-  AndroidBundleVersionCode: 6
+  AndroidBundleVersionCode: 8
   AndroidMinSdkVersion: 10
   AndroidPreferredInstallLocation: 1
   aotOptions: 
@@ -104,7 +104,7 @@ PlayerSettings:
   stripEngineCode: 1
   iPhoneStrippingLevel: 3
   iPhoneScriptCallOptimization: 0
-  iPhoneBuildNumber: 6
+  iPhoneBuildNumber: 8
   ForceInternetPermission: 0
   ForceSDCardPermission: 0
   CreateWallpaper: 0
