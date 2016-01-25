@@ -54,12 +54,6 @@ public class MineController : LevelObjectController
     private Transform junkParent;
     
     [SerializeField]
-    private float junkPusherDuration = 0.2f;
-    
-    [SerializeField]
-    private float junkPusherDistance = 0.5f;
-    
-    [SerializeField]
     private AnimationCurve junkPusherCurve;
 
     private State currState;
@@ -182,7 +176,7 @@ public class MineController : LevelObjectController
     #endregion
     
     
-    public void Initialise(List<JunkController> junk)
+    public void Initialise(List<JunkController> junk, float junkPusherDuration, float junkPusherDistance)
     {
         this.junkPushers = new Dictionary<JunkPusher, JunkController>();
         
@@ -195,7 +189,7 @@ public class MineController : LevelObjectController
             p.transform.localPosition = Vector3.zero;
             p.transform.localRotation = Quaternion.identity;
             
-            p.Initialise(j, rot, this.junkPusherDuration, this.junkPusherDistance, this.junkPusherCurve);
+            p.Initialise(j, rot, junkPusherDuration, junkPusherDistance, this.junkPusherCurve);
             
             this.junkPushers[p] = j;
             rot += interval;
@@ -231,7 +225,7 @@ public class MineController : LevelObjectController
     
     private void Reinitialise()
     {
-        this.StopAllCoroutines();
+        this.StopCoroutine("ExplodeCoroutine");
         
         this.currLight = 0f;
         this.UpdateLight(true);

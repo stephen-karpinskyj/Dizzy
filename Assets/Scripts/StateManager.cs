@@ -83,7 +83,10 @@ public class StateManager : BehaviourSingleton<StateManager>
     
     public LevelState GetLevel(string id)
     {
-        Debug.Assert(this.levelStateDic.ContainsKey(id));
+        if (!this.levelStateDic.ContainsKey(id))
+        {
+            this.levelStateDic[id] = new LevelState(id);
+        }
         
         return this.levelStateDic[id];
     }

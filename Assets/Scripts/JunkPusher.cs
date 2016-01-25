@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class JunkPusher : MonoBehaviour
 {
+    private const float PercentageCompleteBeforeJunkActivation = 0.15f;
+    
     private JunkController junk;
     private float duration;
     private float distance;
@@ -41,7 +43,7 @@ public class JunkPusher : MonoBehaviour
             newPos.y = newY;
             this.junk.transform.localPosition = newPos;
             
-            if (curveValue > 0.25f && !isJunkRunning)
+            if (curveValue > PercentageCompleteBeforeJunkActivation && !isJunkRunning)
             {
                 junk.IsAttractable = true;
             }

@@ -856,7 +856,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.03
   shakeMagnitude: 0.1
-  boostColliderDisableDelay: 0.083
+  boostColliderDisableDelay: 0.166
   smallBoostCollider: {fileID: 6010048}
   ship: {fileID: 11488308}
   boostParticles: {fileID: 19832922}
@@ -911,7 +911,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxSpeed: 7.6
-  maxOverdriveSpeed: 8.5
+  maxOverdriveSpeed: 8.2
   maxSpeedDecayRate: 2
   boostMultiplierCurve:
     serializedVersion: 2
@@ -935,7 +935,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 0
   boostForce: {x: 360, y: 0}
-  boostOverdriveForce: {x: 400, y: 0}
+  boostOverdriveForce: {x: 390, y: 0}
   boostMultiplierRange: {x: 0.82, y: 1}
   boostTimeMultiplierCurve:
     serializedVersion: 2

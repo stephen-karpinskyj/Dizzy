@@ -258,7 +258,8 @@ MonoBehaviour:
   nodeCount: 10
   initialized: 1
   initialName: New Path 1
-  traceResultParent: {fileID: 0}
+  traceOutputParent: {fileID: 0}
+  traceOutputNode: {fileID: 0}
   traceSpeed: 20
   traceDistance: 0.52
 --- !u!1001 &100100000

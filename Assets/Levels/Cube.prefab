@@ -1452,6 +1452,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   numJunkPieces: 5
+  junkPusherDuration: 0.5
+  junkPusherDistance: 0.5
 --- !u!114 &11405158
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1541,6 +1543,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   numJunkPieces: 5
+  junkPusherDuration: 0.5
+  junkPusherDistance: 0.5
 --- !u!114 &11431122
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1553,6 +1557,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   numJunkPieces: 5
+  junkPusherDuration: 0.5
+  junkPusherDistance: 0.5
 --- !u!114 &11434310
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1611,7 +1617,7 @@ MonoBehaviour:
   id: lvl_cube
   displayName: CUBE
   noviceTime: 30
-  proTime: 12
+  proTime: 10
 --- !u!114 &11442880
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1690,6 +1696,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   numJunkPieces: 5
+  junkPusherDuration: 0.5
+  junkPusherDistance: 0.5
 --- !u!114 &11453550
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1856,6 +1864,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   numJunkPieces: 5
+  junkPusherDuration: 0.5
+  junkPusherDistance: 0.5
 --- !u!114 &11486472
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1868,6 +1878,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   numJunkPieces: 5
+  junkPusherDuration: 0.5
+  junkPusherDistance: 0.5
 --- !u!114 &11488020
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1880,6 +1892,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   numJunkPieces: 5
+  junkPusherDuration: 0.5
+  junkPusherDistance: 0.5
 --- !u!114 &11489428
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1931,7 +1945,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: proTime
-      value: 12
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

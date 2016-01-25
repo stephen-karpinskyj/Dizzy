@@ -485,7 +485,8 @@ MonoBehaviour:
   nodeCount: 5
   initialized: 1
   initialName: New Path 1
-  traceResultParent: {fileID: 0}
+  traceOutputParent: {fileID: 0}
+  traceOutputNode: {fileID: 0}
   traceSpeed: 10
   traceDistance: 0.52
 --- !u!114 &11480652
@@ -526,7 +527,8 @@ MonoBehaviour:
   nodeCount: 10
   initialized: 1
   initialName: New Path 1
-  traceResultParent: {fileID: 0}
+  traceOutputParent: {fileID: 0}
+  traceOutputNode: {fileID: 0}
   traceSpeed: 10
   traceDistance: 0.52
 --- !u!114 &11499978

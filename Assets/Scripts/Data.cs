@@ -15,6 +15,9 @@ public class Data : DataAsset<Data>
     private MineController mine;
     
     [SerializeField]
+    private LevelData defaultLevel;
+    
+    [SerializeField]
     private List<LevelData> levels;
 
 
@@ -30,7 +33,7 @@ public class Data : DataAsset<Data>
 
     public LevelData GetDefaultLevel()
     {
-        return this.levels[0];
+        return this.defaultLevel;
     }
 
     public LevelData GetNextLevel(LevelData level, bool forward)

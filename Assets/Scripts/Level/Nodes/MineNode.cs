@@ -4,7 +4,13 @@ using UnityEngine;
 public class MineNode : LevelObjectNode
 {
     [SerializeField]
-    private int numJunkPieces = 4;
+    private int numJunkPieces = 5;
+    
+    [SerializeField]
+    private float junkPusherDuration = 0.5f;
+    
+    [SerializeField]
+    private float junkPusherDistance = 0.5f;
     
     private List<JunkController> junk;
     private MineController mine;
@@ -40,7 +46,7 @@ public class MineNode : LevelObjectNode
         {
             junk.Add(pool.Get<JunkController>());
         }
-        this.mine.Initialise(this.junk);
+        this.mine.Initialise(this.junk, this.junkPusherDuration, this.junkPusherDistance);
         
         result.Junk = this.junk;
         

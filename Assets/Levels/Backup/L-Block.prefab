@@ -1,29 +1,14 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &145562
+--- !u!1 &145356
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
   m_Component:
-  - 4: {fileID: 445966}
-  m_Layer: 0
-  m_Name: Forest
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!1 &160126
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 433276}
-  - 114: {fileID: 11479536}
+  - 4: {fileID: 486624}
+  - 114: {fileID: 11456936}
   m_Layer: 0
   m_Name: Path0
   m_TagString: Untagged
@@ -31,37 +16,52 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &433276
+--- !u!1 &183498
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 417342}
+  m_Layer: 0
+  m_Name: L-Block
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &417342
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 160126}
+  m_GameObject: {fileID: 183498}
+  m_LocalRotation: {x: 0, y: 0, z: 0.066855446, w: 0.99776274}
+  m_LocalPosition: {x: 0.46, y: -0.09, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 486624}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+--- !u!4 &486624
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 145356}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 445966}
+  m_Father: {fileID: 417342}
   m_RootOrder: 0
---- !u!4 &445966
-Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 145562}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 433276}
-  m_Father: {fileID: 0}
-  m_RootOrder: 0
---- !u!114 &11479536
+--- !u!114 &11456936
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 160126}
+  m_GameObject: {fileID: 145356}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d2ef3b15c32eb43108261a87963b8937, type: 3}
@@ -70,21 +70,22 @@ MonoBehaviour:
   pathName: Path0
   pathColor: {r: 0, g: 1, b: 1, a: 1}
   nodes:
-  - {x: 2.7140422, y: 4.2323084, z: 0}
-  - {x: 2.610661, y: -1.9967492, z: 0}
-  - {x: 0.45132917, y: -0.14938867, z: 0}
-  - {x: -1.1344719, y: -1.421505, z: 0}
-  - {x: 0.82516587, y: -3.2329638, z: 0}
-  - {x: -2.9520612, y: -2.47477, z: 0}
-  - {x: -2.4732, y: 4.432151, z: 0}
-  - {x: 0.01661992, y: 2.6443431, z: 0}
-  - {x: 1.1496464, y: 5.6874924, z: 0}
-  - {x: 2.735938, y: 4.618074, z: 0}
+  - {x: -0.15239155, y: -0.035580277, z: 0}
+  - {x: 2.4522932, y: -0.23428884, z: 0}
+  - {x: 2.411388, y: -2.2936182, z: 0}
+  - {x: -0.029250026, y: -2.495195, z: 0}
+  - {x: -2.3309257, y: -2.3563976, z: 0}
+  - {x: -2.6024, y: -0.4013654, z: 0}
+  - {x: -2.4297404, y: 4.4303207, z: 0}
+  - {x: -0.20951271, y: 4.7170773, z: 0}
+  - {x: 0.0049061775, y: 2.6021745, z: 0}
+  - {x: 0.05092013, y: 0.45691812, z: 0}
   nodeCount: 10
   initialized: 1
   initialName: New Path 1
-  traceResultParent: {fileID: 0}
-  traceSpeed: 10
+  traceOutputParent: {fileID: 0}
+  traceOutputNode: {fileID: 0}
+  traceSpeed: 20
   traceDistance: 0.52
 --- !u!1001 &100100000
 Prefab:
@@ -92,8 +93,12 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 145562}
+  m_RootGameObject: {fileID: 183498}
   m_IsPrefabParent: 1
