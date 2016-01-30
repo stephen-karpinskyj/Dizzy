@@ -121,7 +121,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 170168}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: -0.23369996, w: 0.97230875}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
   m_Children:
@@ -175,7 +175,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 162852}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071067}
-  m_LocalPosition: {x: 0, y: 0.2, z: 0.5}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 416976}
@@ -378,6 +378,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43b7ebdb7a8a04a4ab250b84e3f0ba46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  showPositionRange: {x: -4, y: 4}
+  maxShowDuration: 0.1
+  showDurationOffset: {x: 0, y: 0.05}
+  scaleCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 1
+      value: 1
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  scaleDuration: 0.15
   coll: {fileID: 5843728}
   randomElements:
   - rend: {fileID: 2320446}
@@ -387,7 +407,7 @@ MonoBehaviour:
     oddsRatio: 250
     junkValue: 5
   - rend: {fileID: 2325608}
-    oddsRatio: 1
+    oddsRatio: 5
     junkValue: 250
   sparkParticles: {fileID: 19803252}
   source: {fileID: 8288050}
@@ -419,26 +439,7 @@ MonoBehaviour:
   gravityCurveDuration: 0.25
   shipSpeedInfluence: 3
   speedMultiplierRange: {x: 5, y: 60}
-  showPositionRange: {x: -4, y: 4}
-  maxShowDuration: 0.1
-  showDurationOffset: {x: 0, y: 0.05}
-  scaleCurve:
-    serializedVersion: 2
-    m_Curve:
-    - time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    - time: 1
-      value: 1
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 0
-  scaleDuration: 0.15
+  visualsParent: {fileID: 447058}
 --- !u!114 &11428128
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -659,7 +660,7 @@ ParticleSystem:
         rgba: 4294967295
       maxColor:
         serializedVersion: 2
-        rgba: 4278255559
+        rgba: 4280447365
       minMaxState: 0
     startSize:
       scalar: 1
@@ -2448,7 +2449,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: randomElements.Array.data[2].oddsRatio
-      value: 1
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: coll

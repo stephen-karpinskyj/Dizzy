@@ -76,6 +76,10 @@ public class ShipController : MonoBehaviour
     private AnimationCurve velocityDecayCurve;
     [SerializeField]
     private Vector2 velocityDecayRange = new Vector2(0.5f, 0.3f);
+    [SerializeField]
+    private AnimationCurve velocityDecayCurveSpeedInfluence;
+    [SerializeField]
+    private Vector2 velocityDecaySpeedInfluenceRange = new Vector2(1f, 1.3f);
 
     [SerializeField]
     private AnimationCurve angularVelocityDecayCurve;
@@ -123,11 +127,7 @@ public class ShipController : MonoBehaviour
     [Header("Roll")]
 
     [SerializeField]
-    private Vector2 rotationXRange = new Vector2(-80f, 0f);
-    [SerializeField]
     private float rotationXSpeed = 200f;
-    [SerializeField]
-    private float rotationXStartTime = 0.05f;
 
     [SerializeField]
     private AnimationCurve barrelRollCurve;
@@ -151,6 +151,9 @@ public class ShipController : MonoBehaviour
 
 
     [Header("Other")]
+
+    [SerializeField]
+    private Transform centreTransform;
 
     [SerializeField]
     private ControlMode controlMode = ControlMode.SpinCCW;
@@ -233,6 +236,11 @@ public class ShipController : MonoBehaviour
     #region Properties
 
 
+    public float AngularSpeedPercentage
+    {
+        get { return this.rigidBody.angularVelocity / this.maxAngularVelocity; }
+    }
+    
     public float SpeedPercentage
     {
         get { return this.rigidBody.velocity.magnitude / this.maxSpeed; }
@@ -256,6 +264,11 @@ public class ShipController : MonoBehaviour
     public Vector2 Direction
     {
         get { return this.transform.right; }
+    }
+    
+    public Transform Trans
+    {
+        get { return this.centreTransform; }
     }
 
 
@@ -509,7 +522,12 @@ public class ShipController : MonoBehaviour
             {
                 var curveValue = this.velocityDecayCurve.Evaluate(dirDot);
                 var multiplier = Mathf.Lerp(this.velocityDecayRange.x, this.velocityDecayRange.y, curveValue);
-                this.rigidBody.velocity = velDir * this.rigidBody.velocity.magnitude * multiplier;
+                
+                var offsetCurveValue = this.velocityDecayCurveSpeedInfluence.Evaluate(this.SpeedPercentage);
+                var offsetMultiplier = Mathf.Lerp(this.velocityDecaySpeedInfluenceRange.x, this.velocityDecaySpeedInfluenceRange.y, offsetCurveValue);
+                
+                var speed = Mathf.Clamp(this.rigidBody.velocity.magnitude * multiplier * offsetMultiplier, 0f, this.currMaxSpeed);
+                this.rigidBody.velocity = velDir * speed;
             }
 
             // Add new linear velocity
@@ -533,7 +551,7 @@ public class ShipController : MonoBehaviour
             {
                 var curveValue = this.angularVelocityDecayCurve.Evaluate(timeHeld / this.angularVelocityDecayDuration);
                 var multiplier = Mathf.Lerp(this.angularVelocityDecayRange.x, this.angularVelocityDecayRange.y, curveValue);
-                this.rigidBody.angularVelocity *= multiplier * this.SpeedPercentage;
+                this.rigidBody.angularVelocity *= multiplier;
             }
 
             this.isThrusting = true;
@@ -559,22 +577,9 @@ public class ShipController : MonoBehaviour
         // Handle x-rotation
         {
             var target = 0f;
-
-            if (this.isTapping && this.timeHeld >= rotationXStartTime)
-            {
-                target = this.rotationXRange.x;
-            }
-            else if (this.isCCW)
-            {
-                target = this.rotationXRange.y;
-            }
-            else
-            {
-                target = -this.rotationXRange.y;
-            }
-
-            var velAimDiffRot = (1f - dirDot) * this.maxRollAimVelDiff;
                 
+            var velAimDiffRot = (1f - dirDot) * this.maxRollAimVelDiff * this.AngularSpeedPercentage;
+            
             if (this.isCCW)
             {
                 target += velAimDiffRot;

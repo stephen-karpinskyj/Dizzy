@@ -2820,7 +2820,7 @@ MonoBehaviour:
   id: lvl_figure8
   displayName: FIGURE8
   noviceTime: 20
-  proTime: 7
+  proTime: 7.5
 --- !u!114 &11474524
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3129,7 +3129,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: proTime
-      value: 7
+      value: 7.5
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_LocalPosition.z

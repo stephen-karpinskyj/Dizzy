@@ -165,7 +165,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &184120
 GameObject:
   m_ObjectHideFlags: 1
@@ -235,7 +235,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 110628}
   m_LocalRotation: {x: 1, y: 0.00000016292068, z: 0.00000016292068, w: 2.654315e-14}
-  m_LocalPosition: {x: 0.15, y: 0, z: 0}
+  m_LocalPosition: {x: 0.09, y: -0, z: 0}
   m_LocalScale: {x: 1.25, y: 0.625, z: 1.25}
   m_Children:
   - {fileID: 412828}
@@ -250,7 +250,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 150920}
   m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071067}
-  m_LocalPosition: {x: -0.28, y: 0, z: 0}
+  m_LocalPosition: {x: -0.34, y: -0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 479540}
@@ -262,7 +262,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 134872}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.15, y: 0, z: 0}
+  m_LocalPosition: {x: 0.11, y: -0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 478794}
@@ -300,7 +300,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 149306}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.3, z: -0.5}
+  m_LocalPosition: {x: 0, y: 0.3, z: -0.51}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 475666}
@@ -312,7 +312,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 178014}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.06, y: -0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 479540}
@@ -324,7 +324,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 185828}
   m_LocalRotation: {x: -7.1054274e-15, y: 0, z: 0.7071068, w: 0.7071067}
-  m_LocalPosition: {x: -0.2, y: 0, z: 0.020000001}
+  m_LocalPosition: {x: -0.26, y: -0, z: 0.020000001}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 457192}
@@ -379,7 +379,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 178362}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.1, y: -0, z: -0}
+  m_LocalPosition: {x: 0.04, y: -0, z: -0}
   m_LocalScale: {x: 1.25, y: 1, z: 0.625}
   m_Children: []
   m_Father: {fileID: 479540}
@@ -514,13 +514,13 @@ PolygonCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Points:
     m_Paths:
-    - - {x: -0.047698446, y: 0.29600134}
-      - {x: 0.000507989, y: 0.3908345}
-      - {x: 0.04597245, y: 0.2973467}
-      - {x: 0.046061333, y: 0.22041127}
-      - {x: 0.04625944, y: 0.06983833}
-      - {x: -0.0461092, y: 0.068373196}
-      - {x: -0.047058918, y: 0.22333331}
+    - - {x: -0.066870116, y: 0.29600134}
+      - {x: 0.0005080137, y: 0.42573482}
+      - {x: 0.06883376, y: 0.2982904}
+      - {x: 0.06965639, y: 0.20902306}
+      - {x: 0.028523907, y: 0.07363857}
+      - {x: -0.025417741, y: 0.07407397}
+      - {x: -0.06696433, y: 0.2100585}
 --- !u!60 &6044854
 PolygonCollider2D:
   m_ObjectHideFlags: 1
@@ -576,7 +576,7 @@ PolygonCollider2D:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
-  m_Offset: {x: 0.15, y: 0}
+  m_Offset: {x: 0.09, y: 0}
   m_Points:
     m_Paths:
     - - {x: -0.4247931, y: 0.03220553}
@@ -789,7 +789,7 @@ TrailRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 0
-  m_Time: 0.25
+  m_Time: 10
   m_StartWidth: 0.6
   m_EndWidth: 0.1
   m_Colors:
@@ -820,7 +820,7 @@ Light:
   serializedVersion: 6
   m_Type: 2
   m_Color: {r: 0.32115054, g: 0.58684826, b: 0.8088235, a: 1}
-  m_Intensity: 8
+  m_Intensity: 3
   m_Range: 3
   m_SpotAngle: 30
   m_CookieSize: 10
@@ -864,8 +864,8 @@ MonoBehaviour:
   boostCollider: {fileID: 6038216}
   normalColor: {r: 0.32115054, g: 0.58684826, b: 0.8088235, a: 0.5}
   overdriveColor: {r: 0.39786407, g: 0.38213667, b: 0.83823526, a: 0.5}
-  normalLightColor: {r: 0, g: 0.5448277, b: 1, a: 1}
-  overdriveLightColor: {r: 0.4068966, g: 0, b: 1, a: 1}
+  normalLightColor: {r: 0.33818126, g: 0.7107767, b: 1, a: 1}
+  overdriveLightColor: {r: 0.5986197, g: 0.30812067, b: 1, a: 1}
   materialColorPropertyName: _TintColor
   boostLight: {fileID: 10871904}
 --- !u!114 &11474800
@@ -982,6 +982,23 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 0
   velocityDecayRange: {x: 0.575, y: 0.675}
+  velocityDecayCurveSpeedInfluence:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0.50093114
+      value: 0
+      inSlope: 4.140366
+      outSlope: 4.140366
+      tangentMode: 0
+    - time: 0.99907064
+      value: 1.0003885
+      inSlope: 0.091457486
+      outSlope: 0.091457486
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  velocityDecaySpeedInfluenceRange: {x: 1, y: 1.05}
   angularVelocityDecayCurve:
     serializedVersion: 2
     m_Curve:
@@ -1003,8 +1020,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
-  angularVelocityDecayDuration: 0.35
-  angularVelocityDecayRange: {x: 0.35, y: 0.25}
+  angularVelocityDecayDuration: 0.25
+  angularVelocityDecayRange: {x: 0.7, y: 0.4}
   thrustClip: {fileID: 8300000, guid: c119b070d8da4468899d42740153908f, type: 3}
   maxAngularVelocity: 215
   torqueCurve:
@@ -1088,9 +1105,7 @@ MonoBehaviour:
     m_RotationOrder: 0
   aimBoostMultiplierRange: {x: 0.8, y: 1}
   dotProductLimitBeforeThrust: 0.005
-  rotationXRange: {x: 0, y: -25}
-  rotationXSpeed: 200
-  rotationXStartTime: 0.08
+  rotationXSpeed: 90
   barrelRollCurve:
     serializedVersion: 2
     m_Curve:
@@ -1109,10 +1124,11 @@ MonoBehaviour:
     m_RotationOrder: 0
   barrelRollDelay: 0
   barrelRollDuration: 0.4
-  maxRollAimVelDiff: -15
+  maxRollAimVelDiff: -35
   launchShakeDuration: 0.2
   launchShakeMagnitude: 0.1
   launchForce: {x: 0, y: 120}
+  centreTransform: {fileID: 466182}
   controlMode: 3
   doubleTapMode: 0
   rigidBody: {fileID: 5071878}

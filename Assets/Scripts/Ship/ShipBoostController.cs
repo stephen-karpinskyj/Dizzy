@@ -47,6 +47,10 @@ public class ShipBoostController : MonoBehaviour
 
     private bool isOverdrive = true;
     
+    private ParticleSystem.EmissionModule boostParticleEmission;
+    private ParticleSystem.MinMaxCurve boostParticleRate;
+    private float initBoostParticleRateMax;
+    
     private void ChangeColour(bool isOverdrive)
     {
         if (this.isOverdrive == isOverdrive)
@@ -60,6 +64,13 @@ public class ShipBoostController : MonoBehaviour
         this.isOverdrive = isOverdrive;
     }
     
+    private void Awake()
+    {
+        this.boostParticleEmission = this.boostParticles.emission;
+        this.boostParticleRate = this.boostParticleEmission.rate;
+        this.initBoostParticleRateMax = this.boostParticleRate.constantMax;
+    }
+    
     private void Update()
     {
         this.ChangeColour(!this.ship.InOverdrive);
@@ -68,9 +79,10 @@ public class ShipBoostController : MonoBehaviour
         {
             this.StopCoroutine("DelayColliderDisable");
 
-            if (!this.boostParticles.isPlaying)
+            if (this.boostParticleRate.constantMax == 0f)
             {
-                this.boostParticles.Play();
+                this.boostParticleRate.constantMax = this.initBoostParticleRateMax;
+                this.boostParticleEmission.rate = this.boostParticleRate;
                 this.boostLight.enabled = true;
             }
             this.smallBoostCollider.enabled = true;
@@ -82,9 +94,10 @@ public class ShipBoostController : MonoBehaviour
         }
         else
         {
-            if (this.boostParticles.isPlaying)
+            if (this.boostParticleRate.constantMax != 0f)
             {
-                this.boostParticles.Stop();
+                this.boostParticleRate.constantMax = 0f;
+                this.boostParticleEmission.rate = this.boostParticleRate;
             }
             
             this.StartCoroutine("DelayColliderDisable");

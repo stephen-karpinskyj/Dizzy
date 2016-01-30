@@ -52,6 +52,9 @@ public class JunkController : LevelObjectController
 
     [SerializeField]
     private Vector2 speedMultiplierRange = new Vector2(20f, 80f);
+    
+    [SerializeField]
+    private Transform visualsParent;
 
 
     #endregion
@@ -109,7 +112,7 @@ public class JunkController : LevelObjectController
             return;
         }
 
-        var dir = (Vector2)(GameManager.Instance.Ship.transform.position - this.transform.position).normalized; // Ignore z
+        var dir = (Vector2)(GameManager.Instance.Ship.Trans.position - this.transform.position).normalized; // Ignore z
 
         var shipMultipler = 1f + GameManager.Instance.Ship.SpeedPercentage * this.shipSpeedInfluence;
         var curveValue = this.gravityCurve.Evaluate((Time.time - this.startPullTime) / this.gravityCurveDuration);
@@ -161,7 +164,7 @@ public class JunkController : LevelObjectController
         this.coll.enabled = true;
         
         this.transform.localPosition = Vector3.zero;
-        this.transform.eulerAngles = new Vector3(Random.Range(0, 360f), Random.Range(0, 360f), Random.Range(0, 360f));
+        this.visualsParent.eulerAngles = new Vector3(Random.Range(0, 360f), Random.Range(0, 360f), Random.Range(0, 360f));
         
         this.Randomize();
         this.StartCoroutine(this.ShowCoroutine(this.chosenElement.Rend));
@@ -232,7 +235,7 @@ public class JunkController : LevelObjectController
         this.IsAttracted = true;
         this.startPullTime = Time.time;
 
-        var vel = (Vector2)(this.transform.position - GameManager.Instance.Ship.transform.position).normalized;
+        var vel = (Vector2)(this.transform.position - GameManager.Instance.Ship.Trans.position).normalized;
         GameManager.Instance.Ship.AddImpulseForce(vel * this.attractForceMagnitude);
         
         this.transform.parent = null;

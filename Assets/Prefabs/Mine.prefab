@@ -199,7 +199,7 @@ MonoBehaviour:
   colourProperty: _EmissionColor
   lightOnSpeed: 20
   lightOffSpeed: 4
-  lightBlinkWaitDuration: 0.8
+  lightBlinkWaitDuration: 1.2
   activatorTag: MineActivator
   explosionForce: 15
   explosionShakeDuration: 0.1
@@ -209,8 +209,6 @@ MonoBehaviour:
   explodingColor: {r: 0.30218056, g: 0, b: 0.74264705, a: 1}
   explosionParticles: {fileID: 19857168}
   junkParent: {fileID: 426540}
-  junkPusherDuration: 0.5
-  junkPusherDistance: 0.5
   junkPusherCurve:
     serializedVersion: 2
     m_Curve:
@@ -1812,7 +1810,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: lightBlinkWaitDuration
-      value: 0.8
+      value: 1.2
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: explosionShakeDuration
@@ -2001,6 +1999,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: showDurationOffset.y
       value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: colourProperty
+      value: Color
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
