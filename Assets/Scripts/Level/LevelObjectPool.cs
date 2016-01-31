@@ -38,6 +38,7 @@ public class LevelObjectPool : MonoBehaviour
         
         obj.gameObject.SetActive(false);
         obj.transform.parent = this.transform;
+        obj.transform.localScale = Vector3.one;
         
         queue.Enqueue(obj);
     }
