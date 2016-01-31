@@ -130,7 +130,7 @@ MonoBehaviour:
   - {fileID: 21237004}
   - {fileID: 21265874}
   - {fileID: 21269746}
-  dimColour: {r: 0.46631703, g: 0.69789124, b: 0.8455882, a: 1}
+  dimColour: {r: 0.36689013, g: 0.40326858, b: 0.42647058, a: 1}
   litColour: {r: 0.9191176, g: 0.9191176, b: 0.9191176, a: 1}
   hideDelay: 0.2
   perLightDelay: 0.1

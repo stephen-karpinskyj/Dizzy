@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: ShipMetal
-  m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
+  m_Shader: {fileID: 45, guid: 0000000000000000f000000000000000, type: 0}
   m_ShaderKeywords: _EMISSION
   m_LightmapFlags: 0
   m_CustomRenderQueue: -1
@@ -100,6 +100,10 @@ Material:
         second: 0.5
       data:
         first:
+          name: _Shininess
+        second: 0.193
+      data:
+        first:
           name: _Parallax
         second: 0.02
       data:
@@ -109,7 +113,7 @@ Material:
       data:
         first:
           name: _Glossiness
-        second: 0.3
+        second: 0.359
       data:
         first:
           name: _BumpScale
@@ -138,12 +142,16 @@ Material:
       data:
         first:
           name: _EmissionColor
-        second: {r: 0.03, g: 0.03, b: 0.03, a: 1}
+        second: {r: 0.2, g: 0.2, b: 0.2, a: 1}
       data:
         first:
           name: _Color
-        second: {r: 0.3923551, g: 0.41151634, b: 0.43382353, a: 1}
+        second: {r: 0.88532656, g: 0.9213257, b: 0.9632353, a: 1}
       data:
         first:
           name: _SpecColor
-        second: {r: 0.49264705, g: 0.49264705, b: 0.49264705, a: 1}
+        second: {r: 0.6199178, g: 0.68309724, b: 0.7205882, a: 1}
+      data:
+        first:
+          name: _Emission
+        second: {r: 0, g: 0, b: 0, a: 0}
