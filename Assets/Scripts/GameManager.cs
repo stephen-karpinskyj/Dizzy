@@ -33,6 +33,8 @@ public class GameManager : BehaviourSingleton<GameManager>
     #region Properties
 
 
+    public bool IsRunning { get { return this.isRunning; } }
+
     public ShipController Ship { get; private set; }
 
     public MultiplierController Multiplier { get; private set; }

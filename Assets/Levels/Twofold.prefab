@@ -724,7 +724,7 @@ MonoBehaviour:
   id: lvl_twofold
   displayName: TWOFOLD
   noviceTime: 22
-  proTime: 9
+  proTime: 8
 --- !u!114 &11416502
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -937,7 +937,11 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: proTime
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 158026}

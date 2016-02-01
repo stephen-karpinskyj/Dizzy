@@ -88,9 +88,6 @@ public class ShipController : MonoBehaviour
     [SerializeField]
     private Vector2 angularVelocityDecayRange = new Vector2(0.1f, 0.2f);
 
-    [SerializeField]
-    private AudioClip thrustClip;
-
 
     [Header("Spin")]
 
@@ -127,7 +124,9 @@ public class ShipController : MonoBehaviour
     [Header("Roll")]
 
     [SerializeField]
-    private float rotationXSpeed = 200f;
+    private float minRotationXSpeed = 100f;
+    [SerializeField]
+    private float maxRotationXSpeed = 200;
 
     [SerializeField]
     private AnimationCurve barrelRollCurve;
@@ -138,6 +137,19 @@ public class ShipController : MonoBehaviour
 
     [SerializeField]
     private float maxRollAimVelDiff = 10f;
+
+    [SerializeField]
+    private Vector2 easeRollSpeedMultiplierRange = new Vector2(0.3f, 1f);
+    [SerializeField]
+    private float easeRollSpeedMultiplierDuration = 1f;
+    
+    [SerializeField]
+    private Vector2 thrustRollSpeedMultiplierRange = new Vector2(1f, 2.5f);
+    [SerializeField]
+    private float thrustRollSpeedMultiplierDuration = 0.5f;
+    
+    [SerializeField]
+    private float rollSpeedLinearSpeedFactor = 1.2f;
 
 
     [Header("Launch")]
@@ -168,9 +180,6 @@ public class ShipController : MonoBehaviour
     private Transform bodyTransform;
 
     [SerializeField]
-    private AudioSource source;
-
-    [SerializeField]
     private TrailRenderer[] trails;
 
     [SerializeField]
@@ -187,9 +196,6 @@ public class ShipController : MonoBehaviour
 
     [SerializeField]
     private float minTimeBetweenDoubleTaps = 0.2f;
-
-    [SerializeField]
-    private float pitchIncreaseMultiplier = 0.3f;
 
 
     #endregion
@@ -256,6 +262,11 @@ public class ShipController : MonoBehaviour
         get { return this.isThrusting; }
     }
 
+    public float TimeThrusting
+    {
+        get { return this.timeThrusting; }
+    }
+
     public bool IsCCW
     {
         get { return this.isCCW; }
@@ -281,7 +292,6 @@ public class ShipController : MonoBehaviour
     private void Awake()
     {
         Debug.Assert(this.rigidBody != null, this);
-        Debug.Assert(this.source != null, this);
 
         //this.debugBlueLine = DebugLine.Draw(Vector3.zero, Vector3.zero, Color.blue);
         //this.debugYellowLine = DebugLine.Draw(Vector3.zero, Vector3.zero, Color.yellow);
@@ -291,8 +301,6 @@ public class ShipController : MonoBehaviour
 
         this.initialPos = this.transform.position;
         this.initialRot = this.transform.rotation;
-
-        this.source.clip = this.thrustClip;
 
         this.currMaxSpeed = this.maxSpeed;
 
@@ -352,20 +360,6 @@ public class ShipController : MonoBehaviour
             }
         }
 
-        // Audio
-        {
-            this.source.pitch = 1f + this.timeThrusting * this.pitchIncreaseMultiplier;
-
-            if (this.wasThrusting && !this.isThrusting)
-            {
-                AudioManager.Instance.Stop(this.source);
-            }
-            else if (!this.wasThrusting && this.isThrusting)
-            {
-                AudioManager.Instance.Play(this.source);
-            }
-        }
-
         this.wasTapping = this.isTapping;
         this.wasThrusting = this.isThrusting;
 
@@ -386,8 +380,6 @@ public class ShipController : MonoBehaviour
     public void OnLevelStop()
     {
         this.isRunning = false;
-
-        AudioManager.Instance.Stop(this.source);
 
         this.transform.position = this.initialPos;
         this.transform.rotation = this.initialRot;
@@ -577,8 +569,9 @@ public class ShipController : MonoBehaviour
         // Handle x-rotation
         {
             var target = 0f;
-                
-            var velAimDiffRot = (1f - dirDot) * this.maxRollAimVelDiff * this.AngularSpeedPercentage;
+              
+            var speedFactor = (1f - dirDot) * this.SpeedPercentage * this.rollSpeedLinearSpeedFactor;  
+            var velAimDiffRot = this.maxRollAimVelDiff * this.AngularSpeedPercentage * speedFactor;
             
             if (this.isCCW)
             {
@@ -588,22 +581,33 @@ public class ShipController : MonoBehaviour
             {
                 target -= velAimDiffRot;
             }
-
+        
             if (Mathf.Abs(this.xRot - target) > 0.2f)
             {
+                var speed = Mathf.Lerp(this.minRotationXSpeed, this.maxRotationXSpeed, this.SpeedPercentage);
+                
+                if (this.IsThrusting)
+                {
+                    speed *= Mathf.Lerp(this.thrustRollSpeedMultiplierRange.x, this.thrustRollSpeedMultiplierRange.y, this.timeThrusting / this.thrustRollSpeedMultiplierDuration);
+                }
+                else
+                {
+                    speed *= Mathf.Lerp(this.easeRollSpeedMultiplierRange.x, this.easeRollSpeedMultiplierRange.y, this.timeReleased / this.easeRollSpeedMultiplierDuration);
+                }
+                
                 var dir = Mathf.Sign(target - this.xRot);
-                this.xRot += dir * this.rotationXSpeed * Time.smoothDeltaTime;
+                this.xRot += dir * speed * Time.smoothDeltaTime;
                 var bodyEuler = new Vector3(this.xRot, -180f, -180f);
                 this.bodyTransform.localRotation = Quaternion.Euler(bodyEuler);
             }
         }
 
-        //this.debugString = string.Format("{0:f2}", dirDot);
+        //this.debugString = string.Format("{0:f2}", );
+        
         //this.debugBlueLine.Move(this.transform.position, this.transform.position + aimDir * 1f);
         //this.debugYellowLine.Move(this.transform.position, this.transform.position + velDir * 1f);
-        //this.debugText.Text = this.debugString;
     }
-
+    
     private void ControlGoToPoint()
     {
         var worldInputPos = (Vector3)(Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition); // clear z

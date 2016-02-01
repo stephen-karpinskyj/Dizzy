@@ -164,7 +164,7 @@ public class JunkController : LevelObjectController
         this.coll.enabled = true;
         
         this.transform.localPosition = Vector3.zero;
-        this.visualsParent.eulerAngles = new Vector3(Random.Range(0, 360f), Random.Range(0, 360f), Random.Range(0, 360f));
+        this.visualsParent.rotation = Random.rotation;;
         
         this.Randomize();
         this.StartCoroutine(this.ShowCoroutine(this.chosenElement.Rend));

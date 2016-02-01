@@ -51,6 +51,9 @@ public class MineController : LevelObjectController
     private ParticleSystem explosionParticles;
     
     [SerializeField]
+    private F3DPulsewave explosionPulse;
+    
+    [SerializeField]
     private Transform junkParent;
     
     [SerializeField]
@@ -230,6 +233,8 @@ public class MineController : LevelObjectController
         this.currLight = 0f;
         this.UpdateLight(true);
         this.explosionParticles.Stop();
+        this.explosionPulse.gameObject.SetActive(false);
+        this.explosionPulse.Initialise();
 
         this.rend.enabled = true;
     }
@@ -239,6 +244,8 @@ public class MineController : LevelObjectController
         this.currLight = 1f;
         this.UpdateLight(false);
         this.explosionParticles.Play();
+        this.explosionPulse.gameObject.SetActive(true);
+        this.explosionPulse.Fire();
         
         foreach (var kv in this.junkPushers)
         {
