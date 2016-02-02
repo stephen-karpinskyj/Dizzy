@@ -10,6 +10,9 @@ public class SettingsUIController : MonoBehaviour
     private Text spinDirectionText;
 
     [SerializeField]
+    private Text graphicsQualityText;
+
+    [SerializeField]
     private Button resetProgressButton;
 
     [SerializeField]
@@ -33,17 +36,28 @@ public class SettingsUIController : MonoBehaviour
     [SerializeField]
     private string spinDirectionCWText = "INITIAL SPIN: CW";
 
+    [SerializeField]
+    private string graphicsQualityHighText = "GRAPHICS: HI";
+
+    [SerializeField]
+    private string graphicsQualityLowText = "GRAPHICS: LO";
+
+    [SerializeField]
+    private GameObject graphicsQualityHighParent;
+
     private bool isResetProgressConfirmShowing = false;
 
     private void Awake()
     {
         Debug.Assert(this.soundText);
         Debug.Assert(this.spinDirectionText);
+        Debug.Assert(this.graphicsQualityText);
         Debug.Assert(this.resetProgressButton);
         Debug.Assert(this.resetProgressConfirmParent);
 
         this.UpdateSoundToggle(StateManager.Instance.SoundEnabled);
         this.UpdateSpinDirectionToggle(StateManager.Instance.SpinDirectionCCW);
+        this.UpdateGraphicsQualityToggle(StateManager.Instance.GraphicsQualityHigh);
         this.UpdateResetProgressConfirm(false);
     }
 
@@ -61,6 +75,14 @@ public class SettingsUIController : MonoBehaviour
         StateManager.Instance.SpinDirectionCCW = ccw;
 
         this.UpdateSpinDirectionToggle(ccw);
+    }
+    
+    public void OnGraphicsQualityToggle()
+    {
+        var hi = !StateManager.Instance.GraphicsQualityHigh;
+        StateManager.Instance.GraphicsQualityHigh = hi;
+        
+        this.UpdateGraphicsQualityToggle(hi);
     }
 
     public void OnResetProgress()
@@ -83,6 +105,13 @@ public class SettingsUIController : MonoBehaviour
     private void UpdateSpinDirectionToggle(bool ccw)
     {
         this.spinDirectionText.text = ccw ? this.spinDirectionCCWText : this.spinDirectionCWText;
+    }
+    
+    private void UpdateGraphicsQualityToggle(bool hi)
+    {
+        this.graphicsQualityText.text = hi ? this.graphicsQualityHighText : this.graphicsQualityLowText;
+        
+        this.graphicsQualityHighParent.SetActive(hi);
     }
 
     private void UpdateResetProgressConfirm(bool show)
