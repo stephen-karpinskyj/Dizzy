@@ -711,6 +711,11 @@ public class ShipController : MonoBehaviour
             this.lastTapStartTime = Time.time;
         }
 
+        /*if (this.isTapping)
+        {
+            this.isCCW = Input.mousePosition.x < Screen.width / 2;
+        }*/
+        
         this.ControlSpin(this.isCCW);
 
         if (this.isDoubleTapping && !this.isTapping)
