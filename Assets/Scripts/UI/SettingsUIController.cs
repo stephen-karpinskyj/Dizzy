@@ -10,7 +10,7 @@ public class SettingsUIController : MonoBehaviour
     private Text spinDirectionText;
 
     [SerializeField]
-    private Text graphicsQualityText;
+    private Text graphicsModeText;
 
     [SerializeField]
     private Button resetProgressButton;
@@ -37,13 +37,10 @@ public class SettingsUIController : MonoBehaviour
     private string spinDirectionCWText = "INITIAL SPIN: CW";
 
     [SerializeField]
-    private string graphicsQualityHighText = "GRAPHICS: HI";
+    private string graphicsModePrefixText = "GRAPHICS: ";
 
     [SerializeField]
-    private string graphicsQualityLowText = "GRAPHICS: LO";
-
-    [SerializeField]
-    private GameObject graphicsQualityHighParent;
+    private GameObject[] graphicsModeParents;
 
     private bool isResetProgressConfirmShowing = false;
 
@@ -51,13 +48,13 @@ public class SettingsUIController : MonoBehaviour
     {
         Debug.Assert(this.soundText);
         Debug.Assert(this.spinDirectionText);
-        Debug.Assert(this.graphicsQualityText);
+        Debug.Assert(this.graphicsModeText);
         Debug.Assert(this.resetProgressButton);
         Debug.Assert(this.resetProgressConfirmParent);
 
         this.UpdateSoundToggle(StateManager.Instance.SoundEnabled);
         this.UpdateSpinDirectionToggle(StateManager.Instance.SpinDirectionCCW);
-        this.UpdateGraphicsQualityToggle(StateManager.Instance.GraphicsQualityHigh);
+        this.UpdateGraphicsModeToggle(StateManager.Instance.GraphicsQuality);
         this.UpdateResetProgressConfirm(false);
     }
 
@@ -79,10 +76,16 @@ public class SettingsUIController : MonoBehaviour
     
     public void OnGraphicsQualityToggle()
     {
-        var hi = !StateManager.Instance.GraphicsQualityHigh;
-        StateManager.Instance.GraphicsQualityHigh = hi;
+        var quality = StateManager.Instance.GraphicsQuality + 1;
         
-        this.UpdateGraphicsQualityToggle(hi);
+        if (quality > this.graphicsModeParents.Length - 1)
+        {
+            quality = 0;
+        }
+        
+        StateManager.Instance.GraphicsQuality = quality;
+        
+        this.UpdateGraphicsModeToggle(quality);
     }
 
     public void OnResetProgress()
@@ -107,11 +110,15 @@ public class SettingsUIController : MonoBehaviour
         this.spinDirectionText.text = ccw ? this.spinDirectionCCWText : this.spinDirectionCWText;
     }
     
-    private void UpdateGraphicsQualityToggle(bool hi)
+    private void UpdateGraphicsModeToggle(int quality)
     {
-        this.graphicsQualityText.text = hi ? this.graphicsQualityHighText : this.graphicsQualityLowText;
+        this.graphicsModeText.text = this.graphicsModePrefixText + (quality + 1);
         
-        this.graphicsQualityHighParent.SetActive(hi);
+        for (int i = 0; i < this.graphicsModeParents.Length; i++)
+        {
+            var go = this.graphicsModeParents[i];
+            go.SetActive(i == quality);
+        }
     }
 
     private void UpdateResetProgressConfirm(bool show)

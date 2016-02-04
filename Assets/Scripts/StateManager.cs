@@ -40,12 +40,12 @@ public class StateManager : BehaviourSingleton<StateManager>
         }
     }
 
-    public bool GraphicsQualityHigh
+    public int GraphicsQuality
     {
-        get { return PlayerPrefs.GetInt("State.GraphicsQuality", 1) == 0; }
+        get { return PlayerPrefs.GetInt("State.GraphicsMode", 1); }
         set
         {
-            PlayerPrefs.SetInt("State.GraphicsQuality", value ? 0 : 1);
+            PlayerPrefs.SetInt("State.GraphicsMode", value);
             Save();
         }
     }

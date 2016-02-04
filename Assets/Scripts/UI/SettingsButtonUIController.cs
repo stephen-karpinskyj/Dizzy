@@ -21,7 +21,10 @@ public class SettingsButtonUIController : MonoBehaviour
     {
         Debug.Assert(this.parent);
         Debug.Assert(this.button);
-
+    }
+    
+    private void Start()
+    {
         this.UpdateShow(false);
     }
 

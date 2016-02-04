@@ -155,7 +155,7 @@ public class GameManager : BehaviourSingleton<GameManager>
         this.Multiplier.OnLevelStop();
         this.launchLights.OnLevelStop();
 
-        this.canvas.Show(true);
+        this.canvas.OnLevelStop();
         this.levelManager.OnLevelStop();
         
         if (won)

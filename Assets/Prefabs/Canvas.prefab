@@ -406,6 +406,24 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &125996
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 22412644}
+  - 114: {fileID: 11409506}
+  - 222: {fileID: 22287478}
+  - 114: {fileID: 11443960}
+  m_Layer: 5
+  m_Name: Timer Parent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &130974
 GameObject:
   m_ObjectHideFlags: 0
@@ -467,7 +485,7 @@ GameObject:
   - 224: {fileID: 22487310}
   - 114: {fileID: 11451370}
   m_Layer: 5
-  m_Name: Graphics Quality
+  m_Name: Graphics Mode
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1665,6 +1683,22 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &11409506
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 125996}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df090c0a9888e4899ae8d07c881e0216, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: {fileID: 11443960}
+  expiredColor: {r: 0.9044118, g: 0.9044118, b: 0.9044118, a: 0.36078432}
+  alertColor: {r: 0.9921569, g: 0.64705884, b: 0.21568629, a: 1}
+  defaultColor: {r: 0.9044118, g: 0.9044118, b: 0.9044118, a: 1}
+  alertTime: 3
 --- !u!114 &11410042
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2035,6 +2069,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   header: {fileID: 11442414}
   progress: {fileID: 11452624}
+  timer: {fileID: 11409506}
   source: {fileID: 8277482}
   winClip: {fileID: 8300000, guid: 5c91791ae42e849c5896dda71e339cf8, type: 3}
   newBestClip: {fileID: 8300000, guid: e470c581162f04a988ca016fc820cef3, type: 3}
@@ -2623,7 +2658,40 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'GRAPHICS: LO'
+  m_Text: 'GRAPHICS: 1'
+--- !u!114 &11443960
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 125996}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: c6874cc58cf274d0a9aac768572a8099, type: 3}
+    m_FontSize: 14
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 1
+    m_MaxSize: 40
+    m_Alignment: 0
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: 88:88
 --- !u!114 &11444628
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3012,7 +3080,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   soundText: {fileID: 11455510}
   spinDirectionText: {fileID: 11412460}
-  graphicsQualityText: {fileID: 11443648}
+  graphicsModeText: {fileID: 11443648}
   resetProgressButton: {fileID: 11463388}
   resetProgressConfirmParent: {fileID: 141350}
   resetProgressEnabledButtonColor: {r: 0.99215686, g: 0.64705884, b: 0.21568628, a: 1}
@@ -3021,9 +3089,10 @@ MonoBehaviour:
   soundDisabledText: 'SOUND: OFF'
   spinDirectionCCWText: 'SPIN: CCW'
   spinDirectionCWText: 'SPIN: CW'
-  graphicsQualityHighText: 'GRAPHICS: HI'
-  graphicsQualityLowText: 'GRAPHICS: LO'
-  graphicsQualityHighParent: {fileID: 0}
+  graphicsModePrefixText: 'GRAPHICS: '
+  graphicsModeParents:
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &11458298
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4541,6 +4610,12 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 153430}
+--- !u!222 &22287478
+CanvasRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 125996}
 --- !u!222 &22289168
 CanvasRenderer:
   m_ObjectHideFlags: 1
@@ -4738,6 +4813,23 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -42}
   m_SizeDelta: {x: 0, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!224 &22412644
+RectTransform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 125996}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 22493802}
+  m_RootOrder: 3
+  m_AnchorMin: {x: 0, y: 0.9}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 5, y: 0}
+  m_SizeDelta: {x: -5, y: -5}
+  m_Pivot: {x: 0, y: 0}
 --- !u!224 &22412896
 RectTransform:
   m_ObjectHideFlags: 1
@@ -5887,7 +5979,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: -14.999953, y: -19.99999}
-  m_SizeDelta: {x: 125, y: 20}
+  m_SizeDelta: {x: 115, y: 20}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!224 &22488622
 RectTransform:
@@ -5972,6 +6064,7 @@ RectTransform:
   - {fileID: 447902}
   - {fileID: 22439850}
   - {fileID: 22400370}
+  - {fileID: 22412644}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_AnchorMin: {x: 0, y: 0}

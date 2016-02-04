@@ -12,6 +12,9 @@ public class CanvasUIController : MonoBehaviour
     private ProgressUIController progress;
     
     [SerializeField]
+    private TimerUIController timer;
+    
+    [SerializeField]
     private AudioSource source;
 
     [SerializeField]
@@ -50,7 +53,9 @@ public class CanvasUIController : MonoBehaviour
 
     private void Awake()
     {
+        Debug.Assert(this.header);
         Debug.Assert(this.progress);
+        Debug.Assert(this.timer);
 
         Application.targetFrameRate = this.frameRate;
     }
@@ -61,15 +66,6 @@ public class CanvasUIController : MonoBehaviour
 
     #region Public
 
-
-    public void Show(bool show)
-    {
-        for (int i = 0; i < this.transform.childCount; i++)
-        {
-            var t = this.transform.GetChild(i);
-            t.gameObject.SetActive(show);
-        }
-    }
 
     public void HandleLevelWin(bool newTimeRecord)
     {
@@ -93,17 +89,40 @@ public class CanvasUIController : MonoBehaviour
     #endregion
     
     
+    #region Private
+    
+    
+    private void Show(bool show)
+    {
+        for (int i = 0; i < this.transform.childCount; i++)
+        {
+            var t = this.transform.GetChild(i);
+            t.gameObject.SetActive(show);
+        }
+    }
+    
+    
+    #endregion
+    
+    
     #region Events
     
 
     public void OnLevelStart(LevelData data, LevelState state, int junkCount)
     {
         this.Show(false);
+        this.timer.StartTimer(state.BestTime);
 
         this.ForceUpdateAll(data, state, junkCount);
 
         this.source.clip = this.launchClip;
         AudioManager.Instance.Play(this.source);
+    }
+    
+    public void OnLevelStop()
+    {
+        this.Show(true);
+        this.timer.StopTimer();
     }
     
     public void OnLevelLoad(LevelData data, LevelState state, int junkCount)
