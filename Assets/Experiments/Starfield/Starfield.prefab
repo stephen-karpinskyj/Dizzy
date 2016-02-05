@@ -76,10 +76,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   numPoints: 99
   material: {fileID: 2100000, guid: 01aac410d67734651a33aa527df5ea1e, type: 2}
-  velocityRange: {x: -0.3, y: 0.3}
+  velocityRange: {x: -0.8, y: 0.8}
   radiusRange: {x: 0.5, y: 2}
-  intensity: 0.1
-  bounds: {x: -6, y: 6, z: -6, w: 6}
+  intensity: 0.2
+  bounds: {x: -6, y: 6, z: -8, w: 8}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
