@@ -2,7 +2,8 @@
 {
 	Properties
 	{
-		_Stars ("Stars (RGB)", 2D) = "white" { }	
+		_Stars ("Stars (RGB)", 2D) = "white" { }
+		_Nebula ("Nebula (RGB)",2D) = "white" {}	
 
 	}
 	SubShader 
@@ -28,20 +29,20 @@
 			uniform float3 _Colour [99]; 		// rgb
 
 			sampler2D _Stars;
+			sampler2D _Nebula;
 
 			struct vertexInput
 			{
       			float4 vertex : POSITION;
       			float4 texcoord : TEXCOORD0;
       			float4 texcoord1 : TEXCOORD1;
-                //float3 worldPos : TEXCOORD2;
       			float4 color : COLOR;
 				float4 normal : NORMAL;
 			};
       
 			struct fragmentInput {
         		float4 uv1 : TEXCOORD0;
-        		float2 uv2 : TEXCOORD1;
+        		float4 uv2 : TEXCOORD1;
         		
         		float4 pos : SV_POSITION;
         		float4 color : COLOR;
@@ -51,9 +52,17 @@
 			{
 				fragmentInput o;
 				o.uv1 = v.texcoord.xyyy;
+				o.uv2 = v.texcoord.xyxy;
+
 				o.uv1.y -= _Time.x*.15;
 				o.uv1.z -= _Time.x*.3;
 				o.uv1.w -= _Time.x*.45;
+
+				o.uv2.x += _Time.x*.1;
+				o.uv2.y -= _Time.x*.1;
+				o.uv2.z -= _Time.x*.1;
+
+
                 				
 				half3 worldPos = mul(_Object2World,v.vertex).xyz;
 				
@@ -80,14 +89,17 @@
 				half4 sm_stars = tex2D(_Stars,v.uv1.xy);
 				half4 md_stars = tex2D(_Stars,v.uv1.xz);
 				half4 lg_stars = tex2D(_Stars,v.uv1.xw);
+
+				half4 a_nebula = tex2D(_Nebula,v.uv2.xy*.5);
+				half4 b_nebula = tex2D(_Nebula,v.uv2.zy*.5);
 				
 				half3 _sm_stars = lerp(0,0.5,sm_stars.b);
 				half3 _md_stars = lerp(0,0.5,md_stars.g);
 				half3 _lg_stars = lerp(0,0.5,lg_stars.r);
 				
-				half4 combined = half4(_sm_stars+_md_stars+_lg_stars,1)+v.color;
+				half4 stars_combined = half4(_sm_stars+_md_stars+_lg_stars,1)+v.color*a_nebula.r*b_nebula.g;
 
-				return combined;				
+				return stars_combined;				
                 //return float4(v.color.rgb,1);
 			}
 			ENDCG
