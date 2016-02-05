@@ -33,7 +33,7 @@ public class BouncingPoints : MonoBehaviour
             var pos = new Vector2(Random.Range(this.bounds.x, this.bounds.y), Random.Range(this.bounds.z, this.bounds.w));
             var vel = new Vector2(Random.Range(this.velocityRange.x, this.velocityRange.y), Random.Range(this.velocityRange.x, this.velocityRange.y));
             var radius = Random.Range(this.radiusRange.x, this.radiusRange.y);
-			var colour = new Vector3 (Random.Range (0f, 1f), Random.Range (0f, 1f), Random.Range (0f, 1f));
+			var colour = new Vector3 (Random.Range (0f, 1f), Random.Range (0f, .5f), Random.Range (0f, 1f));
             
 			this.points[i] = new StarfieldPoint(pos, vel, radius, this.intensity, colour);
 		}
