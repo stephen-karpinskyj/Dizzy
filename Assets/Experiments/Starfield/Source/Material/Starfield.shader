@@ -25,6 +25,7 @@
 			uniform int _Points_Length = 0;
 			uniform float2 _Points [99];		// (x, z) = position
 			uniform float2 _Properties [99];	// x = radius, y = intensity
+			uniform float3 _Colour [99]; 		// rgb
 
 			sampler2D _Stars;
 
@@ -57,7 +58,7 @@
 				half3 worldPos = mul(_Object2World,v.vertex).xyz;
 				
 				// Loops over all the points
-				half h = 0;
+				half4 h = 0;
 				for (int i = 0; i < _Points_Length; i ++)
 				{
 					// Calculates the contribution of each point
@@ -66,7 +67,7 @@
 					half ri = _Properties[i].x;
 					half hi = 1 - saturate(di / ri);
  
-					h += hi * _Properties[i].y;
+					h += hi * _Properties[i].y* half4(_Colour[i],1);
 				}
 				o.color = h;
 

@@ -5,6 +5,7 @@ public class StarfieldPoint
     private Vector2 pos;
     private Vector2 vel;
     private Vector2 properties;
+	private Vector3 colour;
     
     public float Radius
     {
@@ -17,17 +18,26 @@ public class StarfieldPoint
         get { return this.properties.y; }
         set { this.properties.y = value; }
     }
+
+	public Vector3 Colour 
+	{ 
+		get { return this.colour; } 
+		set { this.colour = value; }
+	}
     
     public Vector2 Position { get { return this.pos; } }
     public Vector2 Properties { get { return this.properties; } }
 
-	public StarfieldPoint(Vector2 position, Vector2 velocity, float radius, float intensity)
+
+	public StarfieldPoint(Vector2 position, Vector2 velocity, float radius, float intensity, Vector3 colour)
     {
         this.pos = position;    
         this.vel = velocity;
         
         this.Radius = radius;
         this.Intensity = intensity;
+
+		this.Colour = colour;
 	}
     
     public void Update(float dt, Vector4 bounds)
