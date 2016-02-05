@@ -97,7 +97,7 @@
 				half3 _md_stars = lerp(0,0.5,md_stars.g);
 				half3 _lg_stars = lerp(0,0.5,lg_stars.r);
 				
-				half4 stars_combined = half4(_sm_stars+_md_stars+_lg_stars,1)+v.color*a_nebula.r*b_nebula.g;
+				half4 stars_combined = half4(_sm_stars+_md_stars+_lg_stars,1)+v.color*a_nebula.r*b_nebula.g*3;
 
 				return stars_combined;				
                 //return float4(v.color.rgb,1);
