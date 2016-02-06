@@ -23,9 +23,11 @@
 			#pragma fragment frag
 			#include "UnityCG.cginc"
 					
+            uniform float4 _Offset12;
+            uniform float4 _Offset34;
+                    
 			uniform int _Points_Length = 0;
-			uniform float2 _Points [99];		// (x, z) = position
-			uniform float2 _Properties [99];	// x = radius, y = intensity
+			uniform float4 _Points [99];		// x-pos, y-pos, radius, intensity
 			uniform float3 _Colour [99]; 		// rgb
 
 			sampler2D _Stars;
@@ -35,7 +37,6 @@
 			{
       			float4 vertex : POSITION;
       			float4 texcoord : TEXCOORD0;
-      			float4 texcoord1 : TEXCOORD1;
       			float4 color : COLOR;
 				float4 normal : NORMAL;
 			};
@@ -43,6 +44,7 @@
 			struct fragmentInput {
         		float4 uv1 : TEXCOORD0;
         		float4 uv2 : TEXCOORD1;
+                float4 uv3 : TEXCOORD2;
         		
         		float4 pos : SV_POSITION;
         		float4 color : COLOR;
@@ -51,19 +53,22 @@
 			fragmentInput vert (vertexInput v) 
 			{
 				fragmentInput o;
-				o.uv1 = v.texcoord.xyyy;
+                
+                // Star uv scrolling
+				o.uv1 = v.texcoord.xyxy;
+                o.uv3 = v.texcoord.xyww;
+                
+                o.uv1.xy += _Offset12.xy;
+                o.uv1.zw += _Offset12.zw;
+                o.uv3.xy += _Offset34.xy;
+                
+                // Nebula uv scrolling
 				o.uv2 = v.texcoord.xyxy;
-
-				o.uv1.y -= _Time.x*.15;
-				o.uv1.z -= _Time.x*.3;
-				o.uv1.w -= _Time.x*.45;
 
 				o.uv2.x += _Time.x*.1;
 				o.uv2.y -= _Time.x*.1;
 				o.uv2.z -= _Time.x*.1;
 
-
-                				
 				half3 worldPos = mul(_Object2World,v.vertex).xyz;
 				
 				// Loops over all the points
@@ -71,12 +76,12 @@
 				for (int i = 0; i < _Points_Length; i ++)
 				{
 					// Calculates the contribution of each point
-					half di = distance(worldPos, half3(_Points[i].x,_Points[i].y,worldPos.z));
+					half di = distance(worldPos.xy, _Points[i].xy);
  
-					half ri = _Properties[i].x;
+					half ri = _Points[i].z;
 					half hi = 1 - saturate(di / ri);
  
-					h += hi * _Properties[i].y* half4(_Colour[i],1);
+					h += hi * _Points[i].w* half4(_Colour[i],1);
 				}
 				o.color = h;
 
@@ -87,11 +92,11 @@
 			half4 frag (fragmentInput v):COLOR
 			{
 				half4 sm_stars = tex2D(_Stars,v.uv1.xy);
-				half4 md_stars = tex2D(_Stars,v.uv1.xz);
-				half4 lg_stars = tex2D(_Stars,v.uv1.xw);
+				half4 md_stars = tex2D(_Stars,v.uv1.zw);
+				half4 lg_stars = tex2D(_Stars,v.uv3.xy);
 
-				half4 a_nebula = tex2D(_Nebula,v.uv2.xy*.5);
-				half4 b_nebula = tex2D(_Nebula,v.uv2.zy*.5);
+				half4 a_nebula = tex2D(_Nebula,v.uv2.xy);
+				half4 b_nebula = tex2D(_Nebula,v.uv2.zw);
 				
 				half3 _sm_stars = lerp(0,0.5,sm_stars.b);
 				half3 _md_stars = lerp(0,0.5,md_stars.g);

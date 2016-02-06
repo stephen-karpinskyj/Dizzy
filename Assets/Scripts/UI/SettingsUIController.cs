@@ -54,7 +54,7 @@ public class SettingsUIController : MonoBehaviour
 
         this.UpdateSoundToggle(StateManager.Instance.SoundEnabled);
         this.UpdateSpinDirectionToggle(StateManager.Instance.SpinDirectionCCW);
-        this.UpdateGraphicsModeToggle(StateManager.Instance.GraphicsQuality);
+        this.UpdateGraphicsModeToggle(StateManager.Instance.GraphicsMode);
         this.UpdateResetProgressConfirm(false);
     }
 
@@ -76,16 +76,11 @@ public class SettingsUIController : MonoBehaviour
     
     public void OnGraphicsQualityToggle()
     {
-        var quality = StateManager.Instance.GraphicsQuality + 1;
+        var mode = StateManager.Instance.GraphicsMode + 1;
         
-        if (quality > this.graphicsModeParents.Length - 1)
-        {
-            quality = 0;
-        }
+        mode = this.UpdateGraphicsModeToggle(mode);
         
-        StateManager.Instance.GraphicsQuality = quality;
-        
-        this.UpdateGraphicsModeToggle(quality);
+        StateManager.Instance.GraphicsMode = mode;
     }
 
     public void OnResetProgress()
@@ -110,15 +105,27 @@ public class SettingsUIController : MonoBehaviour
         this.spinDirectionText.text = ccw ? this.spinDirectionCCWText : this.spinDirectionCWText;
     }
     
-    private void UpdateGraphicsModeToggle(int quality)
+    private int UpdateGraphicsModeToggle(int mode)
     {
-        this.graphicsModeText.text = this.graphicsModePrefixText + (quality + 1);
+        if (mode > this.graphicsModeParents.Length - 1)
+        {
+            mode = 0;
+        }
+        
+        if (mode < 0)
+        {
+            mode = this.graphicsModeParents.Length - 1;
+        }
+        
+        this.graphicsModeText.text = this.graphicsModePrefixText + (mode + 1);
         
         for (int i = 0; i < this.graphicsModeParents.Length; i++)
         {
             var go = this.graphicsModeParents[i];
-            go.SetActive(i == quality);
+            go.SetActive(i == mode);
         }
+        
+        return mode;
     }
 
     private void UpdateResetProgressConfirm(bool show)

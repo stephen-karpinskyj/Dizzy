@@ -110,23 +110,33 @@ public class CanvasUIController : MonoBehaviour
 
     public void OnLevelStart(LevelData data, LevelState state, int junkCount)
     {
+        var isTrial = data is TrialLevelData;
+        
         this.Show(false);
-        this.timer.StartTimer(state.BestTime);
 
+        if (isTrial)
+        {
+            this.timer.StartTimer(state.BestTime);
+        }
+        
         this.ForceUpdateAll(data, state, junkCount);
 
         this.source.clip = this.launchClip;
         AudioManager.Instance.Play(this.source);
     }
     
-    public void OnLevelStop()
+    public void OnLevelStop(LevelData data)
     {
         this.Show(true);
+        
         this.timer.StopTimer();
+        
+        this.progress.OnLevelStop(data);
     }
     
     public void OnLevelLoad(LevelData data, LevelState state, int junkCount)
     {
+        this.progress.OnLevelLoad(data);
         this.ForceUpdateAll(data, state, junkCount);
     }
 

@@ -21,11 +21,22 @@ public class CameraController : MonoBehaviour
     [SerializeField]
     private float sizeOffsetFromMultiplier = 4f;
 
+    [SerializeField]
+    private float scrollingSizeOffset = 2f;
+        
+    [SerializeField]
+    private float scrollingSizeToSpeed = 0.5f;
+    
+    [SerializeField]
+    private float scrollingSizeFromSpeed = 2.5f;
+    
     private Vector3 originalCamPos;
     private float originalSize;
 
     private Vector3 shakeOffset;
     private float targetHeight;
+
+    private bool isScrolling;
 
     private static CameraController instance;
 
@@ -47,14 +58,36 @@ public class CameraController : MonoBehaviour
     }
 
     private void LateUpdate()
-    {
-        this.transform.position = this.originalCamPos + this.shakeOffset;
+    {        
+        var ship = GameManager.Instance.Ship;
         
-        var speedPercentage = GameManager.Instance.Ship.SpeedPercentage;
-        var curveValue = (speedPercentage - this.sizeOffsetRange.x) / (this.sizeOffsetRange.y - this.sizeOffsetRange.x);
-        this.targetHeight = this.originalSize + (this.sizeOffsetCurve.Evaluate(curveValue) * this.maxSizeOffset);
-        var offsetMultiplier = this.targetHeight < this.cam.orthographicSize ? this.sizeOffsetFromMultiplier : this.sizeOffsetToMultiplier;
-        this.cam.orthographicSize = Mathf.Lerp(this.cam.orthographicSize, this.targetHeight, Time.smoothDeltaTime * offsetMultiplier);
+        if (this.isScrolling)
+        {
+            var shipPos = new Vector3(ship.Trans.position.x, ship.Trans.position.y, this.originalCamPos.z);
+            this.transform.position = shipPos + this.shakeOffset;
+            
+            float target;
+            
+            if (ship.IsThrusting)
+            {
+                target = Mathf.Lerp(this.cam.orthographicSize, this.originalSize - this.scrollingSizeOffset, Time.deltaTime * this.scrollingSizeToSpeed);
+            }
+            else
+            {
+                target = Mathf.Lerp(this.cam.orthographicSize, this.originalSize, Time.deltaTime * this.scrollingSizeFromSpeed);
+            }
+            
+            this.cam.orthographicSize = target;
+        }
+        else
+        {
+            this.transform.position = this.originalCamPos + this.shakeOffset;
+        
+            var curveValue = (ship.SpeedPercentage - this.sizeOffsetRange.x) / (this.sizeOffsetRange.y - this.sizeOffsetRange.x);
+            this.targetHeight = this.originalSize + (this.sizeOffsetCurve.Evaluate(curveValue) * this.maxSizeOffset);
+            var offsetMultiplier = this.targetHeight < this.cam.orthographicSize ? this.sizeOffsetFromMultiplier : this.sizeOffsetToMultiplier;
+            this.cam.orthographicSize = Mathf.Lerp(this.cam.orthographicSize, this.targetHeight, Time.smoothDeltaTime * offsetMultiplier);
+        }
     }
 
     public static void Shake(float duration, float magnitude)
@@ -65,6 +98,16 @@ public class CameraController : MonoBehaviour
         }
         
         instance.StartCoroutine(instance.ShakeCoroutine(duration, magnitude));
+    }
+    
+    public static void ChangeMode(bool isScrolling)
+    {
+        instance.isScrolling = isScrolling;
+    }
+    
+    public static void AddChild(Transform transform)
+    {
+        transform.parent = instance.transform;
     }
 
     /// <remarks>Based on: http://unitytipsandtricks.blogspot.co.nz/2013/05/camera-shake.html</remarks>

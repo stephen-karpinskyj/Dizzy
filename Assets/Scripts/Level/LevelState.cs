@@ -113,7 +113,7 @@ public class LevelState
     #region Public
     
     
-    public float HandleWin(float time, float noviceTime, float proTime)
+    public float HandleWin(float time, LevelData data)
     {
         time = ClampTime(time);
 
@@ -133,14 +133,19 @@ public class LevelState
             this.RunCount = newRunCount;
         }
 
-        if (time <= noviceTime && !this.NoviceMedalEarnt)
+        var trialData = data as TrialLevelData;
+            
+        if (trialData != null)
         {
-            this.NoviceMedalEarnt = true;
-        }
+            if (time <= trialData.NoviceTime && !this.NoviceMedalEarnt)
+            {
+                this.NoviceMedalEarnt = true;
+            }
 
-        if (time <= proTime && !this.ProMedalEarnt)
-        {
-            this.ProMedalEarnt = true;
+            if (time <= trialData.ProTime && !this.ProMedalEarnt)
+            {
+                this.ProMedalEarnt = true;
+            }
         }
         
         StateManager.Save();

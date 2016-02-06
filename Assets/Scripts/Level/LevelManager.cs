@@ -85,9 +85,6 @@ public class LevelManager : MonoBehaviour
         this.CurrentLevel = Object.Instantiate(levelPrefab);
         this.CurrentLevelState = StateManager.Instance.GetLevel(this.CurrentLevel.Id);
         this.onLevelWin = onLevelWin;
-        
-        this.canvas.Progress.NoviceMedal.UpdateTime(this.CurrentLevel.NoviceTime);
-        this.canvas.Progress.ProMedal.UpdateTime(this.CurrentLevel.ProTime);
                 
         foreach (var n in this.CurrentLevel.GetComponentsInChildren<LevelObjectNode>())
         {
@@ -122,44 +119,9 @@ public class LevelManager : MonoBehaviour
     
     public void OnLevelWin()
     {
-        var prevBest = this.CurrentLevelState.BestTime;
-        var prevLast = this.CurrentLevelState.LastTime;
-        var prevRuns = this.CurrentLevelState.RunCount;
-        var prevNovice = this.CurrentLevelState.NoviceMedalEarnt;
-        var prevPro = this.CurrentLevelState.ProMedalEarnt;
-        
-        var currBest = this.CurrentLevelState.HandleWin(Time.time - this.startTime, this.CurrentLevel.NoviceTime, this.CurrentLevel.ProTime);
-        var isNewTimeRecord = currBest < prevBest;
-        var currLast = this.CurrentLevelState.LastTime;
-        var currRuns = this.CurrentLevelState.RunCount;
-        var currNovice = this.CurrentLevelState.NoviceMedalEarnt;
-        var currPro = this.CurrentLevelState.ProMedalEarnt;
-
-        this.canvas.HandleLevelWin(isNewTimeRecord);
-
-        if (isNewTimeRecord)
+        if (this.CurrentLevel is TrialLevelData)
         {
-            this.canvas.Progress.UpdateBestTime(currBest, currBest - prevBest);
-        }
-        
-        if (!Mathf.Approximately(prevLast, currLast))
-        {
-            this.canvas.Progress.UpdateLastTime(currLast);
-        }
-        
-        if (prevRuns != currRuns)
-        {
-            this.canvas.Progress.UpdateRunCount(currRuns);
-        }
-        
-        if (prevNovice != currNovice)
-        {
-            this.canvas.Progress.NoviceMedal.UpdateEarnt(currNovice);
-        }
-        
-        if (prevPro != currPro)
-        {
-            this.canvas.Progress.ProMedal.UpdateEarnt(currPro);
+            this.HandleTrialWin();
         }
     }
     
@@ -213,5 +175,49 @@ public class LevelManager : MonoBehaviour
     }
     
     
+    private void HandleTrialWin()
+    {
+        var prevBest = this.CurrentLevelState.BestTime;
+        var prevLast = this.CurrentLevelState.LastTime;
+        var prevRuns = this.CurrentLevelState.RunCount;
+        var prevNovice = this.CurrentLevelState.NoviceMedalEarnt;
+        var prevPro = this.CurrentLevelState.ProMedalEarnt;
+
+        var currBest = this.CurrentLevelState.HandleWin(Time.time - this.startTime, this.CurrentLevel);
+        var isNewTimeRecord = currBest < prevBest;
+        var currLast = this.CurrentLevelState.LastTime;
+        var currRuns = this.CurrentLevelState.RunCount;
+        var currNovice = this.CurrentLevelState.NoviceMedalEarnt;
+        var currPro = this.CurrentLevelState.ProMedalEarnt;
+
+        this.canvas.HandleLevelWin(isNewTimeRecord);
+
+        if (isNewTimeRecord)
+        {
+            this.canvas.Progress.UpdateBestTime(currBest, currBest - prevBest);
+        }
+
+        if (!Mathf.Approximately(prevLast, currLast))
+        {
+            this.canvas.Progress.UpdateLastTime(currLast);
+        }
+
+        if (prevRuns != currRuns)
+        {
+            this.canvas.Progress.UpdateRunCount(currRuns);
+        }
+
+        if (prevNovice != currNovice)
+        {
+            this.canvas.Progress.NoviceMedal.UpdateEarnt(currNovice);
+        }
+
+        if (prevPro != currPro)
+        {
+            this.canvas.Progress.ProMedal.UpdateEarnt(currPro);
+        }
+    }
+
+
     #endregion
 }

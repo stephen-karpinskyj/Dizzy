@@ -251,6 +251,11 @@ public class ShipController : MonoBehaviour
     {
         get { return this.rigidBody.velocity.magnitude / this.maxSpeed; }
     }
+    
+    public Vector2 VelocityNormalized
+    {
+        get { return this.rigidBody.velocity.normalized; }
+    }
 
     public bool InOverdrive
     {
@@ -311,6 +316,7 @@ public class ShipController : MonoBehaviour
     {
         if (!this.isRunning)
         {
+            this.isThrusting = false;
             return;
         }
         

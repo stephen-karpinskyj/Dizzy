@@ -40,7 +40,7 @@ public class StateManager : BehaviourSingleton<StateManager>
         }
     }
 
-    public int GraphicsQuality
+    public int GraphicsMode
     {
         get { return PlayerPrefs.GetInt("State.GraphicsMode", 1); }
         set

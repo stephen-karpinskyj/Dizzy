@@ -4,27 +4,21 @@ using UnityEngine.EventSystems;
 
 public class GameManager : BehaviourSingleton<GameManager>
 {
-    #region Constants
-
-
-    private const float NoviceMedalTime = 20f;
-    private const float ProMedalTime = 7f;
-
-
-    #endregion
-
-    
     #region Fields
 
 
     private LevelManager levelManager;
     private CanvasUIController canvas;
+    private StarfieldController starfield;
     
     private LaunchLightsController launchLights;
 
     private bool hasInitialised = false;
     private bool isRunning = false;
     private bool canRun = false;
+    
+    private Vector2 offset;
+    private Vector3 prevAcceleration;
 
 
     #endregion
@@ -48,6 +42,8 @@ public class GameManager : BehaviourSingleton<GameManager>
 
     private void Update()
     {   
+        this.UpdateStarfield();
+        
         if (this.isRunning || !this.canRun)
         {
             return;
@@ -90,6 +86,9 @@ public class GameManager : BehaviourSingleton<GameManager>
         
         this.canvas = Object.FindObjectOfType<CanvasUIController>();
         Debug.Assert(this.canvas);
+        
+        this.starfield = Object.FindObjectOfType<StarfieldController>();
+        Debug.Assert(this.starfield);
         
         this.Ship = Object.FindObjectOfType<ShipController>();
         Debug.Assert(this.Ship);
@@ -138,6 +137,20 @@ public class GameManager : BehaviourSingleton<GameManager>
     {
         Debug.LogFormat("[{0}] Loading level={1}", this.GetType().Name, level.Id);
         
+        var isScrolling = level is ExplorationLevelData;
+        
+        if (isScrolling)
+        {
+            CameraController.AddChild(this.starfield.transform);
+        }
+        else
+        {
+            this.starfield.transform.parent = null;
+            this.starfield.ResetPosition();
+        }
+        
+        CameraController.ChangeMode(isScrolling);
+        
         this.levelManager.OnLeveUnload();
         this.levelManager.OnLevelLoad(level, () => this.OnLevelStop(true));
         this.OnLevelStop(false);
@@ -153,9 +166,10 @@ public class GameManager : BehaviourSingleton<GameManager>
 
         this.Ship.OnLevelStop();
         this.Multiplier.OnLevelStop();
-        this.launchLights.OnLevelStop();
-
-        this.canvas.OnLevelStop();
+        
+        this.launchLights.OnLevelStop(this.levelManager.CurrentLevel is TrialLevelData);
+        
+        this.canvas.OnLevelStop(this.levelManager.CurrentLevel);
         this.levelManager.OnLevelStop();
         
         if (won)
@@ -184,6 +198,38 @@ public class GameManager : BehaviourSingleton<GameManager>
 
         this.levelManager.OnLevelStart();
         this.canvas.OnLevelStart(this.levelManager.CurrentLevel, this.levelManager.CurrentLevelState, StateManager.Instance.JunkCount);
+        
+        if (this.levelManager.CurrentLevel is ExplorationLevelData)
+        {
+            // SK: TODO: Fuel mechanic
+            this.StartCoroutine(this.DelayedLevelStop(15f));
+        }
+    }
+    
+    private void UpdateStarfield()
+    {
+        if (this.levelManager.CurrentLevel is ExplorationLevelData)
+        {
+            this.offset = (Vector2)GameManager.Instance.Ship.Trans.position;
+        }
+        else
+        {
+            this.offset = this.GetAcceleration() * 0.5f;
+        }
+        
+        this.starfield.UpdateOffset(this.offset);
+    }
+
+    private Vector3 GetAcceleration()
+    {
+        // Source: http://stackoverflow.com/questions/24501290/unity3d-android-accelerometer-and-gyroscope-controls
+        const float AccelerometerUpdateInterval = 1f / 100f;
+        const float LowPassKernelWidthInSeconds = 0.1f;
+        const float LowPassFilterFactor = AccelerometerUpdateInterval / LowPassKernelWidthInSeconds;
+        
+        this.prevAcceleration = Vector3.Lerp(this.prevAcceleration, Input.acceleration, LowPassFilterFactor);
+        
+        return this.prevAcceleration;
     }
 
 
@@ -198,6 +244,13 @@ public class GameManager : BehaviourSingleton<GameManager>
         this.canRun = false;
         yield return new WaitForSeconds(0.5f);
         this.canRun = true;
+    }
+    
+    private IEnumerator DelayedLevelStop(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        
+        this.HandleOutOfBounds();
     }
 
 

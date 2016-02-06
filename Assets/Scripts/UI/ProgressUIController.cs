@@ -88,6 +88,32 @@ public class ProgressUIController : MonoBehaviour
     
     
     #endregion
+    
+    
+    #region Events
+    
+    
+    public void OnLevelStop(LevelData data)
+    {
+        var isTrial = data is TrialLevelData;
+        
+        this.noviceMedal.gameObject.SetActive(isTrial);
+        this.proMedal.gameObject.SetActive(isTrial);
+    }
+    
+    public void OnLevelLoad(LevelData data)
+    {
+        var trialData = data as TrialLevelData;
+        
+        if (trialData != null)
+        {
+            this.NoviceMedal.UpdateTime(trialData.NoviceTime);
+            this.ProMedal.UpdateTime(trialData.ProTime);
+        }
+    }
+    
+    
+    #endregion
 
 
     #region Public

@@ -42,6 +42,14 @@ public class LaunchLightsController : MonoBehaviour
         
         this.StartCoroutine(this.LightCoroutine());
     }
+    
+    private void ForceHide()
+    {
+        foreach (var l in this.lights)
+        {
+            l.enabled = false;
+        }
+    }
 
     private IEnumerator HideCoroutine()
     {
@@ -54,10 +62,7 @@ public class LaunchLightsController : MonoBehaviour
 
         yield return new WaitForSeconds(this.hideDelay);
 
-        foreach (var l in this.lights)
-        {
-            l.enabled = false;
-        }
+        this.ForceHide();
 
         this.StopAllCoroutines();
     }
@@ -86,9 +91,16 @@ public class LaunchLightsController : MonoBehaviour
     #region Level events
 
 
-    public void OnLevelStop()
+    public void OnLevelStop(bool show)
     {
-        this.LightUp();
+        if (show)
+        {
+            this.LightUp();
+        }
+        else
+        {
+            this.ForceHide();
+        }
     }
 
     public void OnLevelStart()
