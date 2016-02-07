@@ -127,6 +127,7 @@ GameObject:
   - 4: {fileID: 444426}
   - 114: {fileID: 11433182}
   - 58: {fileID: 5866332}
+  - 114: {fileID: 11466160}
   m_Layer: 0
   m_Name: Mine
   m_TagString: Untagged
@@ -496,7 +497,7 @@ MonoBehaviour:
   blinkingColor: {r: 0, g: 0.3966025, b: 0.72794116, a: 1}
   explodingColor: {r: 0.30218056, g: 0, b: 0.74264705, a: 1}
   explosionParticles: {fileID: 19806284}
-  explosionPulse: {fileID: 11440322}
+  explosionBlast: {fileID: 11466160}
   junkParent: {fileID: 426540}
   junkPusherCurve:
     serializedVersion: 2
@@ -535,6 +536,57 @@ MonoBehaviour:
   ScaleTime: 7
   ScaleSize: {x: 0.29, y: 0.05, z: 0.29}
   DebugLoop: 0
+--- !u!114 &11466160
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 168042}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74ce97395944e4d88a8b15e117e06779, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mat: {fileID: 2100000, guid: 01aac410d67734651a33aa527df5ea1e, type: 2}
+  color: {r: 0, g: 0, b: 0, a: 0}
+  radiusCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0.0006330954
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 1
+      value: 1
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  heightRange: {x: 0, y: 0.15}
+  heightCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 0.5007074
+      value: 0.99998575
+      inSlope: 3.652604
+      outSlope: -4.5669637
+      tangentMode: 1
+    - time: 0.9934823
+      value: -0.001338688
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
 --- !u!198 &19806284
 ParticleSystem:
   m_ObjectHideFlags: 1
@@ -12873,6 +12925,82 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: colourProperty
       value: Color
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: color.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: radiusRange.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: radiusCurve.m_Curve.Array.data[0].inSlope
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: radiusCurve.m_Curve.Array.data[0].outSlope
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: radiusCurve.m_Curve.Array.data[0].tangentMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: radiusCurve.m_Curve.Array.data[1].inSlope
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: radiusCurve.m_Curve.Array.data[1].outSlope
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: radiusCurve.m_Curve.Array.data[1].tangentMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: radiusRange.x
+      value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: heightCurve.m_Curve.Array.data[1].time
+      value: 0.5007074
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: heightCurve.m_Curve.Array.data[1].value
+      value: 0.99998575
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: heightCurve.m_Curve.Array.data[1].inSlope
+      value: 3.652604
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: duration
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: heightRange.y
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: radiusCurve.m_Curve.Array.data[0].time
+      value: 0.0006330954
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: radiusCurve.m_Curve.Array.data[0].value
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

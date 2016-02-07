@@ -51,7 +51,7 @@ public class MineController : LevelObjectController
     private ParticleSystem explosionParticles;
     
     [SerializeField]
-    private F3DPulsewave explosionPulse;
+    private StarfieldBlast explosionBlast;
     
     [SerializeField]
     private Transform junkParent;
@@ -64,6 +64,9 @@ public class MineController : LevelObjectController
     private float currLight;
     private float targetLight;
     private float lastLightOffTime;
+    
+    private float duration;
+    private float distance;
     
     private Color lightColour;
     
@@ -184,7 +187,10 @@ public class MineController : LevelObjectController
         this.junkPushers = new Dictionary<JunkPusher, JunkController>();
         
         var rot = 0f;
-        var interval = 360f / junk.Count; 
+        var interval = 360f / junk.Count;
+        
+        this.duration = junkPusherDuration;
+        this.distance = junkPusherDistance;
         
         foreach (var j in junk)
         {
@@ -233,8 +239,6 @@ public class MineController : LevelObjectController
         this.currLight = 0f;
         this.UpdateLight(true);
         this.explosionParticles.Stop();
-        this.explosionPulse.gameObject.SetActive(false);
-        this.explosionPulse.Initialise();
 
         this.rend.enabled = true;
     }
@@ -244,8 +248,7 @@ public class MineController : LevelObjectController
         this.currLight = 1f;
         this.UpdateLight(false);
         this.explosionParticles.Play();
-        this.explosionPulse.gameObject.SetActive(true);
-        this.explosionPulse.Fire();
+        this.explosionBlast.Play(this.duration / 2.5f, new Vector2(0.4f, Mathf.Max(0.75f, this.distance)));
         
         foreach (var kv in this.junkPushers)
         {

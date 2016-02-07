@@ -7,7 +7,8 @@ public class GameManager : BehaviourSingleton<GameManager>
     #region Fields
 
 
-    private LevelManager levelManager;
+    private LevelManager level;
+    private WorldManager world;
     private CanvasUIController canvas;
     private StarfieldController starfield;
     
@@ -19,6 +20,8 @@ public class GameManager : BehaviourSingleton<GameManager>
     
     private Vector2 offset;
     private Vector3 prevAcceleration;
+    
+    private bool isExploration;
 
 
     #endregion
@@ -81,8 +84,11 @@ public class GameManager : BehaviourSingleton<GameManager>
 
         this.hasInitialised = true;
 
-        this.levelManager = this.gameObject.AddComponent<LevelManager>();
-        Debug.Assert(this.levelManager);
+        this.level = this.gameObject.AddComponent<LevelManager>();
+        Debug.Assert(this.level);
+        
+        this.world = Object.FindObjectOfType<WorldManager>();
+        Debug.Assert(this.world);
         
         this.canvas = Object.FindObjectOfType<CanvasUIController>();
         Debug.Assert(this.canvas);
@@ -110,12 +116,12 @@ public class GameManager : BehaviourSingleton<GameManager>
     public void ResetProgress()
     {
         StateManager.Instance.ResetProgress();
-        this.canvas.ForceUpdateAll(this.levelManager.CurrentLevel, this.levelManager.CurrentLevelState, StateManager.Instance.JunkCount);
+        this.canvas.ForceUpdateAll(this.level.CurrentLevel, this.level.CurrentLevelState, StateManager.Instance.JunkCount);
     }
     
     public void LoadNextLevel(bool forward)
     {
-        var currLevel = this.levelManager.CurrentLevel;
+        var currLevel = this.level.CurrentLevel;
         var nextLevel = Data.Instance.GetNextLevel(currLevel, forward);
         
         this.OnLevelLoad(nextLevel);
@@ -130,16 +136,16 @@ public class GameManager : BehaviourSingleton<GameManager>
 
     private void OnGameStart()
     {
-        this.levelManager.OnGameStart(this.canvas);
+        this.level.OnGameStart(this.canvas);
     }
 
     private void OnLevelLoad(LevelData level)
     {
         Debug.LogFormat("[{0}] Loading level={1}", this.GetType().Name, level.Id);
         
-        var isScrolling = level is ExplorationLevelData;
+        this.isExploration = level is ExplorationLevelData;
         
-        if (isScrolling)
+        if (this.isExploration)
         {
             CameraController.AddChild(this.starfield.transform);
         }
@@ -149,13 +155,13 @@ public class GameManager : BehaviourSingleton<GameManager>
             this.starfield.ResetPosition();
         }
         
-        CameraController.ChangeMode(isScrolling);
+        CameraController.ChangeMode(this.isExploration);
         
-        this.levelManager.OnLeveUnload();
-        this.levelManager.OnLevelLoad(level, () => this.OnLevelStop(true));
+        this.level.OnLeveUnload();
+        this.level.OnLevelLoad(level, () => this.OnLevelStop(true));
         this.OnLevelStop(false);
         
-        this.canvas.OnLevelLoad(this.levelManager.CurrentLevel, this.levelManager.CurrentLevelState, StateManager.Instance.JunkCount);
+        this.canvas.OnLevelLoad(this.level.CurrentLevel, this.level.CurrentLevelState, StateManager.Instance.JunkCount);
     }
     
     private void OnLevelStop(bool won)
@@ -167,14 +173,14 @@ public class GameManager : BehaviourSingleton<GameManager>
         this.Ship.OnLevelStop();
         this.Multiplier.OnLevelStop();
         
-        this.launchLights.OnLevelStop(this.levelManager.CurrentLevel is TrialLevelData);
+        this.launchLights.OnLevelStop(this.level.CurrentLevel is TrialLevelData);
         
-        this.canvas.OnLevelStop(this.levelManager.CurrentLevel);
-        this.levelManager.OnLevelStop();
+        this.canvas.OnLevelStop(this.level.CurrentLevel);
+        this.level.OnLevelStop();
         
         if (won)
         {
-            this.levelManager.OnLevelWin();
+            this.level.OnLevelWin();
             this.StartCoroutine(this.BlockRunStart());
         }
         else
@@ -196,10 +202,10 @@ public class GameManager : BehaviourSingleton<GameManager>
         this.Ship.OnLevelStart();
         this.launchLights.OnLevelStart();
 
-        this.levelManager.OnLevelStart();
-        this.canvas.OnLevelStart(this.levelManager.CurrentLevel, this.levelManager.CurrentLevelState, StateManager.Instance.JunkCount);
+        this.level.OnLevelStart();
+        this.canvas.OnLevelStart(this.level.CurrentLevel, this.level.CurrentLevelState, StateManager.Instance.JunkCount);
         
-        if (this.levelManager.CurrentLevel is ExplorationLevelData)
+        if (this.isExploration)
         {
             // SK: TODO: Fuel mechanic
             this.StartCoroutine(this.DelayedLevelStop(15f));
@@ -208,7 +214,7 @@ public class GameManager : BehaviourSingleton<GameManager>
     
     private void UpdateStarfield()
     {
-        if (this.levelManager.CurrentLevel is ExplorationLevelData)
+        if (this.isExploration)
         {
             this.offset = (Vector2)GameManager.Instance.Ship.Trans.position;
         }

@@ -69,7 +69,7 @@ public class StarfieldPoint
             this.vel.y *= -1;
         }
  
-        this.offset += this.vel * dt;
+        this.UpdateOffset(this.offset += this.vel * dt);
     }
     
     public void UpdateOffset(Vector2 offset)

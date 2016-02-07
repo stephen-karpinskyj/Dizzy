@@ -34,11 +34,6 @@ public class StarfieldController : MonoBehaviour
     
     private Vector3 initPosition;
 
-    private void Awake()
-    {
-        this.initPosition = this.transform.position;
-    }
-
 	private void Start()
     {        
 		this.material.SetInt("_Points_Length", this.numPoints);
@@ -63,6 +58,11 @@ public class StarfieldController : MonoBehaviour
     
     public void ResetPosition()
     {
+        if (this.initPosition == Vector3.zero)
+        {
+            this.initPosition = this.transform.position;
+        }
+        
         this.transform.position = this.initPosition;
     }
     
