@@ -1,9 +1,10 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 /// <summary>
-/// All persistent state corresponding to a level.
+/// All persistent state corresponding to a <see cref="TrialLevelData"/>.
 /// </summary>
-public class LevelState
+public class TrialLevelState
 {
     #region Constants
     
@@ -16,6 +17,8 @@ public class LevelState
     private const int MinRunCount = DefaultRunCount;
     private const int MaxRunCount = 9999;
     
+    private const int ActiveGoalCount = 2;
+    
     
     #endregion
     
@@ -24,6 +27,8 @@ public class LevelState
     
     
     private string levelId;
+    
+    private List<TrialLevelDataGoal> activeGoals;
     
     
     #endregion
@@ -49,17 +54,16 @@ public class LevelState
         get { return PlayerPrefs.GetInt(RunCountPrefKey, DefaultRunCount); }
         private set { PlayerPrefs.SetInt(RunCountPrefKey, ClampRunCount(value)); }
     }
-
-    public bool NoviceMedalEarnt
+    
+    public float JunkMultiplier
     {
-        get { return PlayerPrefs.GetInt(this.NoviceMedalEarntPrefKey, 1) == 0; }
-        private set { PlayerPrefs.SetInt(this.NoviceMedalEarntPrefKey, value ? 0 : 1); }
+        get { return PlayerPrefs.GetFloat(JunkMultiplierPrefKey, 0f); }
+        private set { PlayerPrefs.SetFloat(JunkMultiplierPrefKey, value); }
     }
-
-    public bool ProMedalEarnt
+    
+    public IEnumerable<TrialLevelDataGoal> ActiveGoals
     {
-        get { return PlayerPrefs.GetInt(this.ProMedalEarntPrefKey, 1) == 0; }
-        private set { PlayerPrefs.SetInt(this.ProMedalEarntPrefKey, value ? 0 : 1); }
+        get { return this.activeGoals; }
     }
     
     
@@ -69,7 +73,7 @@ public class LevelState
     #region Initialization
     
     
-    public LevelState(string levelId)
+    public TrialLevelState(string levelId)
     {
         this.levelId = levelId;
     }
@@ -96,14 +100,9 @@ public class LevelState
         get { return "State.RunCount." + this.levelId; }
     }
     
-    private string NoviceMedalEarntPrefKey
+    private string JunkMultiplierPrefKey
     {
-        get { return "State.NoviceMedalEarnt." + this.levelId; }
-    }
-    
-    private string ProMedalEarntPrefKey
-    {
-        get { return "State.ProMedalEarnt." + this.levelId; }
+        get { return "State.JunkMultiplier." + this.levelId; }
     }
 
     
@@ -113,7 +112,7 @@ public class LevelState
     #region Public
     
     
-    public float HandleWin(float time, LevelData data)
+    public float HandleWin(float time, TrialLevelData data)
     {
         time = ClampTime(time);
 
@@ -132,35 +131,34 @@ public class LevelState
         {
             this.RunCount = newRunCount;
         }
-
-        var trialData = data as TrialLevelData;
-            
-        if (trialData != null)
-        {
-            if (time <= trialData.NoviceTime && !this.NoviceMedalEarnt)
-            {
-                this.NoviceMedalEarnt = true;
-            }
-
-            if (time <= trialData.ProTime && !this.ProMedalEarnt)
-            {
-                this.ProMedalEarnt = true;
-            }
-        }
+        
+        this.UpdateMultiplierIncrease(data);
+        this.UpdateActiveGoals(data);
         
         StateManager.Save();
 
         return time;
     }
     
-    public void ResetProgress()
+    public void ResetProgress(TrialLevelData data)
     {
         this.BestTime = DefaultTime;
         this.LastTime = DefaultTime;
         this.RunCount = DefaultRunCount;
+        this.JunkMultiplier = 0f;
         
-        this.NoviceMedalEarnt = false;
-        this.ProMedalEarnt = false;
+        this.UpdateWithData(data);
+    }
+    
+    public void UpdateWithData(TrialLevelData data)
+    {
+        if (data == null)
+        {
+            return;
+        }
+        
+        this.UpdateMultiplierIncrease(data);
+        this.UpdateActiveGoals(data);
     }
     
     
@@ -170,24 +168,19 @@ public class LevelState
     #region Helpers
     
     
-    public static string TimeToString(float time)
+    private void UpdateMultiplierIncrease(TrialLevelData data)
     {
-        return string.Format("{0:00.000}", time);
+        this.JunkMultiplier = data.GetCompletedGoalMultiplier(this.BestTime);
     }
-
-    public static string TimeDiffToString(float time)
+    
+    private void UpdateActiveGoals(TrialLevelData data)
     {
-        return string.Format("{0:+0.000;-0.000;0.000}", time);
+        this.activeGoals = data.GetActiveGoals(this.BestTime, ActiveGoalCount);
     }
-
+    
     private static float ClampTime(float time)
     {
         return Mathf.Clamp(time, MinTime, MaxTime);
-    }
-
-    public static string RunCountToString(int count)
-    {
-        return string.Format("{0:0000}", count);
     }
 
     private static int ClampRunCount(int count)

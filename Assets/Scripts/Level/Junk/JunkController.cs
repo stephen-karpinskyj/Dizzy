@@ -15,7 +15,7 @@ public class JunkController : LevelObjectController
     private Collider2D coll;
 
     [SerializeField]
-    private RandomJunkElement[] randomElements;
+    private JunkElement[] elements;
 
     [SerializeField]
     private ParticleSystem sparkParticles;
@@ -63,7 +63,7 @@ public class JunkController : LevelObjectController
     #region Fields
 
 
-    private RandomJunkElement chosenElement;
+    private JunkElement chosenElement;
 
     private float startPullTime;
 
@@ -85,7 +85,7 @@ public class JunkController : LevelObjectController
 
     public bool IsAttractable { get; set; }
 
-    public RandomJunkElement ChosenElement
+    public JunkElement ChosenElement
     {
         get { return this.chosenElement; }
     }
@@ -164,10 +164,7 @@ public class JunkController : LevelObjectController
         this.coll.enabled = true;
         
         this.transform.localPosition = Vector3.zero;
-        this.visualsParent.rotation = Random.rotation;;
-        
-        this.Randomize();
-        this.StartCoroutine(this.ShowCoroutine(this.chosenElement.Rend));
+        this.visualsParent.rotation = Random.rotation;
     }
 
     public override void OnLevelStart()
@@ -189,44 +186,33 @@ public class JunkController : LevelObjectController
         this.onCollect = onCollect;
     }
     
+    public void SetElement(int exponent, bool showNow = false)
+    {
+        this.HideAllElements();
+        
+        exponent = Mathf.Clamp(exponent, 0, this.elements.Length - 1);
+        
+        this.chosenElement = this.elements[exponent];
+        this.chosenElement.Value = (ulong)Math.Pow(10, exponent);
+        this.chosenElement.Initialise();
+        
+        if (showNow)
+        {
+            this.chosenElement.Rend.enabled = true;
+            this.chosenElement.ShowSparkles(true);
+        }
+        else
+        {
+            this.StartCoroutine(this.ShowCoroutine(this.chosenElement.Rend, () => this.chosenElement.ShowSparkles(true)));
+        }
+    }
+    
     
     #endregion
 
 
     #region Private
 
-
-    private void Randomize()
-    {
-        var totalOdds = 0;
-
-        foreach (var e in this.randomElements)
-        {
-            totalOdds += e.OddsRatio;
-        }
-
-        var r = Random.Range(0, totalOdds);
-        var prev = 0;
-        var curr = 0;
-
-        foreach (var e in this.randomElements)
-        {
-            curr += e.OddsRatio;
-
-            if (r >= prev && r < curr)
-            {
-                this.chosenElement = e;
-                break;
-            }
-
-            prev = curr;
-        }
-
-        foreach (var e in this.randomElements)
-        {
-            e.Rend.enabled = false;
-        }
-    }
 
     private void StartPulling()
     {
@@ -256,12 +242,24 @@ public class JunkController : LevelObjectController
         AudioManager.Instance.Play(this.source);
 
         this.chosenElement.Rend.enabled = false;
+        this.chosenElement.ShowSparkles(false);
 
         this.transform.eulerAngles = Vector3.forward * this.rotationAtAttraction;
 
         this.sparkParticles.Play();
 
         GameManager.Instance.Multiplier.Increment();
+    }
+    
+    private void HideAllElements()
+    {
+        this.StopAllCoroutines();
+        
+        foreach (var e in this.elements)
+        {
+            e.Rend.enabled = false;
+            e.ShowSparkles(false);
+        }
     }
 
 

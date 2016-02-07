@@ -1,5 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
+
+using Random = UnityEngine.Random;
 
 public abstract class LevelObjectController : MonoBehaviour
 {
@@ -32,7 +35,7 @@ public abstract class LevelObjectController : MonoBehaviour
     #region Coroutines
 
 
-    protected IEnumerator ShowCoroutine(Renderer rend)
+    protected IEnumerator ShowCoroutine(Renderer rend, Action onComplete = null)
     {
         var x = this.transform.position.x - this.showPositionRange.x;
         var t = x / (this.showPositionRange.y - this.showPositionRange.x);
@@ -50,6 +53,11 @@ public abstract class LevelObjectController : MonoBehaviour
             progress = Mathf.Clamp01((Time.time - time) / this.scaleDuration);
             this.transform.localScale = this.initialScale * this.scaleCurve.Evaluate(progress);
             yield return null;
+        }
+        
+        if (onComplete != null)
+        {
+            onComplete();
         }
     }
 

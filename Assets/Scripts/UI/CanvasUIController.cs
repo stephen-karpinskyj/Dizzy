@@ -73,10 +73,11 @@ public class CanvasUIController : MonoBehaviour
         AudioManager.Instance.Play(this.source);
     }
     
-    public void ForceUpdateAll(LevelData data, LevelState state, int junkCount)
+    public void ForceUpdateAll(LevelData data, TrialLevelState state, ulong junkCount, float junkMultiplier)
     {
         this.header.UpdateLevelTitleText(data.DisplayName);
-        this.progress.ForceUpdateAll(state, junkCount);
+        
+        this.progress.ForceUpdateAll(state, junkCount, junkMultiplier);
     }
 
     public void PlayClickSound()
@@ -108,7 +109,7 @@ public class CanvasUIController : MonoBehaviour
     #region Events
     
 
-    public void OnLevelStart(LevelData data, LevelState state, int junkCount)
+    public void OnLevelStart(LevelData data, TrialLevelState state, ulong junkCount, float junkMultiplier)
     {
         var isTrial = data is TrialLevelData;
         
@@ -119,7 +120,7 @@ public class CanvasUIController : MonoBehaviour
             this.timer.StartTimer(state.BestTime);
         }
         
-        this.ForceUpdateAll(data, state, junkCount);
+        this.ForceUpdateAll(data, state, junkCount, junkMultiplier);
 
         this.source.clip = this.launchClip;
         AudioManager.Instance.Play(this.source);
@@ -130,14 +131,11 @@ public class CanvasUIController : MonoBehaviour
         this.Show(true);
         
         this.timer.StopTimer();
-        
-        this.progress.OnLevelStop(data);
     }
     
-    public void OnLevelLoad(LevelData data, LevelState state, int junkCount)
+    public void OnLevelLoad(LevelData data, TrialLevelState state, ulong junkCount, float junkMultiplier)
     {
-        this.progress.OnLevelLoad(data);
-        this.ForceUpdateAll(data, state, junkCount);
+        this.ForceUpdateAll(data, state, junkCount, junkMultiplier);
     }
 
 

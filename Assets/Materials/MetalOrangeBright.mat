@@ -6,7 +6,7 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: CommonMetal
+  m_Name: MetalOrangeBright
   m_Shader: {fileID: 45, guid: 0000000000000000f000000000000000, type: 0}
   m_ShaderKeywords: _EMISSION
   m_LightmapFlags: 0
@@ -113,7 +113,7 @@ Material:
       data:
         first:
           name: _Glossiness
-        second: 0.416
+        second: 0.5
       data:
         first:
           name: _BumpScale
@@ -142,15 +142,15 @@ Material:
       data:
         first:
           name: _EmissionColor
-        second: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+        second: {r: 0.05, g: 0.05, b: 0.05, a: 1}
       data:
         first:
           name: _Color
-        second: {r: 0.8299632, g: 0.8545005, b: 0.875, a: 1}
+        second: {r: 1, g: 0.43772894, b: 0.27205884, a: 1}
       data:
         first:
           name: _SpecColor
-        second: {r: 0.3455882, g: 0.3455882, b: 0.3455882, a: 1}
+        second: {r: 0.31617647, g: 0.14699511, b: 0.09531791, a: 1}
       data:
         first:
           name: _Emission

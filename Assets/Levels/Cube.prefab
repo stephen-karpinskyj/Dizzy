@@ -1616,8 +1616,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: lvl_cube
   displayName: CUBE
-  noviceTime: 30
-  proTime: 7.6
+  goals:
+  - time: 80
+    multiplierIncrease: 0.5
+  - time: 60
+    multiplierIncrease: 1
+  - time: 40
+    multiplierIncrease: 2
+  - time: 30
+    multiplierIncrease: 3.5
+  - time: 20
+    multiplierIncrease: 6
+  - time: 16
+    multiplierIncrease: 10
+  - time: 13
+    multiplierIncrease: 13
+  - time: 11
+    multiplierIncrease: 18
+  - time: 9
+    multiplierIncrease: 25
+  - time: 7
+    multiplierIncrease: 40
+  - time: 6.5
+    multiplierIncrease: 64.5
 --- !u!114 &11442880
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1924,6 +1945,10 @@ Prefab:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 0}
+      propertyPath: goals.Array.size
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
       propertyPath: displayName
       value: CUBE
       objectReference: {fileID: 0}
@@ -1946,6 +1971,94 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: proTime
       value: 7.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[0].time
+      value: 80
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[1].time
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[2].time
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[3].time
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[4].time
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[5].time
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[6].time
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[9].time
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[8].time
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[7].time
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[0].multiplierIncrease
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[1].multiplierIncrease
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[2].multiplierIncrease
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[3].multiplierIncrease
+      value: 3.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[4].multiplierIncrease
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[5].multiplierIncrease
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[6].multiplierIncrease
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[7].multiplierIncrease
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[8].multiplierIncrease
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[9].multiplierIncrease
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[10].time
+      value: 6.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[10].multiplierIncrease
+      value: 64.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -26,13 +27,16 @@ public class ProgressUIController : MonoBehaviour
     private Text addedJunkCountText;
     
     [SerializeField]
-    private MedalUIController noviceMedal;
+    private Text junkMultiplierText;
+    
+    [SerializeField]
+    private Text addedJunkMultiplierText; 
+    
+    [SerializeField]
+    private TrialLevelGoalUIController[] trialGoals;
 
     [SerializeField]
-    private MedalUIController proMedal;
-
-    [SerializeField]
-    private Vector2 junkAddRateRange = new Vector2(295, 305);
+    private int junkAddRate = 300;
     
     [SerializeField]
     private Color normalTimeColor;
@@ -48,23 +52,6 @@ public class ProgressUIController : MonoBehaviour
 
 
     #endregion
-    
-    
-    #region Properties
-    
-    
-    public MedalUIController NoviceMedal
-    {
-        get { return this.noviceMedal; }
-    }
-    
-    public MedalUIController ProMedal
-    {
-        get { return this.proMedal; }
-    }
-    
-    
-    #endregion
 
 
     #region Unity
@@ -77,39 +64,12 @@ public class ProgressUIController : MonoBehaviour
         Debug.Assert(this.runCountText);
         Debug.Assert(this.junkCountText);
         Debug.Assert(this.addedJunkCountText);
-        Debug.Assert(this.noviceMedal);
-        Debug.Assert(this.proMedal);
+        Debug.Assert(this.trialGoals.Length > 0);
     }
 
     private void OnDisable()
     {
         this.StopAllCoroutines();
-    }
-    
-    
-    #endregion
-    
-    
-    #region Events
-    
-    
-    public void OnLevelStop(LevelData data)
-    {
-        var isTrial = data is TrialLevelData;
-        
-        this.noviceMedal.gameObject.SetActive(isTrial);
-        this.proMedal.gameObject.SetActive(isTrial);
-    }
-    
-    public void OnLevelLoad(LevelData data)
-    {
-        var trialData = data as TrialLevelData;
-        
-        if (trialData != null)
-        {
-            this.NoviceMedal.UpdateTime(trialData.NoviceTime);
-            this.ProMedal.UpdateTime(trialData.ProTime);
-        }
     }
     
     
@@ -121,39 +81,84 @@ public class ProgressUIController : MonoBehaviour
 
     public void UpdateBestTime(float time, float diff)
     {
-        this.StartCoroutine(this.TimeChangeCoroutine(this.bestTimeText, time));
+        this.StartCoroutine(this.FlashCoroutine(this.bestTimeText, FormattingUtility.TimeToString(time)));
         this.bestTimeDiffText.gameObject.SetActive(true);
-        this.bestTimeDiffText.text = LevelState.TimeDiffToString(diff);
+        this.bestTimeDiffText.text = FormattingUtility.TimeDiffToString(diff);
     }
 
     public void UpdateLastTime(float time)
     {
-        this.StartCoroutine(this.TimeChangeCoroutine(this.lastTimeText, time));
+        this.StartCoroutine(this.FlashCoroutine(this.lastTimeText, FormattingUtility.TimeToString(time)));
     }
 
     public void UpdateRunCount(int count)
     {
-        this.runCountText.text = LevelState.RunCountToString(count);
+        this.runCountText.text = FormattingUtility.RunCountToString(count);
     }
 
-    public void UpdateJunkCount(int count, int change)
+    public void UpdateJunkCount(ulong count, ulong change)
     {
         this.StartCoroutine(this.JunkChangeCoroutine(count, change));
     }
-
-    public void ForceUpdateAll(LevelState state, int junkCount)
+    
+    public void UpdateJunkMultiplier(float multiplier, float change = 0f)
     {
-        this.bestTimeText.text = LevelState.TimeToString(state.BestTime);
-        this.bestTimeText.color = this.normalTimeColor;
-        this.bestTimeDiffText.gameObject.SetActive(false);
-        this.lastTimeText.text = LevelState.TimeToString(state.LastTime);
-        this.lastTimeText.color = this.normalTimeColor;
-        this.runCountText.text = LevelState.RunCountToString(state.RunCount);
-        this.noviceMedal.UpdateEarnt(state.NoviceMedalEarnt);
-        this.proMedal.UpdateEarnt(state.ProMedalEarnt);
+        this.junkMultiplierText.text = FormattingUtility.JunkMultiplierToString(multiplier);
         
-        this.junkCountText.text = StateManager.JunkCountToString(junkCount);
+        if (Mathf.Approximately(change, 0f))
+        {
+            this.addedJunkMultiplierText.text = string.Empty;
+        }
+        else
+        {
+            this.addedJunkMultiplierText.text = FormattingUtility.SignedJunkMultiplierToString(change);
+        }
+    }
+    
+    public void UpdateGoals(TrialLevelState state)
+    {
+        var i = 0;
+        
+        if (state != null)
+        {
+            foreach (var g in state.ActiveGoals)
+            {
+                if (i >= this.trialGoals.Length)
+                {
+                    break;
+                }
+                
+                this.trialGoals[i].UpdateData(g);
+                
+                i++;
+            }
+        }
+
+        while (i < this.trialGoals.Length)
+        {
+            this.trialGoals[i].Hide();
+            i++;
+        }
+    }
+
+    public void ForceUpdateAll(TrialLevelState state, ulong junkCount, float junkMultiplier)
+    {
+        if (state != null)
+        {
+            this.bestTimeText.text = FormattingUtility.TimeToString(state.BestTime);
+            this.bestTimeText.color = this.normalTimeColor;
+            this.bestTimeDiffText.gameObject.SetActive(false);
+            this.lastTimeText.text = FormattingUtility.TimeToString(state.LastTime);
+            this.lastTimeText.color = this.normalTimeColor;
+            this.runCountText.text = FormattingUtility.RunCountToString(state.RunCount);
+        }
+        
+        this.UpdateGoals(state);
+
+        this.junkCountText.text = FormattingUtility.JunkCountToString(junkCount);
         this.addedJunkCountText.gameObject.SetActive(false);
+        
+        this.UpdateJunkMultiplier(junkMultiplier);
     }
     
     
@@ -163,9 +168,9 @@ public class ProgressUIController : MonoBehaviour
     #region Coroutines
     
 
-    private IEnumerator TimeChangeCoroutine(Text text, float time)
+    private IEnumerator FlashCoroutine(Text text, string value)
     {
-        text.text = LevelState.TimeToString(time);
+        text.text = value;
 
         for (int i = 0; i < this.timeChangeFlashCount; i++)
         {
@@ -176,7 +181,7 @@ public class ProgressUIController : MonoBehaviour
         }
     }
 
-    private IEnumerator JunkChangeCoroutine(int count, int change)
+    private IEnumerator JunkChangeCoroutine(ulong count, ulong change)
     {
         if (change == 0)
         {
@@ -185,7 +190,7 @@ public class ProgressUIController : MonoBehaviour
         }
 
         this.addedJunkCountText.gameObject.SetActive(true);
-        this.addedJunkCountText.text = change.ToString("+#;-#");
+        this.addedJunkCountText.text = FormattingUtility.SignedJunkCountToString(change);
 
         var finalCount = count;
         count -= change;
@@ -196,20 +201,24 @@ public class ProgressUIController : MonoBehaviour
         var countMin = (dir == 1) ? count : finalCount;
         var countMax = (dir == 1) ? finalCount : count;
 
-        while (change != 0)
+        var range = Math.Pow(this.junkAddRate, Math.Max(1, Math.Log10(count + change) - 0.5));
+
+        while (count != finalCount)
         {
-            var r = Random.Range(this.junkAddRateRange.x, this.junkAddRateRange.y);
-            var changeThisFrame = Mathf.RoundToInt(Time.deltaTime * r * dir);
+            var changeThisFrame = (ulong)(Time.deltaTime * range * dir);
 
             if (changeThisFrame == 0)
             {
-                changeThisFrame = 1 * dir;
+                changeThisFrame = (ulong)(1 * dir);
             }
 
-            change = Mathf.Clamp(change - changeThisFrame, changeMin, changeMax);
-            count = Mathf.Clamp(count + changeThisFrame, countMin, countMax);
+            change -= changeThisFrame;
+            change = change < changeMin ? changeMin : change > changeMax ? changeMax : change;
+            
+            count += changeThisFrame;
+            count = count < countMin ? countMin : count > countMax ? countMax : count;
 
-            this.junkCountText.text = StateManager.JunkCountToString(count);
+            this.junkCountText.text = FormattingUtility.JunkCountToString(count);
 
             yield return null;
         }

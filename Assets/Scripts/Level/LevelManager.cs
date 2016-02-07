@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using Object = UnityEngine.Object;
+using Random = UnityEngine.Random;
 
 public class LevelManager : MonoBehaviour
 {
@@ -16,7 +17,7 @@ public class LevelManager : MonoBehaviour
     
     private HashSet<JunkController> allJunk;
     private HashSet<JunkController> uncollectedJunk;
-    private int totalCollectedJunkValue;
+    private ulong totalCollectedJunkValue;
     
     private float startTime;
     private Action onLevelWin;
@@ -29,7 +30,7 @@ public class LevelManager : MonoBehaviour
     
     
     public LevelData CurrentLevel { get; private set; }
-    public LevelState CurrentLevelState { get; private set; }
+    public TrialLevelState CurrentLevelState { get; private set; }
     
     
     #endregion
@@ -83,7 +84,17 @@ public class LevelManager : MonoBehaviour
         Debug.Assert(!this.CurrentLevel);
         
         this.CurrentLevel = Object.Instantiate(levelPrefab);
-        this.CurrentLevelState = StateManager.Instance.GetLevel(this.CurrentLevel.Id);
+        
+        if (this.CurrentLevel is TrialLevelData)
+        {
+            this.CurrentLevelState = StateManager.Instance.GetLevel(this.CurrentLevel.Id);
+            this.CurrentLevelState.UpdateWithData(this.CurrentLevel as TrialLevelData);
+        }
+        else
+        {
+            this.CurrentLevelState = null;
+        }
+        
         this.onLevelWin = onLevelWin;
                 
         foreach (var n in this.CurrentLevel.GetComponentsInChildren<LevelObjectNode>())
@@ -108,13 +119,17 @@ public class LevelManager : MonoBehaviour
     {
         this.EarnCollectedJunk();
         
+        this.InitialiseJunk();
+        
         foreach (var n in this.nodes)
         {
             n.OnLevelStop();
         }
-        
-        this.uncollectedJunk.Clear();
-        this.uncollectedJunk.UnionWith(allJunk);
+    }
+    
+    public void ReinitialiseJunkValues()
+    {
+        this.InitialiseJunk(true);
     }
     
     public void OnLevelWin()
@@ -146,7 +161,7 @@ public class LevelManager : MonoBehaviour
     {
         Debug.Assert(junk);
         
-        this.totalCollectedJunkValue += junk.ChosenElement.JunkValue;
+        this.totalCollectedJunkValue += junk.ChosenElement.Value;
         this.uncollectedJunk.Remove(junk);
         
         if (this.uncollectedJunk.Count <= 0)
@@ -174,21 +189,18 @@ public class LevelManager : MonoBehaviour
         this.totalCollectedJunkValue = 0;
     }
     
-    
     private void HandleTrialWin()
     {
         var prevBest = this.CurrentLevelState.BestTime;
         var prevLast = this.CurrentLevelState.LastTime;
         var prevRuns = this.CurrentLevelState.RunCount;
-        var prevNovice = this.CurrentLevelState.NoviceMedalEarnt;
-        var prevPro = this.CurrentLevelState.ProMedalEarnt;
 
-        var currBest = this.CurrentLevelState.HandleWin(Time.time - this.startTime, this.CurrentLevel);
+        var currBest = this.CurrentLevelState.HandleWin(Time.time - this.startTime, this.CurrentLevel as TrialLevelData);
         var isNewTimeRecord = currBest < prevBest;
         var currLast = this.CurrentLevelState.LastTime;
         var currRuns = this.CurrentLevelState.RunCount;
-        var currNovice = this.CurrentLevelState.NoviceMedalEarnt;
-        var currPro = this.CurrentLevelState.ProMedalEarnt;
+        
+        var prevMultiplier = StateManager.Instance.JunkMultiplier;
 
         this.canvas.HandleLevelWin(isNewTimeRecord);
 
@@ -206,15 +218,72 @@ public class LevelManager : MonoBehaviour
         {
             this.canvas.Progress.UpdateRunCount(currRuns);
         }
-
-        if (prevNovice != currNovice)
+        
+        this.canvas.Progress.UpdateGoals(this.CurrentLevelState);
+        
+        this.CurrentLevelState.UpdateWithData(this.CurrentLevel as TrialLevelData);
+        StateManager.Instance.UpdateJunkMultiplier();
+        
+        var currMultiplier = StateManager.Instance.JunkMultiplier;
+        this.canvas.Progress.UpdateJunkMultiplier(currMultiplier, currMultiplier - prevMultiplier);
+        
+        // SK: HACK: Shouldn't need to call this twice (both in level stop and level won)
+        this.InitialiseJunk();
+    }
+    
+    private void InitialiseJunk(bool showJunkNow = false)
+    {
+        this.uncollectedJunk.Clear();
+        this.uncollectedJunk.UnionWith(allJunk);
+        
+        var total = Math.Round((ulong)this.allJunk.Count * (double)StateManager.Instance.JunkMultiplier);
+        
+        var shuffledJunk = new List<JunkController>(this.allJunk);
+        shuffledJunk.Shuffle();
+        
+        var highValueDic = new Dictionary<int, double>();
+        var numAssigned = 0;
+        
+        // Calculate high-value element counts
         {
-            this.canvas.Progress.NoviceMedal.UpdateEarnt(currNovice);
+            var temp = total;
+            var log10 = (int)Math.Round(Math.Log10(total), MidpointRounding.AwayFromZero);
+            
+            const int NumHighValueElementTypes = 2;
+            for (var i = log10 - 1; i >= Mathf.Max(log10 - NumHighValueElementTypes, 1); i--)
+            {
+                var scale = Math.Pow(10, i);
+                var floor = Math.Floor(temp / scale);
+                var ceil = Math.Ceiling(temp / scale);
+                
+                temp -= scale * floor;
+                highValueDic[i] = ceil;
+            }
         }
-
-        if (prevPro != currPro)
+        
+        // Assign high-value elements
+        foreach (var kv in highValueDic)
         {
-            this.canvas.Progress.ProMedal.UpdateEarnt(currPro);
+            var exponent = kv.Key;
+            
+            for (var i = 0; i < kv.Value; i++)
+            {
+                shuffledJunk[numAssigned].SetElement(exponent, showJunkNow);
+                numAssigned++;
+            }
+        }
+        
+        // Assign low-value elements
+        {
+            var maxLeftoverExponent = total > 1000 ? 1 : 0;
+            
+            while (numAssigned < shuffledJunk.Count)
+            {
+                var exponent = maxLeftoverExponent == 0 ? 0 : Random.Range(0, maxLeftoverExponent);
+                
+                shuffledJunk[numAssigned].SetElement(exponent, showJunkNow);
+                numAssigned++;
+            }
         }
     }
 

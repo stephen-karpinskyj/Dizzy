@@ -1,20 +1,43 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class TrialLevelData : LevelData
 {
-    [SerializeField, Range(1, 128)]
-    private float noviceTime = 25f;
+    [SerializeField]
+    private TrialLevelDataGoal[] goals;
     
-    [SerializeField, Range(1, 128)]
-    private float proTime = 10f;
-    
-    public float NoviceTime
+    public float GetCompletedGoalMultiplier(float time)
     {
-        get { return this.noviceTime; }
+        var multiplier = 0f;
+        
+        foreach (var g in this.goals)
+        {
+            if (g.Time >= time)
+            {
+                multiplier += g.MultiplierIncrease;
+            }
+        }
+        
+        return multiplier;
     }
     
-    public float ProTime
+    public List<TrialLevelDataGoal> GetActiveGoals(float time, int count)
     {
-        get { return this.proTime; }
+        var active = new List<TrialLevelDataGoal>();
+        
+        foreach (var g in this.goals)
+        {
+            if (g.Time < time)
+            {
+                active.Add(g);
+            }
+            
+            if (active.Count >= count)
+            {
+                break;
+            }
+        }
+        
+        return active;
     }
 }

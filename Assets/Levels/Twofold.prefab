@@ -723,8 +723,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: lvl_twofold
   displayName: TWOFOLD
-  noviceTime: 22
-  proTime: 7.7
+  goals:
+  - time: 25
+    multiplierIncrease: 1
+  - time: 20
+    multiplierIncrease: 2.5
+  - time: 15
+    multiplierIncrease: 5
+  - time: 10
+    multiplierIncrease: 10
+  - time: 8
+    multiplierIncrease: 20
+  - time: 7.5
+    multiplierIncrease: 60
 --- !u!114 &11416502
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -939,8 +950,60 @@ Prefab:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 0}
+      propertyPath: goals.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
       propertyPath: proTime
       value: 7.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[0].time
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[1].time
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[2].time
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[3].time
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[4].time
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[4].multiplierIncrease
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[3].multiplierIncrease
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[2].multiplierIncrease
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[1].multiplierIncrease
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[0].multiplierIncrease
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[5].multiplierIncrease
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[5].time
+      value: 7.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

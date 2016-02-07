@@ -31,12 +31,7 @@ public class MedalUIController : MonoBehaviour
 
     public void UpdateTime(float time)
     {
-        Debug.Assert(time < 1000);
-        
-        const int MaxDigits = 4;
-        var numDp = MaxDigits - ((int)time).ToString().Length;
-        
-        this.timeText.text = time.ToString("F" + numDp);
+        this.timeText.text = FormattingUtility.VariableDPTimeToString(time);
     }
 
     public void UpdateEarnt(bool earnt)

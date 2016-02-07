@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -9,9 +10,11 @@ public class StateManager : BehaviourSingleton<StateManager>
     #region Constants
     
     
-    private const int DefaultJunkCount = 0;
-    private const int MinJunkCount = DefaultJunkCount;
-    private const int MaxJunkCount = 99999999;
+    private const ulong DefaultJunkCount = 0;
+    private const ulong MinJunkCount = DefaultJunkCount;
+    private const ulong MaxJunkCount = 999999999999999999;
+    
+    private const float DefaultJunkMultiplier = 1f;
 
 
     #endregion
@@ -57,27 +60,30 @@ public class StateManager : BehaviourSingleton<StateManager>
     #region Progress
 
 
-    private Dictionary<string, LevelState> levelStateDic;
+    private Dictionary<string, TrialLevelState> levelStateDic;
 
-    public int JunkCount
+    public ulong JunkCount
     {
-        get { return PlayerPrefs.GetInt("State.JunkCount", DefaultJunkCount); }
-        private set { PlayerPrefs.SetInt("State.JunkCount", ClampJunkCount(value)); }
+        get { return ulong.Parse(PlayerPrefs.GetString("State.JunkCount", "0")); }
+        private set { PlayerPrefs.SetString("State.JunkCount", ClampJunkCount(value).ToString()); }
     }
+    
+    public float JunkMultiplier { get; private set; }
 
-    public void ResetProgress()
+    public void ResetProgress(TrialLevelData data)
     {
         foreach (var l in this.levelStateDic)
         {
-            l.Value.ResetProgress();
+            l.Value.ResetProgress(data);
         }
         
         this.JunkCount = DefaultJunkCount;
+        this.UpdateJunkMultiplier();
 
         Save();
     }
 
-    public int HandleNewJunk(int count)
+    public ulong HandleNewJunk(ulong count)
     {
         count = ClampJunkCount(this.JunkCount + count);
 
@@ -91,14 +97,24 @@ public class StateManager : BehaviourSingleton<StateManager>
         return this.JunkCount;
     }
     
-    public LevelState GetLevel(string id)
+    public TrialLevelState GetLevel(string id)
     {
         if (!this.levelStateDic.ContainsKey(id))
         {
-            this.levelStateDic[id] = new LevelState(id);
+            this.levelStateDic[id] = new TrialLevelState(id);
         }
         
         return this.levelStateDic[id];
+    }
+    
+    public void UpdateJunkMultiplier()
+    {
+        this.JunkMultiplier = DefaultJunkMultiplier;
+        
+        foreach (var l in this.levelStateDic)
+        {
+            this.JunkMultiplier += l.Value.JunkMultiplier;
+        }
     }
 
 
@@ -112,12 +128,14 @@ public class StateManager : BehaviourSingleton<StateManager>
     {
         base.Awake();
         
-        this.levelStateDic = new Dictionary<string, LevelState>();
+        this.levelStateDic = new Dictionary<string, TrialLevelState>();
         
         foreach (var l in Data.Instance.Levels)
         {
-            this.levelStateDic.Add(l.Id, new LevelState(l.Id));
+            this.levelStateDic[l.Id] = new TrialLevelState(l.Id);
         }
+        
+        this.UpdateJunkMultiplier();
     }
     
     
@@ -127,14 +145,19 @@ public class StateManager : BehaviourSingleton<StateManager>
     #region Helpers
 
 
-    public static string JunkCountToString(int count)
+    private static ulong ClampJunkCount(ulong count)
     {
-        return string.Format("{0:00000000}", count);
-    }
-
-    private static int ClampJunkCount(int count)
-    {
-        return Mathf.Clamp(count, MinJunkCount, MaxJunkCount);
+        if (count < MinJunkCount)
+        {
+            return MinJunkCount;
+        }
+        
+        if (count > MaxJunkCount)
+        {
+            return MaxJunkCount;
+        }
+        
+        return count;
     }
 
     public static void Save()

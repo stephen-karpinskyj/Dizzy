@@ -115,8 +115,9 @@ public class GameManager : BehaviourSingleton<GameManager>
     
     public void ResetProgress()
     {
-        StateManager.Instance.ResetProgress();
-        this.canvas.ForceUpdateAll(this.level.CurrentLevel, this.level.CurrentLevelState, StateManager.Instance.JunkCount);
+        StateManager.Instance.ResetProgress(this.level.CurrentLevel as TrialLevelData);
+        this.level.ReinitialiseJunkValues();
+        this.canvas.ForceUpdateAll(this.level.CurrentLevel, this.level.CurrentLevelState, StateManager.Instance.JunkCount, StateManager.Instance.JunkMultiplier);
     }
     
     public void LoadNextLevel(bool forward)
@@ -161,7 +162,7 @@ public class GameManager : BehaviourSingleton<GameManager>
         this.level.OnLevelLoad(level, () => this.OnLevelStop(true));
         this.OnLevelStop(false);
         
-        this.canvas.OnLevelLoad(this.level.CurrentLevel, this.level.CurrentLevelState, StateManager.Instance.JunkCount);
+        this.canvas.OnLevelLoad(this.level.CurrentLevel, this.level.CurrentLevelState, StateManager.Instance.JunkCount, StateManager.Instance.JunkMultiplier);
     }
     
     private void OnLevelStop(bool won)
@@ -203,7 +204,7 @@ public class GameManager : BehaviourSingleton<GameManager>
         this.launchLights.OnLevelStart();
 
         this.level.OnLevelStart();
-        this.canvas.OnLevelStart(this.level.CurrentLevel, this.level.CurrentLevelState, StateManager.Instance.JunkCount);
+        this.canvas.OnLevelStart(this.level.CurrentLevel, this.level.CurrentLevelState, StateManager.Instance.JunkCount, StateManager.Instance.JunkMultiplier);
         
         if (this.isExploration)
         {

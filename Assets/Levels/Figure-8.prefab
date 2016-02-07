@@ -2819,8 +2819,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: lvl_figure8
   displayName: FIGURE8
-  noviceTime: 20
-  proTime: 7.9
+  goals:
+  - time: 45
+    multiplierIncrease: 1
+  - time: 30
+    multiplierIncrease: 1.5
+  - time: 20
+    multiplierIncrease: 2
+  - time: 15
+    multiplierIncrease: 3
+  - time: 12
+    multiplierIncrease: 5
+  - time: 10
+    multiplierIncrease: 7
+  - time: 9
+    multiplierIncrease: 9
+  - time: 8
+    multiplierIncrease: 15
+  - time: 7.5
+    multiplierIncrease: 25
+  - time: 7
+    multiplierIncrease: 40
+  - time: 6.5
+    multiplierIncrease: 99
 --- !u!114 &11474524
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3116,6 +3137,10 @@ Prefab:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 0}
+      propertyPath: goals.Array.size
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
       propertyPath: id
       value: lvl_figure8
       objectReference: {fileID: 0}
@@ -3134,6 +3159,102 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: m_LocalPosition.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[0].time
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[1].time
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[2].time
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[3].time
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[4].time
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[0].multiplierIncrease
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[1].multiplierIncrease
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[2].multiplierIncrease
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[3].multiplierIncrease
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[4].multiplierIncrease
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[5].time
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[5].multiplierIncrease
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[6].time
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[7].time
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[8].time
+      value: 7.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[9].time
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[6].multiplierIncrease
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[7].multiplierIncrease
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[8].multiplierIncrease
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[9].multiplierIncrease
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[11].time
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[11].multiplierIncrease
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[10].time
+      value: 6.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: goals.Array.data[10].multiplierIncrease
+      value: 99
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
