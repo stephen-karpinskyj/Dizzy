@@ -3,7 +3,9 @@
 	Properties
 	{
 		_Stars ("Stars (RGB)", 2D) = "white" { }
-		_Nebula ("Nebula (RGB)",2D) = "white" {}	
+		_Nebula ("Nebula (RGB)",2D) = "white" {}
+		_Blast ("Blast Properties",Vector) = (0,0,1,.1)		//X = x position,Y = y position,Z = radius,W = height
+		_BlastColor ("Blast Color",Vector) = (3,1,3,1)		
 
 	}
 	SubShader 
@@ -33,6 +35,9 @@
 			sampler2D _Stars;
 			sampler2D _Nebula;
 
+			float4 _Blast;
+			half4 _BlastColor;
+
 			struct vertexInput
 			{
       			float4 vertex : POSITION;
@@ -44,8 +49,8 @@
 			struct fragmentInput {
         		float4 uv1 : TEXCOORD0;
         		float4 uv2 : TEXCOORD1;
-                float4 uv3 : TEXCOORD2;
-        		
+        		float4 uv3 : TEXCOORD2;
+        		float4 blastColor : TEXCOORD3;
         		float4 pos : SV_POSITION;
         		float4 color : COLOR;
 			};
@@ -85,6 +90,14 @@
 				}
 				o.color = h;
 
+				//handle blast				
+				float4 origin = float4(_Blast.x,_Blast.y,20,1);
+         		half3 blastNormal = (normalize(worldPos.xyz-origin.xyz));
+         		float dis = max(1-abs(_Blast.z-distance(worldPos.xyz,origin.xyz)*.5),0);
+          		o.blastColor = float4(dis.xxx,0)*_Blast.w;  
+          		v.vertex.xyz += dis*_Blast.w*float3(blastNormal.x,1,blastNormal.y);
+          		//end of blast section
+
 				o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
 				return o;
 			}
@@ -102,7 +115,7 @@
 				half3 _md_stars = lerp(0,0.5,md_stars.g);
 				half3 _lg_stars = lerp(0,0.5,lg_stars.r);
 				
-				half4 stars_combined = half4(_sm_stars+_md_stars+_lg_stars,1)+v.color*a_nebula.r*b_nebula.g*3;
+				half4 stars_combined = half4(_sm_stars+_md_stars+_lg_stars,1)+v.color*a_nebula.r*b_nebula.g*3+(v.blastColor*_BlastColor);
 
 				return stars_combined;				
                 //return float4(v.color.rgb,1);
