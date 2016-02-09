@@ -48,7 +48,7 @@
       
 			struct fragmentInput {
         		float4 uv1 : TEXCOORD0;
-        		float4 uv2 : TEXCOORD1;
+        		float2 uv2 : TEXCOORD1;
         		float4 uv3 : TEXCOORD2;
         		float4 blastColor : TEXCOORD3;
         		float4 pos : SV_POSITION;
@@ -66,15 +66,11 @@
                 o.uv1.xy += _Offset12.xy;
                 o.uv1.zw += _Offset12.zw;
                 o.uv3.xy += _Offset34.xy;
-                
+
+                half3 worldPos = mul(_Object2World,v.vertex).xyz;
+
                 // Nebula uv scrolling
-				o.uv2 = v.texcoord.xyxy;
-
-				o.uv2.x += _Time.x*.1;
-				o.uv2.y -= _Time.x*.1;
-				o.uv2.z -= _Time.x*.1;
-
-				half3 worldPos = mul(_Object2World,v.vertex).xyz;
+				o.uv2 = worldPos.xy*.1;
 				
 				// Loops over all the points
 				half4 h = 0;
@@ -109,7 +105,7 @@
 				half4 lg_stars = tex2D(_Stars,v.uv3.xy);
 
 				half4 a_nebula = tex2D(_Nebula,v.uv2.xy);
-				half4 b_nebula = tex2D(_Nebula,v.uv2.zw);
+				half4 b_nebula = tex2D(_Nebula,v.uv2.xy);
 				
 				half3 _sm_stars = lerp(0,0.5,sm_stars.b);
 				half3 _md_stars = lerp(0,0.5,md_stars.g);
