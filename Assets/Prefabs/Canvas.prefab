@@ -2921,8 +2921,12 @@ MonoBehaviour:
   spinDirectionCCWText: 'SPIN: CCW'
   spinDirectionCWText: 'SPIN: CW'
   graphicsModePrefixText: 'GRAPHICS: '
-  graphicsModeParents:
-  - {fileID: 0}
+  starfieldMeshes:
+  - {fileID: 4300006, guid: 0dfe1f04a0de348bdb7167e3f19be57c, type: 3}
+  - {fileID: 4300008, guid: 0dfe1f04a0de348bdb7167e3f19be57c, type: 3}
+  - {fileID: 4300004, guid: 0dfe1f04a0de348bdb7167e3f19be57c, type: 3}
+  - {fileID: 4300002, guid: 0dfe1f04a0de348bdb7167e3f19be57c, type: 3}
+  starfieldMeshFilter: {fileID: 0}
 --- !u!114 &11458298
 MonoBehaviour:
   m_ObjectHideFlags: 1

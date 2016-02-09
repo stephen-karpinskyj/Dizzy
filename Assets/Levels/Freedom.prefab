@@ -40,7 +40,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: lvl_freedom
-  displayName: 15s
+  displayName: EXPLORE
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -54,7 +54,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: displayName
-      value: 15s
+      value: EXPLORE
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

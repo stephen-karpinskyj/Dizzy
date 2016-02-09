@@ -40,7 +40,10 @@ public class SettingsUIController : MonoBehaviour
     private string graphicsModePrefixText = "GRAPHICS: ";
 
     [SerializeField]
-    private GameObject[] graphicsModeParents;
+    private Mesh[] starfieldMeshes;
+    
+    [SerializeField]
+    private MeshFilter starfieldMeshFilter;
 
     private bool isResetProgressConfirmShowing = false;
 
@@ -107,22 +110,33 @@ public class SettingsUIController : MonoBehaviour
     
     private int UpdateGraphicsModeToggle(int mode)
     {
-        if (mode > this.graphicsModeParents.Length - 1)
+        if (mode > this.starfieldMeshes.Length + 1)
         {
             mode = 0;
         }
         
         if (mode < 0)
         {
-            mode = this.graphicsModeParents.Length - 1;
+            mode = this.starfieldMeshes.Length + 1;
         }
         
         this.graphicsModeText.text = this.graphicsModePrefixText + (mode + 1);
         
-        for (int i = 0; i < this.graphicsModeParents.Length; i++)
+        if (mode == this.starfieldMeshes.Length + 1)
         {
-            var go = this.graphicsModeParents[i];
-            go.SetActive(i == mode);
+            this.starfieldMeshFilter.GetComponent<Renderer>().enabled = true;
+            this.starfieldMeshFilter.mesh = this.starfieldMeshes[0];
+            this.starfieldMeshFilter.GetComponent<StarfieldController>().ToggleNebula(false);
+        }
+        else if (mode == this.starfieldMeshes.Length)
+        {
+            this.starfieldMeshFilter.GetComponent<Renderer>().enabled = false;
+        }
+        else
+        {
+            this.starfieldMeshFilter.GetComponent<Renderer>().enabled = true;
+            this.starfieldMeshFilter.mesh = this.starfieldMeshes[mode];
+            this.starfieldMeshFilter.GetComponent<StarfieldController>().ToggleNebula(true);
         }
         
         return mode;

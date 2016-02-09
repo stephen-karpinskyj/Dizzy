@@ -143,15 +143,16 @@ public class ProgressUIController : MonoBehaviour
 
     public void ForceUpdateAll(TrialLevelState state, ulong junkCount, float junkMultiplier)
     {
-        if (state != null)
-        {
-            this.bestTimeText.text = FormattingUtility.TimeToString(state.BestTime);
-            this.bestTimeText.color = this.normalTimeColor;
-            this.bestTimeDiffText.gameObject.SetActive(false);
-            this.lastTimeText.text = FormattingUtility.TimeToString(state.LastTime);
-            this.lastTimeText.color = this.normalTimeColor;
-            this.runCountText.text = FormattingUtility.RunCountToString(state.RunCount);
-        }
+        var best = state == null ? 0f : state.BestTime;
+        var last = state == null ? 0f : state.LastTime;
+        var runs = state == null ? 0 : state.RunCount;
+        
+        this.bestTimeText.text = FormattingUtility.TimeToString(best);
+        this.bestTimeText.color = this.normalTimeColor;
+        this.bestTimeDiffText.gameObject.SetActive(false);
+        this.lastTimeText.text = FormattingUtility.TimeToString(last);
+        this.lastTimeText.color = this.normalTimeColor;
+        this.runCountText.text = FormattingUtility.RunCountToString(runs);
         
         this.UpdateGoals(state);
 

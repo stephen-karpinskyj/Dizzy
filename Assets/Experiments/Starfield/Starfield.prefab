@@ -24,7 +24,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 160890}
-  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071067}
+  m_LocalRotation: {x: 0.7071066, y: 0, z: 0, w: -0.70710695}
   m_LocalPosition: {x: -0, y: 0, z: 20}
   m_LocalScale: {x: 6.2, y: 6.2, z: 6.2}
   m_Children: []
@@ -62,7 +62,7 @@ MeshFilter:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 160890}
-  m_Mesh: {fileID: 4300000, guid: 0dfe1f04a0de348bdb7167e3f19be57c, type: 3}
+  m_Mesh: {fileID: 4300004, guid: 0dfe1f04a0de348bdb7167e3f19be57c, type: 3}
 --- !u!114 &11496984
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -74,13 +74,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ba64e92d57204ee8b8858548057ed29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speedMultiplier: 0.05
-  numPoints: 99
+  speedMultiplier: 0.03
+  numPoints: 20
   material: {fileID: 2100000, guid: 01aac410d67734651a33aa527df5ea1e, type: 2}
   velocityRange: {x: -0.8, y: 0.8}
-  radiusRange: {x: 0.5, y: 2}
-  intensity: 0.2
-  bounds: {x: -10, y: 10, z: -10, w: 10}
+  radiusRange: {x: 0.1, y: 10}
+  intensity: 0.12
+  bounds: {x: -20, y: 20, z: -15, w: 15}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

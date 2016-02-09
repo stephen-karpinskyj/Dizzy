@@ -20,8 +20,6 @@ public class GameManager : BehaviourSingleton<GameManager>
     
     private Vector2 offset;
     private Vector3 prevAcceleration;
-    
-    private bool isExploration;
 
 
     #endregion
@@ -31,6 +29,8 @@ public class GameManager : BehaviourSingleton<GameManager>
 
 
     public bool IsRunning { get { return this.isRunning; } }
+    
+    public bool InExplorationMode { get; private set; }
 
     public ShipController Ship { get; private set; }
 
@@ -53,6 +53,7 @@ public class GameManager : BehaviourSingleton<GameManager>
         }
 
         var shouldRun = false;
+        var usingKeyboard = false;
 
         if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
         {
@@ -63,11 +64,24 @@ public class GameManager : BehaviourSingleton<GameManager>
         {
             shouldRun = Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space) ||
                 (Input.GetMouseButtonDown(0) && (!EventSystem.current || !EventSystem.current.IsPointerOverGameObject()));
+            
+            usingKeyboard = true;
         }
         
         if (shouldRun)
         {
             this.OnLevelStart();
+        }
+        else if (usingKeyboard)
+        {
+            if (Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                this.LoadNextLevel(false);
+            }
+            else if (Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                this.LoadNextLevel(true);
+            }
         }
     }
 
@@ -144,9 +158,9 @@ public class GameManager : BehaviourSingleton<GameManager>
     {
         Debug.LogFormat("[{0}] Loading level={1}", this.GetType().Name, level.Id);
         
-        this.isExploration = level is ExplorationLevelData;
+        this.InExplorationMode = level is ExplorationLevelData;
         
-        if (this.isExploration)
+        if (this.InExplorationMode)
         {
             CameraController.AddChild(this.starfield.transform);
         }
@@ -156,7 +170,7 @@ public class GameManager : BehaviourSingleton<GameManager>
             this.starfield.ResetPosition();
         }
         
-        CameraController.ChangeMode(this.isExploration);
+        CameraController.ChangeMode(this.InExplorationMode);
         
         this.level.OnLeveUnload();
         this.level.OnLevelLoad(level, () => this.OnLevelStop(true));
@@ -205,17 +219,11 @@ public class GameManager : BehaviourSingleton<GameManager>
 
         this.level.OnLevelStart();
         this.canvas.OnLevelStart(this.level.CurrentLevel, this.level.CurrentLevelState, StateManager.Instance.JunkCount, StateManager.Instance.JunkMultiplier);
-        
-        if (this.isExploration)
-        {
-            // SK: TODO: Fuel mechanic
-            this.StartCoroutine(this.DelayedLevelStop(15f));
-        }
     }
     
     private void UpdateStarfield()
     {
-        if (this.isExploration)
+        if (this.InExplorationMode)
         {
             this.offset = (Vector2)GameManager.Instance.Ship.Trans.position;
         }

@@ -382,14 +382,14 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 11458084, guid: d64000cbb614c43999022dda09a24e8e, type: 2}
+      propertyPath: starfieldMeshFilter
+      value: 
+      objectReference: {fileID: 1288511700}
     - target: {fileID: 22367364, guid: d64000cbb614c43999022dda09a24e8e, type: 2}
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 1663139705}
-    - target: {fileID: 11458084, guid: d64000cbb614c43999022dda09a24e8e, type: 2}
-      propertyPath: graphicsModeParents.Array.data[0]
-      value: 
-      objectReference: {fileID: 1288511697}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d64000cbb614c43999022dda09a24e8e, type: 2}
   m_IsPrefabParent: 0
@@ -507,9 +507,10 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 965d4b0dc1738469c8592156ddfadb17, type: 2}
   m_IsPrefabParent: 0
---- !u!1 &1288511697 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 160890, guid: c8cfdc017372d4ac1898244e069928f9, type: 2}
+--- !u!33 &1288511700 stripped
+MeshFilter:
+  m_PrefabParentObject: {fileID: 3347304, guid: c8cfdc017372d4ac1898244e069928f9,
+    type: 2}
   m_PrefabInternal: {fileID: 1581522621}
 --- !u!1001 &1290270704
 Prefab:
@@ -702,39 +703,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 428462, guid: c8cfdc017372d4ac1898244e069928f9, type: 2}
       propertyPath: m_RootOrder
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 3347304, guid: c8cfdc017372d4ac1898244e069928f9, type: 2}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 4300004, guid: 0dfe1f04a0de348bdb7167e3f19be57c, type: 3}
-    - target: {fileID: 11496984, guid: c8cfdc017372d4ac1898244e069928f9, type: 2}
-      propertyPath: bounds.x
-      value: -15
-      objectReference: {fileID: 0}
-    - target: {fileID: 11496984, guid: c8cfdc017372d4ac1898244e069928f9, type: 2}
-      propertyPath: bounds.y
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 11496984, guid: c8cfdc017372d4ac1898244e069928f9, type: 2}
-      propertyPath: bounds.z
-      value: -15
-      objectReference: {fileID: 0}
-    - target: {fileID: 11496984, guid: c8cfdc017372d4ac1898244e069928f9, type: 2}
-      propertyPath: bounds.w
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 11496984, guid: c8cfdc017372d4ac1898244e069928f9, type: 2}
-      propertyPath: intensity
-      value: 0.12
-      objectReference: {fileID: 0}
-    - target: {fileID: 11496984, guid: c8cfdc017372d4ac1898244e069928f9, type: 2}
-      propertyPath: radiusRange.x
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 11496984, guid: c8cfdc017372d4ac1898244e069928f9, type: 2}
-      propertyPath: radiusRange.y
-      value: 6
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c8cfdc017372d4ac1898244e069928f9, type: 2}

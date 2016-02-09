@@ -741,6 +741,13 @@ public class ShipController : MonoBehaviour
 
     private void OnStopDoubleTap()
     {
+        // SK: TEMP
+        if (GameManager.Instance.InExplorationMode)
+        {
+            GameManager.Instance.HandleOutOfBounds();
+            return;
+        }
+        
         switch (this.doubleTapMode)
         {
             case DoubleTapMode.Shield: this.shieldController.Show(false); break;
