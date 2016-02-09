@@ -4,10 +4,30 @@ ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
     100000: //RootNode
+    100002: triangles_1184
+    100004: triangles_17792
+    100006: triangles_304
+    100008: triangles_4544
     400000: //RootNode
+    400002: triangles_1184
+    400004: triangles_17792
+    400006: triangles_304
+    400008: triangles_4544
     2300000: //RootNode
+    2300002: triangles_1184
+    2300004: triangles_17792
+    2300006: triangles_304
+    2300008: triangles_4544
     3300000: //RootNode
+    3300002: triangles_1184
+    3300004: triangles_17792
+    3300006: triangles_304
+    3300008: triangles_4544
     4300000: Plane_002
+    4300002: triangles_17792
+    4300004: triangles_4544
+    4300006: triangles_304
+    4300008: triangles_1184
   materials:
     importMaterials: 0
     materialName: 0

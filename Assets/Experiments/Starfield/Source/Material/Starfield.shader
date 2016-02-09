@@ -48,7 +48,7 @@
       
 			struct fragmentInput {
         		float4 uv1 : TEXCOORD0;
-        		float2 uv2 : TEXCOORD1;
+        		float4 uv2 : TEXCOORD1;
         		float4 uv3 : TEXCOORD2;
         		float4 blastColor : TEXCOORD3;
         		float4 pos : SV_POSITION;
@@ -70,7 +70,8 @@
                 half3 worldPos = mul(_Object2World,v.vertex).xyz;
 
                 // Nebula uv scrolling
-				o.uv2 = worldPos.xy*.1;
+				o.uv2.xy = worldPos.xy*.005;
+				o.uv2.zw = worldPos.xy*.125;
 				
 				// Loops over all the points
 				half4 h = 0;
@@ -105,15 +106,19 @@
 				half4 lg_stars = tex2D(_Stars,v.uv3.xy);
 
 				half4 a_nebula = tex2D(_Nebula,v.uv2.xy);
-				half4 b_nebula = tex2D(_Nebula,v.uv2.xy);
+				half4 b_nebula = tex2D(_Nebula,v.uv2.zw);
 				
-				half3 _sm_stars = lerp(0,0.5,sm_stars.b);
-				half3 _md_stars = lerp(0,0.5,md_stars.g);
-				half3 _lg_stars = lerp(0,0.5,lg_stars.r);
+				half3 _sm_stars = lerp(0,0.4,sm_stars.b);
+				half3 _md_stars = lerp(0,0.6,md_stars.g);
+				half3 _lg_stars = lerp(0,0.8,lg_stars.r);
 				
-				half4 stars_combined = half4(_sm_stars+_md_stars+_lg_stars,1)+v.color*a_nebula.r*b_nebula.g*3+(v.blastColor*_BlastColor);
+				half4 stars = half4(_sm_stars+_md_stars+_lg_stars,1);
 
-				return stars_combined;				
+				half4 nebula = v.color*(a_nebula.r+a_nebula.g+b_nebula.g+b_nebula.r)+(v.blastColor*_BlastColor);
+
+				half4 combined = stars+nebula+pow(nebula,3);
+
+				return float4(combined.rgb,1);				
                 //return float4(v.color.rgb,1);
 			}
 			ENDCG

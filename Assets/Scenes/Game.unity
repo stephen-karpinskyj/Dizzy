@@ -704,6 +704,38 @@ Prefab:
       propertyPath: m_RootOrder
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 3347304, guid: c8cfdc017372d4ac1898244e069928f9, type: 2}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300004, guid: 0dfe1f04a0de348bdb7167e3f19be57c, type: 3}
+    - target: {fileID: 11496984, guid: c8cfdc017372d4ac1898244e069928f9, type: 2}
+      propertyPath: bounds.x
+      value: -15
+      objectReference: {fileID: 0}
+    - target: {fileID: 11496984, guid: c8cfdc017372d4ac1898244e069928f9, type: 2}
+      propertyPath: bounds.y
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 11496984, guid: c8cfdc017372d4ac1898244e069928f9, type: 2}
+      propertyPath: bounds.z
+      value: -15
+      objectReference: {fileID: 0}
+    - target: {fileID: 11496984, guid: c8cfdc017372d4ac1898244e069928f9, type: 2}
+      propertyPath: bounds.w
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 11496984, guid: c8cfdc017372d4ac1898244e069928f9, type: 2}
+      propertyPath: intensity
+      value: 0.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 11496984, guid: c8cfdc017372d4ac1898244e069928f9, type: 2}
+      propertyPath: radiusRange.x
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 11496984, guid: c8cfdc017372d4ac1898244e069928f9, type: 2}
+      propertyPath: radiusRange.y
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c8cfdc017372d4ac1898244e069928f9, type: 2}
   m_IsPrefabParent: 0
