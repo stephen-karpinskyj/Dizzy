@@ -15,6 +15,9 @@ public class CanvasUIController : MonoBehaviour
     private TimerUIController timer;
     
     [SerializeField]
+    private Transform[] childrenToHideInGame;
+    
+    [SerializeField]
     private AudioSource source;
 
     [SerializeField]
@@ -28,9 +31,6 @@ public class CanvasUIController : MonoBehaviour
 
     [SerializeField]
     private AudioClip launchClip;
-
-    [SerializeField]
-    private int frameRate = 60;
     
     
     #endregion
@@ -56,8 +56,6 @@ public class CanvasUIController : MonoBehaviour
         Debug.Assert(this.header);
         Debug.Assert(this.progress);
         Debug.Assert(this.timer);
-
-        Application.targetFrameRate = this.frameRate;
     }
     
     
@@ -95,9 +93,8 @@ public class CanvasUIController : MonoBehaviour
     
     private void Show(bool show)
     {
-        for (int i = 0; i < this.transform.childCount; i++)
+        foreach (var t in this.childrenToHideInGame)
         {
-            var t = this.transform.GetChild(i);
             t.gameObject.SetActive(show);
         }
     }

@@ -105,7 +105,7 @@ public class JunkController : LevelObjectController
         Debug.Assert(this.source, this);
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         if (!this.isRunning || !this.IsAttracted)
         {

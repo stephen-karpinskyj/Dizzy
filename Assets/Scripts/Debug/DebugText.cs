@@ -12,9 +12,9 @@ public class DebugText : MonoBehaviour
 
     public void Move(Vector3 worldPos)
     {
-        if (!Debug.isDebugBuild)
+        //if (!Debug.isDebugBuild)
         {
-            return;
+            //return;
         }
 
         this.worldPos = worldPos;
@@ -22,9 +22,9 @@ public class DebugText : MonoBehaviour
 
     private void Update()
     {
-        if (!Debug.isDebugBuild)
+        //if (!Debug.isDebugBuild)
         {
-            return;
+            //return;
         }
 
         if (lastsForever)
@@ -40,9 +40,9 @@ public class DebugText : MonoBehaviour
 
     private void OnGUI()
     {
-        if (!Debug.isDebugBuild)
+        //if (!Debug.isDebugBuild)
         {
-            return;
+            //return;
         }
 
         var screenPoint = Camera.main.WorldToScreenPoint(this.worldPos);
@@ -62,9 +62,9 @@ public class DebugText : MonoBehaviour
         var go = new GameObject("Text");
         var debug = go.AddComponent<DebugText>();
 
-        if (!Debug.isDebugBuild)
+        //if (!Debug.isDebugBuild)
         {
-            return debug;
+            //return debug;
         }
 
         if (Mathf.Approximately(duration, 0f))

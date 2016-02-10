@@ -75,12 +75,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speedMultiplier: 0.03
-  numPoints: 20
+  numPoints: 99
   material: {fileID: 2100000, guid: 01aac410d67734651a33aa527df5ea1e, type: 2}
   velocityRange: {x: -0.8, y: 0.8}
-  radiusRange: {x: 0.1, y: 10}
+  radiusRange: {x: 2, y: 10}
   intensity: 0.12
-  bounds: {x: -20, y: 20, z: -15, w: 15}
+  bounds: {x: -120, y: 120, z: -15, w: 15}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -91,6 +91,26 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: speedMultiplier
       value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: numPoints
+      value: 99
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: bounds.x
+      value: -120
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: bounds.y
+      value: 120
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: radiusRange.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: radiusRange.y
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

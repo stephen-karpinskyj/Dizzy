@@ -52,6 +52,16 @@ public class StateManager : BehaviourSingleton<StateManager>
             Save();
         }
     }
+    
+    public bool FpsEnabled
+    {
+        get { return PlayerPrefs.GetInt("State.FPS", 1) == 0; }
+        set
+        {
+            PlayerPrefs.SetInt("State.FPS", value ? 0 : 1);
+            Save();
+        }
+    }
 
 
     #endregion

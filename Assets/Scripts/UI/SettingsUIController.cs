@@ -11,6 +11,9 @@ public class SettingsUIController : MonoBehaviour
 
     [SerializeField]
     private Text graphicsModeText;
+    
+    [SerializeField]
+    private Text fpsText;
 
     [SerializeField]
     private Button resetProgressButton;
@@ -40,6 +43,15 @@ public class SettingsUIController : MonoBehaviour
     private string graphicsModePrefixText = "GRAPHICS: ";
 
     [SerializeField]
+    private string fpsEnabledText = "FPS: ON";
+
+    [SerializeField]
+    private string fpsDisabledText = "FPS: OFF";
+    
+    [SerializeField]
+    private Text fpsParent;
+
+    [SerializeField]
     private Mesh[] starfieldMeshes;
     
     [SerializeField]
@@ -58,6 +70,7 @@ public class SettingsUIController : MonoBehaviour
         this.UpdateSoundToggle(StateManager.Instance.SoundEnabled);
         this.UpdateSpinDirectionToggle(StateManager.Instance.SpinDirectionCCW);
         this.UpdateGraphicsModeToggle(StateManager.Instance.GraphicsMode);
+        this.UpdateFpsToggle(StateManager.Instance.FpsEnabled);
         this.UpdateResetProgressConfirm(false);
     }
 
@@ -84,6 +97,14 @@ public class SettingsUIController : MonoBehaviour
         mode = this.UpdateGraphicsModeToggle(mode);
         
         StateManager.Instance.GraphicsMode = mode;
+    }
+    
+    public void OnFpsToggle()
+    {
+        var fps = !StateManager.Instance.FpsEnabled;
+        StateManager.Instance.FpsEnabled = fps;
+        
+        this.UpdateFpsToggle(fps);
     }
 
     public void OnResetProgress()
@@ -140,6 +161,12 @@ public class SettingsUIController : MonoBehaviour
         }
         
         return mode;
+    }
+
+    private void UpdateFpsToggle(bool fps)
+    {
+        this.fpsText.text = fps ? this.fpsEnabledText : this.fpsDisabledText;
+        this.fpsParent.enabled = fps;
     }
 
     private void UpdateResetProgressConfirm(bool show)
