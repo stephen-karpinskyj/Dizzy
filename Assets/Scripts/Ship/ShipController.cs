@@ -6,7 +6,7 @@ public class ShipController : MonoBehaviour
     #region Types
 
 
-    private enum ControlMode
+    /*private enum ControlMode
     {
         /// <summary>
         /// Tapping: thrust.
@@ -32,13 +32,21 @@ public class ShipController : MonoBehaviour
         /// None: drift rotating in last direction.
         /// </summary>
         DualSpin,
-    }
+    }*/
 
     private enum DoubleTapMode
     {
         Nothing = 0,
 
         Shield,
+    }
+    
+    private enum TapType
+    {
+        None = 0,
+        Left,
+        Right,
+        Both,
     }
 
 
@@ -167,8 +175,8 @@ public class ShipController : MonoBehaviour
     [SerializeField]
     private Transform centreTransform;
 
-    [SerializeField]
-    private ControlMode controlMode = ControlMode.SpinCCW;
+    //[SerializeField]
+    //private ControlMode controlMode = ControlMode.SpinCCW;
 
     [SerializeField]
     private DoubleTapMode doubleTapMode = DoubleTapMode.Nothing;
@@ -206,6 +214,8 @@ public class ShipController : MonoBehaviour
 
     private Vector3 initialPos;
     private Quaternion initialRot;
+
+    private TapType tapType;
 
     private float timeHeld = 0f;
     private float timeReleased = 0f;
@@ -312,7 +322,7 @@ public class ShipController : MonoBehaviour
         this.OnLevelStop();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (!this.isRunning)
         {
@@ -320,29 +330,55 @@ public class ShipController : MonoBehaviour
             return;
         }
         
-        this.isTapping = Input.anyKey;
+        // Input
+        {
+            this.isTapping = Input.anyKey;
+            this.tapType = this.GetCurrentTapType();
 
-        if (this.isTapping)
-        {
-            this.timeReleased = 0f;
-            this.timeHeld += Time.deltaTime;
-        }
-        else
-        {
-            this.timeHeld = 0f;
-            this.timeReleased += Time.deltaTime;
-        }
+            if (this.isTapping)
+            {
+                this.timeReleased = 0f;
+                this.timeHeld += Time.fixedDeltaTime;
+            }
+            else
+            {
+                this.timeHeld = 0f;
+                this.timeReleased += Time.fixedDeltaTime;
+            }
 
-        if (this.isThrusting)
-        {
-            this.timeThrusting += Time.deltaTime;
-        }
-        else
-        {
-            this.timeThrusting = 0f;
-        }
+            if (this.isThrusting)
+            {
+                this.timeThrusting += Time.fixedDeltaTime;
+            }
+            else
+            {
+                this.timeThrusting = 0f;
+            }
+            
+            var canDoubleTap = (Time.time - this.lastDoubleTapTime) >= this.minTimeBetweenDoubleTaps;
+            if (canDoubleTap && this.isTapping && !this.wasTapping)
+            {
+                var doubleTapped = (Time.time - this.lastTapStartTime) <= this.doubleTapDuration;
+                if (doubleTapped)
+                {
+                    // TODO: Do special action with double tap
+                    this.lastDoubleTapTime = Time.time;
+                    this.isDoubleTapping = true;
+                    this.OnStartDoubleTap();
+                }
 
-        this.HandleControl();
+                this.lastTapStartTime = Time.time;
+            }
+
+            this.UpdateControl();
+            
+            if (this.isDoubleTapping && !this.isTapping)
+            {
+                this.isDoubleTapping = false;
+                this.OnStopDoubleTap();
+            }
+        }
+        
 
         // Trails
         {
@@ -409,7 +445,7 @@ public class ShipController : MonoBehaviour
         }
 
         this.isRunning = true;
-        this.isCCW = StateManager.Instance.SpinDirectionCCW;
+        //this.isCCW = StateManager.Instance.SpinDirectionCCW;
 
         CameraController.Shake(this.launchShakeDuration, this.launchShakeMagnitude);
 
@@ -489,131 +525,213 @@ public class ShipController : MonoBehaviour
     #region Private
 
 
-    private void HandleControl()
-    {
-        switch (this.controlMode)
-        {
-            case ControlMode.SpinCCW: this.isCCW = true; this.ControlSpin(true); break;
-            case ControlMode.SpinCW: this.isCCW = false; this.ControlSpin(false); break;
-            case ControlMode.GoToPoint: this.ControlGoToPoint(); break;
-            case ControlMode.DualSpin: this.ControlWithDoubleTap(); break;
-        }
-    }
-
-    private void ControlSpin(bool counterclockwise)
+    private void UpdateControl()
     {
         var aimDir = this.transform.right;
         var velDir = (Vector3)this.rigidBody.velocity.normalized;
         var dirDot = (Vector2.Dot(aimDir, velDir) + 1f) / 2f;
     
-        // Decay max speed
-        if (this.currMaxSpeed > this.maxSpeed)
-        {
-            var decay = this.maxSpeedDecayRate * Time.smoothDeltaTime;
-            this.currMaxSpeed = Mathf.Clamp(this.currMaxSpeed - decay, this.maxSpeed, this.maxOverdriveSpeed);
-        }
+        this.UpdateMaxSpeed();
             
-        if (this.isTapping)
+        if (this.tapType == TapType.Both)
         {
-            // Decay previous linear velocity
-            if (Input.anyKeyDown)
-            {
-                var curveValue = this.velocityDecayCurve.Evaluate(dirDot);
-                var multiplier = Mathf.Lerp(this.velocityDecayRange.x, this.velocityDecayRange.y, curveValue);
-                
-                var offsetCurveValue = this.velocityDecayCurveSpeedInfluence.Evaluate(this.SpeedPercentage);
-                var offsetMultiplier = Mathf.Lerp(this.velocityDecaySpeedInfluenceRange.x, this.velocityDecaySpeedInfluenceRange.y, offsetCurveValue);
-                
-                var speed = Mathf.Clamp(this.rigidBody.velocity.magnitude * multiplier * offsetMultiplier, 0f, this.currMaxSpeed);
-                this.rigidBody.velocity = velDir * speed;
-            }
-
-            // Add new linear velocity
-            {
-                var curveValue = this.boostMultiplierCurve.Evaluate(dirDot);
-                var multiplier = Mathf.Lerp(this.boostMultiplierRange.x, this.boostMultiplierRange.y, curveValue);
-                var timeCurveValue = this.boostTimeMultiplierCurve.Evaluate(this.timeReleased / this.boostTimeMultiplierDuration);
-                var timeMultiplier = Mathf.Lerp(this.boostTimeMultiplierRange.x, this.boostTimeMultiplierRange.y, timeCurveValue);
-                var force = this.InOverdrive ? this.boostOverdriveForce : this.boostForce;
-                this.rigidBody.AddRelativeForce(force * multiplier * timeMultiplier);
-            }
-
-            // Cap linear velocity
-            if (this.rigidBody.velocity.magnitude > this.currMaxSpeed)
-            {
-                var unitVel = this.rigidBody.velocity.normalized;
-                this.rigidBody.velocity = unitVel * this.currMaxSpeed;
-            }
-
-            // Decay angular velocity
-            {
-                var curveValue = this.angularVelocityDecayCurve.Evaluate(timeHeld / this.angularVelocityDecayDuration);
-                var multiplier = Mathf.Lerp(this.angularVelocityDecayRange.x, this.angularVelocityDecayRange.y, curveValue);
-                this.rigidBody.angularVelocity *= multiplier;
-            }
-
+            this.UpdateThrust(velDir, dirDot);
             this.isThrusting = true;
         }
         else
         {
-            var direction = counterclockwise ? 1 : -1;
-
-            // Add angular velocity
-            var curveValue = this.timeReleased / this.torqueCurveDuration;
-            var multiplier = this.torqueCurve.Evaluate(curveValue);
-            this.rigidBody.AddTorque(this.torque * multiplier * direction);
-
-            // Cap angular velocity
-            if (Mathf.Abs(this.rigidBody.angularVelocity) > this.maxAngularVelocity)
+            if (this.tapType == TapType.Left)
             {
-                this.rigidBody.angularVelocity = this.maxAngularVelocity * direction;
+                this.UpdateSpin(true); 
+                this.isCCW = true;
             }
-
+            else if (this.tapType == TapType.Right)
+            {
+                this.UpdateSpin(false); 
+                this.isCCW = false;
+            }
+            
             this.isThrusting = false;
         }
 
-        // Handle x-rotation
+        this.UpdateRoll(dirDot, this.isCCW);
+    }
+
+    private void UpdateMaxSpeed()
+    {
+        // Decay max speed
+        if (this.currMaxSpeed > this.maxSpeed)
         {
-            var target = 0f;
-              
-            var speedFactor = (1f - dirDot) * this.SpeedPercentage * this.rollSpeedLinearSpeedFactor;  
-            var velAimDiffRot = this.maxRollAimVelDiff * this.AngularSpeedPercentage * speedFactor;
+            var decay = this.maxSpeedDecayRate * Time.fixedDeltaTime;
+            this.currMaxSpeed = Mathf.Clamp(this.currMaxSpeed - decay, this.maxSpeed, this.maxOverdriveSpeed);
+        }
+    }
+
+    private void UpdateSpin(bool counterclockwise)
+    {
+        var direction = counterclockwise ? 1 : -1;
+
+        // Add angular velocity
+        var curveValue = this.timeReleased / this.torqueCurveDuration;
+        var multiplier = this.torqueCurve.Evaluate(curveValue);
+        this.rigidBody.AddTorque(this.torque * multiplier * direction);
+
+        // Cap angular velocity
+        if (Mathf.Abs(this.rigidBody.angularVelocity) > this.maxAngularVelocity)
+        {
+            this.rigidBody.angularVelocity = this.maxAngularVelocity * direction;
+        }
+    }
+    
+    private void UpdateThrust(Vector2 velDir, float dirDot)
+    {
+        // Decay previous linear velocity
+        if (!this.wasThrusting)
+        {
+            var curveValue = this.velocityDecayCurve.Evaluate(dirDot);
+            var multiplier = Mathf.Lerp(this.velocityDecayRange.x, this.velocityDecayRange.y, curveValue);
             
-            if (this.isCCW)
+            var offsetCurveValue = this.velocityDecayCurveSpeedInfluence.Evaluate(this.SpeedPercentage);
+            var offsetMultiplier = Mathf.Lerp(this.velocityDecaySpeedInfluenceRange.x, this.velocityDecaySpeedInfluenceRange.y, offsetCurveValue);
+            
+            var speed = Mathf.Clamp(this.rigidBody.velocity.magnitude * multiplier * offsetMultiplier, 0f, this.currMaxSpeed);
+            this.rigidBody.velocity = velDir * speed;
+        }
+
+        // Add new linear velocity
+        {
+            var curveValue = this.boostMultiplierCurve.Evaluate(dirDot);
+            var multiplier = Mathf.Lerp(this.boostMultiplierRange.x, this.boostMultiplierRange.y, curveValue);
+            var timeCurveValue = this.boostTimeMultiplierCurve.Evaluate(this.timeReleased / this.boostTimeMultiplierDuration);
+            var timeMultiplier = Mathf.Lerp(this.boostTimeMultiplierRange.x, this.boostTimeMultiplierRange.y, timeCurveValue);
+            var force = this.InOverdrive ? this.boostOverdriveForce : this.boostForce;
+            this.rigidBody.AddRelativeForce(force * multiplier * timeMultiplier);
+        }
+
+        // Cap linear velocity
+        if (this.rigidBody.velocity.magnitude > this.currMaxSpeed)
+        {
+            var unitVel = this.rigidBody.velocity.normalized;
+            this.rigidBody.velocity = unitVel * this.currMaxSpeed;
+        }
+
+        // Decay angular velocity
+        {
+            var curveValue = this.angularVelocityDecayCurve.Evaluate(timeHeld / this.angularVelocityDecayDuration);
+            var multiplier = Mathf.Lerp(this.angularVelocityDecayRange.x, this.angularVelocityDecayRange.y, curveValue);
+            this.rigidBody.angularVelocity *= multiplier;
+        }
+    }
+    
+    private void UpdateRoll(float dirDot, bool counterclockwise)
+    {
+        var target = 0f;
+            
+        var speedFactor = (1f - dirDot) * this.SpeedPercentage * this.rollSpeedLinearSpeedFactor;  
+        var velAimDiffRot = this.maxRollAimVelDiff * this.AngularSpeedPercentage * speedFactor;
+        
+        if (counterclockwise)
+        {
+            target += velAimDiffRot;
+        }
+        else
+        {
+            target -= velAimDiffRot;
+        }
+    
+        if (Mathf.Abs(this.xRot - target) > 0.2f)
+        {
+            var speed = Mathf.Lerp(this.minRotationXSpeed, this.maxRotationXSpeed, this.SpeedPercentage);
+            
+            if (this.IsThrusting)
             {
-                target += velAimDiffRot;
+                speed *= Mathf.Lerp(this.thrustRollSpeedMultiplierRange.x, this.thrustRollSpeedMultiplierRange.y, this.timeThrusting / this.thrustRollSpeedMultiplierDuration);
             }
             else
             {
-                target -= velAimDiffRot;
+                speed *= Mathf.Lerp(this.easeRollSpeedMultiplierRange.x, this.easeRollSpeedMultiplierRange.y, this.timeReleased / this.easeRollSpeedMultiplierDuration);
             }
-        
-            if (Mathf.Abs(this.xRot - target) > 0.2f)
-            {
-                var speed = Mathf.Lerp(this.minRotationXSpeed, this.maxRotationXSpeed, this.SpeedPercentage);
-                
-                if (this.IsThrusting)
-                {
-                    speed *= Mathf.Lerp(this.thrustRollSpeedMultiplierRange.x, this.thrustRollSpeedMultiplierRange.y, this.timeThrusting / this.thrustRollSpeedMultiplierDuration);
-                }
-                else
-                {
-                    speed *= Mathf.Lerp(this.easeRollSpeedMultiplierRange.x, this.easeRollSpeedMultiplierRange.y, this.timeReleased / this.easeRollSpeedMultiplierDuration);
-                }
-                
-                var dir = Mathf.Sign(target - this.xRot);
-                this.xRot += dir * speed * Time.smoothDeltaTime;
-                var bodyEuler = new Vector3(this.xRot, -180f, -180f);
-                this.bodyTransform.localRotation = Quaternion.Euler(bodyEuler);
-            }
+            
+            var dir = Mathf.Sign(target - this.xRot);
+            this.xRot += dir * speed * Time.fixedDeltaTime;
+            var bodyEuler = new Vector3(this.xRot, -180f, -180f);
+            this.bodyTransform.localRotation = Quaternion.Euler(bodyEuler);
         }
+    }
 
-        //this.debugString = string.Format("{0:f2}", );
+    private void OnStartDoubleTap()
+    {
+        switch (this.doubleTapMode)
+        {
+            case DoubleTapMode.Shield: this.shieldController.Show(true); break;
+        }
+    }
+
+    private void OnStopDoubleTap()
+    {
+        // SK: TEMP
+        if (GameManager.Instance.InExplorationMode)
+        {
+            GameManager.Instance.HandleOutOfBounds();
+            return;
+        }
         
-        //this.debugBlueLine.Move(this.transform.position, this.transform.position + aimDir * 1f);
-        //this.debugYellowLine.Move(this.transform.position, this.transform.position + velDir * 1f);
+        switch (this.doubleTapMode)
+        {
+            case DoubleTapMode.Shield: this.shieldController.Show(false); break;
+        }
     }
     
+    private TapType GetCurrentTapType()
+    {
+        if (GameManager.Instance.IsUsingKeyboard)
+        {
+            return Input.anyKey ? TapType.Both : TapType.Left;
+            
+            /*var left = Input.GetKey(KeyCode.LeftArrow);
+            var right = Input.GetKey(KeyCode.RightArrow);
+            
+            if (left && right)
+            {
+                return TapType.Both;
+            }
+            else if (left)
+            {
+                return TapType.Left;
+            }
+            else if (right)
+            {
+                return TapType.Right;
+            }*/
+        }
+        else
+        {
+            switch (Input.touchCount)
+            {
+                case 0: return TapType.Left;
+                default: return TapType.Both;
+            }
+            
+            /*switch (Input.touchCount)
+            {
+                case 1: return Input.mousePosition.x >= (Screen.width / 2) ? TapType.Left : TapType.Both;
+                case 2: return TapType.Both;
+            }*/
+            
+            /*switch (Input.touchCount)
+            {
+                case 1: return Input.mousePosition.x >= (Screen.width / 2) ? TapType.Right : TapType.Left;
+                case 2: return TapType.Both;
+            }*/
+        }
+        
+        //return TapType.None;
+    }
+
+
+    #region Unused
+
+
     private void ControlGoToPoint()
     {
         var worldInputPos = (Vector3)(Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition); // clear z
@@ -699,60 +817,9 @@ public class ShipController : MonoBehaviour
             this.bodyTransform.localRotation = Quaternion.Euler(bodyEuler);
         }
     }
-
-    private void ControlWithDoubleTap()
-    {
-        var canDoubleTap = (Time.time - this.lastDoubleTapTime) >= this.minTimeBetweenDoubleTaps;
-        if (canDoubleTap && this.isTapping && !this.wasTapping)
-        {
-            var doubleTapped = (Time.time - this.lastTapStartTime) <= this.doubleTapDuration;
-            if (doubleTapped)
-            {
-                // TODO: Do special action with double tap
-                this.lastDoubleTapTime = Time.time;
-                this.isDoubleTapping = true;
-                this.OnStartDoubleTap();
-            }
-
-            this.lastTapStartTime = Time.time;
-        }
-
-        /*if (this.isTapping)
-        {
-            this.isCCW = Input.mousePosition.x < Screen.width / 2;
-        }*/
-        
-        this.ControlSpin(this.isCCW);
-
-        if (this.isDoubleTapping && !this.isTapping)
-        {
-            this.isDoubleTapping = false;
-            this.OnStopDoubleTap();
-        }
-    }
-
-    private void OnStartDoubleTap()
-    {
-        switch (this.doubleTapMode)
-        {
-            case DoubleTapMode.Shield: this.shieldController.Show(true); break;
-        }
-    }
-
-    private void OnStopDoubleTap()
-    {
-        // SK: TEMP
-        if (GameManager.Instance.InExplorationMode)
-        {
-            GameManager.Instance.HandleOutOfBounds();
-            return;
-        }
-        
-        switch (this.doubleTapMode)
-        {
-            case DoubleTapMode.Shield: this.shieldController.Show(false); break;
-        }
-    }
+    
+    
+    #endregion
 
 
     #endregion

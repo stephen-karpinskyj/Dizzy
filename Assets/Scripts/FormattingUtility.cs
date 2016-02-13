@@ -104,4 +104,9 @@ public static class FormattingUtility
     {
         return string.Format("{0:0000}", count);
     }
+    
+    public static string DistanceToString(float distance)
+    {
+        return string.Format("{0:0.00}AU", distance / 100);
+    }
 }

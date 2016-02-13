@@ -3,10 +3,13 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ProgressUIController : MonoBehaviour
+public class TrialProgressUIController : MonoBehaviour
 {
     #region Inspector
     
+    
+    [SerializeField]
+    private GameObject parent;
     
     [SerializeField]
     private Text bestTimeText;
@@ -19,24 +22,9 @@ public class ProgressUIController : MonoBehaviour
 
     [SerializeField]
     private Text runCountText;
-
-    [SerializeField]
-    private Text junkCountText;
-
-    [SerializeField]
-    private Text addedJunkCountText;
     
     [SerializeField]
-    private Text junkMultiplierText;
-    
-    [SerializeField]
-    private Text addedJunkMultiplierText; 
-    
-    [SerializeField]
-    private TrialLevelGoalUIController[] trialGoals;
-
-    [SerializeField]
-    private int junkAddRate = 300;
+    private TrialGoalUIController[] trialGoals;
     
     [SerializeField]
     private Color normalTimeColor;
@@ -62,8 +50,6 @@ public class ProgressUIController : MonoBehaviour
         Debug.Assert(this.bestTimeText);
         Debug.Assert(this.lastTimeText);
         Debug.Assert(this.runCountText);
-        Debug.Assert(this.junkCountText);
-        Debug.Assert(this.addedJunkCountText);
         Debug.Assert(this.trialGoals.Length > 0);
     }
 
@@ -95,25 +81,6 @@ public class ProgressUIController : MonoBehaviour
     {
         this.runCountText.text = FormattingUtility.RunCountToString(count);
     }
-
-    public void UpdateJunkCount(ulong count, ulong change)
-    {
-        this.StartCoroutine(this.JunkChangeCoroutine(count, change));
-    }
-    
-    public void UpdateJunkMultiplier(float multiplier, float change = 0f)
-    {
-        this.junkMultiplierText.text = FormattingUtility.JunkMultiplierToString(multiplier);
-        
-        if (Mathf.Approximately(change, 0f))
-        {
-            this.addedJunkMultiplierText.text = string.Empty;
-        }
-        else
-        {
-            this.addedJunkMultiplierText.text = FormattingUtility.SignedJunkMultiplierToString(change);
-        }
-    }
     
     public void UpdateGoals(TrialLevelState state)
     {
@@ -141,7 +108,7 @@ public class ProgressUIController : MonoBehaviour
         }
     }
 
-    public void ForceUpdateAll(TrialLevelState state, ulong junkCount, float junkMultiplier)
+    public void ForceUpdateAll(TrialLevelState state)
     {
         var best = state == null ? 0f : state.BestTime;
         var last = state == null ? 0f : state.LastTime;
@@ -155,11 +122,11 @@ public class ProgressUIController : MonoBehaviour
         this.runCountText.text = FormattingUtility.RunCountToString(runs);
         
         this.UpdateGoals(state);
-
-        this.junkCountText.text = FormattingUtility.JunkCountToString(junkCount);
-        this.addedJunkCountText.gameObject.SetActive(false);
-        
-        this.UpdateJunkMultiplier(junkMultiplier);
+    }
+    
+    public void Show(bool show)
+    {
+        this.parent.SetActive(show);
     }
     
     
@@ -179,49 +146,6 @@ public class ProgressUIController : MonoBehaviour
             yield return new WaitForSeconds(this.timeChangeHalfFlashDuration);
             text.color = this.normalTimeColor;
             yield return new WaitForSeconds(this.timeChangeHalfFlashDuration);
-        }
-    }
-
-    private IEnumerator JunkChangeCoroutine(ulong count, ulong change)
-    {
-        if (change == 0)
-        {
-            this.addedJunkCountText.gameObject.SetActive(false);
-            yield break;
-        }
-
-        this.addedJunkCountText.gameObject.SetActive(true);
-        this.addedJunkCountText.text = FormattingUtility.SignedJunkCountToString(change);
-
-        var finalCount = count;
-        count -= change;
-
-        var dir = (int)Mathf.Sign(change);
-        var changeMin = (dir == 1) ? 0 : change;
-        var changeMax = (dir == 1) ? change : 0;
-        var countMin = (dir == 1) ? count : finalCount;
-        var countMax = (dir == 1) ? finalCount : count;
-
-        var range = Math.Pow(this.junkAddRate, Math.Max(1, Math.Log10(count + change) - 0.5));
-
-        while (count != finalCount)
-        {
-            var changeThisFrame = (ulong)(Time.deltaTime * range * dir);
-
-            if (changeThisFrame == 0)
-            {
-                changeThisFrame = (ulong)(1 * dir);
-            }
-
-            change -= changeThisFrame;
-            change = change < changeMin ? changeMin : change > changeMax ? changeMax : change;
-            
-            count += changeThisFrame;
-            count = count < countMin ? countMin : count > countMax ? countMax : count;
-
-            this.junkCountText.text = FormattingUtility.JunkCountToString(count);
-
-            yield return null;
         }
     }
     

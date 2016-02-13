@@ -2,7 +2,7 @@
 using UnityEngine;
 
 [Serializable]
-public class TrialLevelDataGoal
+public class TrialGoalData
 {
     [SerializeField, Range(1f, 99.9f)]
     private float time = 20f;

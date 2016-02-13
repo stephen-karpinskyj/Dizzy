@@ -2,7 +2,7 @@
 
 public class GameStarter : MonoBehaviour
 {
-    private void Awake()
+    private void Start()
     {
         GameManager.Instance.Initialise();
     }

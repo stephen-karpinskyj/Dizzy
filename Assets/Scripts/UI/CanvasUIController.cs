@@ -9,10 +9,19 @@ public class CanvasUIController : MonoBehaviour
     private HeaderUIController header;
     
     [SerializeField]
-    private ProgressUIController progress;
+    private GlobalJunkUIController junk;
+    
+    [SerializeField]
+    private TrialProgressUIController trialProgress;
+    
+    [SerializeField]
+    private ExplorationProgressUIController explorationProgress;
     
     [SerializeField]
     private TimerUIController timer;
+    
+    [SerializeField]
+    private BeaconPingUIController beaconPing;
     
     [SerializeField]
     private Transform[] childrenToHideInGame;
@@ -39,9 +48,19 @@ public class CanvasUIController : MonoBehaviour
     #region Properties
     
     
-    public ProgressUIController Progress
+    public GlobalJunkUIController Junk
     {
-        get { return this.progress; }
+        get { return this.junk; }
+    }
+    
+    public TrialProgressUIController TrialProgress
+    {
+        get { return this.trialProgress; }
+    }
+    
+    public ExplorationProgressUIController ExplorationProgress
+    {
+        get { return this.explorationProgress; }
     }
     
     
@@ -54,8 +73,11 @@ public class CanvasUIController : MonoBehaviour
     private void Awake()
     {
         Debug.Assert(this.header);
-        Debug.Assert(this.progress);
+        Debug.Assert(this.junk);
+        Debug.Assert(this.trialProgress);
+        Debug.Assert(this.explorationProgress);
         Debug.Assert(this.timer);
+        Debug.Assert(this.beaconPing);
     }
     
     
@@ -65,17 +87,27 @@ public class CanvasUIController : MonoBehaviour
     #region Public
 
 
-    public void HandleLevelWin(bool newTimeRecord)
+    public void HandleTrialWin(bool newTimeRecord)
     {
         this.source.clip = newTimeRecord ? this.newBestClip : this.winClip;
         AudioManager.Instance.Play(this.source);
     }
     
-    public void ForceUpdateAll(LevelData data, TrialLevelState state, ulong junkCount, float junkMultiplier)
+    public void ForceUpdateAll(LevelData data, LevelState state, ulong junkCount, float junkMultiplier)
     {
         this.header.UpdateLevelTitleText(data.DisplayName);
+        this.junk.ForceUpdateAll(junkCount, junkMultiplier);
         
-        this.progress.ForceUpdateAll(state, junkCount, junkMultiplier);
+        var trialState = state as TrialLevelState;
+        
+        if (trialState != null)
+        {
+            this.trialProgress.ForceUpdateAll(trialState);
+        }
+        else
+        {
+            this.explorationProgress.ForceUpdateAll(data as ExplorationLevelData, state as ExplorationLevelState, junkCount);
+        }
     }
 
     public void PlayClickSound()
@@ -106,21 +138,30 @@ public class CanvasUIController : MonoBehaviour
     #region Events
     
 
-    public void OnLevelStart(LevelData data, TrialLevelState state, ulong junkCount, float junkMultiplier)
+    public void OnLevelStart(LevelData data, LevelState state, ulong junkCount, float junkMultiplier)
     {
-        var isTrial = data is TrialLevelData;
+        var trialState = state as TrialLevelState;
         
-        this.Show(false);
-
-        if (isTrial)
+        if (trialState != null)
         {
-            this.timer.StartTimer(state.BestTime);
+            this.timer.StartTimer(trialState.BestTime);
+        }
+        else
+        {
+            var explorationState = state as ExplorationLevelState;
+            
+            if (explorationState.IsBeaconPurchased)
+            {
+                this.beaconPing.Show(true);
+            }
         }
         
         this.ForceUpdateAll(data, state, junkCount, junkMultiplier);
 
         this.source.clip = this.launchClip;
         AudioManager.Instance.Play(this.source);
+        
+        this.Show(false);
     }
     
     public void OnLevelStop(LevelData data)
@@ -128,11 +169,23 @@ public class CanvasUIController : MonoBehaviour
         this.Show(true);
         
         this.timer.StopTimer();
+        this.beaconPing.Show(false);
     }
     
-    public void OnLevelLoad(LevelData data, TrialLevelState state, ulong junkCount, float junkMultiplier)
+    public void OnLevelLoad(LevelData data, LevelState state, ulong junkCount, float junkMultiplier)
     {
         this.ForceUpdateAll(data, state, junkCount, junkMultiplier);
+        
+        var explorationData = data as ExplorationLevelData;
+        var isTrial = explorationData == null;
+        
+        this.TrialProgress.Show(isTrial);
+        this.ExplorationProgress.Show(!isTrial);
+        
+        if (!isTrial)
+        {
+            this.beaconPing.Initialise(explorationData.Beacon.Target);
+        }
     }
 
 

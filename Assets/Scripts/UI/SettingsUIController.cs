@@ -90,7 +90,7 @@ public class SettingsUIController : MonoBehaviour
         this.UpdateSpinDirectionToggle(ccw);
     }
     
-    public void OnGraphicsQualityToggle()
+    public void OnGraphicsModeToggle()
     {
         var mode = StateManager.Instance.GraphicsMode + 1;
         

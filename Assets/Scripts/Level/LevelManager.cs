@@ -30,7 +30,7 @@ public class LevelManager : MonoBehaviour
     
     
     public LevelData CurrentLevel { get; private set; }
-    public TrialLevelState CurrentLevelState { get; private set; }
+    public LevelState CurrentLevelState { get; private set; }
     
     
     #endregion
@@ -52,7 +52,7 @@ public class LevelManager : MonoBehaviour
     #endregion
     
     
-    #region Events
+    #region Public
     
     
     public void OnGameStart(CanvasUIController canvas)
@@ -84,15 +84,14 @@ public class LevelManager : MonoBehaviour
         Debug.Assert(!this.CurrentLevel);
         
         this.CurrentLevel = Object.Instantiate(levelPrefab);
+        this.CurrentLevelState = StateManager.Instance.GetLevel(this.CurrentLevel);	
         
-        if (this.CurrentLevel is TrialLevelData)
+        var trialData = this.CurrentLevel as TrialLevelData;
+        
+        if (trialData != null)
         {
-            this.CurrentLevelState = StateManager.Instance.GetLevel(this.CurrentLevel.Id);
-            this.CurrentLevelState.UpdateWithData(this.CurrentLevel as TrialLevelData);
-        }
-        else
-        {
-            this.CurrentLevelState = null;
+            var trialState = this.CurrentLevelState as TrialLevelState;
+            trialState.UpdateWithData(trialData);
         }
         
         this.onLevelWin = onLevelWin;
@@ -134,9 +133,11 @@ public class LevelManager : MonoBehaviour
     
     public void OnLevelWin()
     {
-        if (this.CurrentLevel is TrialLevelData)
+        var trialData = this.CurrentLevel as TrialLevelData;
+        
+        if (trialData != null)
         {
-            this.HandleTrialWin();
+            this.HandleTrialWin(trialData, this.CurrentLevelState as TrialLevelState);
         }
     }
     
@@ -148,6 +149,11 @@ public class LevelManager : MonoBehaviour
         }
 
         this.startTime = Time.time;
+    }
+    
+    public void OnBeaconPurchase()
+    {
+        StateManager.Instance.HandleBeaconPurchase(this.CurrentLevel as ExplorationLevelData);
     }
     
     
@@ -183,49 +189,49 @@ public class LevelManager : MonoBehaviour
         
         if (diff != 0)
         {
-            this.canvas.Progress.UpdateJunkCount(curr, curr - prev);
+            this.canvas.Junk.UpdateCount(curr, curr - prev);
         }
         
         this.totalCollectedJunkValue = 0;
     }
     
-    private void HandleTrialWin()
+    private void HandleTrialWin(TrialLevelData data, TrialLevelState state)
     {
-        var prevBest = this.CurrentLevelState.BestTime;
-        var prevLast = this.CurrentLevelState.LastTime;
-        var prevRuns = this.CurrentLevelState.RunCount;
+        var prevBest = state.BestTime;
+        var prevLast = state.LastTime;
+        var prevRuns = state.RunCount;
 
-        var currBest = this.CurrentLevelState.HandleWin(Time.time - this.startTime, this.CurrentLevel as TrialLevelData);
+        var currBest = state.HandleWin(Time.time - this.startTime, this.CurrentLevel as TrialLevelData);
         var isNewTimeRecord = currBest < prevBest;
-        var currLast = this.CurrentLevelState.LastTime;
-        var currRuns = this.CurrentLevelState.RunCount;
+        var currLast = state.LastTime;
+        var currRuns = state.RunCount;
         
         var prevMultiplier = StateManager.Instance.JunkMultiplier;
 
-        this.canvas.HandleLevelWin(isNewTimeRecord);
+        this.canvas.HandleTrialWin(isNewTimeRecord);
 
         if (isNewTimeRecord)
         {
-            this.canvas.Progress.UpdateBestTime(currBest, currBest - prevBest);
+            this.canvas.TrialProgress.UpdateBestTime(currBest, currBest - prevBest);
         }
 
         if (!Mathf.Approximately(prevLast, currLast))
         {
-            this.canvas.Progress.UpdateLastTime(currLast);
+            this.canvas.TrialProgress.UpdateLastTime(currLast);
         }
 
         if (prevRuns != currRuns)
         {
-            this.canvas.Progress.UpdateRunCount(currRuns);
+            this.canvas.TrialProgress.UpdateRunCount(currRuns);
         }
         
-        this.canvas.Progress.UpdateGoals(this.CurrentLevelState);
+        this.canvas.TrialProgress.UpdateGoals(state);
         
-        this.CurrentLevelState.UpdateWithData(this.CurrentLevel as TrialLevelData);
+        state.UpdateWithData(data);
         StateManager.Instance.UpdateJunkMultiplier();
         
         var currMultiplier = StateManager.Instance.JunkMultiplier;
-        this.canvas.Progress.UpdateJunkMultiplier(currMultiplier, currMultiplier - prevMultiplier);
+        this.canvas.Junk.UpdateMultiplier(currMultiplier, currMultiplier - prevMultiplier);
         
         // SK: HACK: Shouldn't need to call this twice (both in level stop and level won)
         this.InitialiseJunk();

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class TrialLevelGoalUIController : MonoBehaviour
+public class TrialGoalUIController : MonoBehaviour
 {
     [SerializeField]
     private Text timeText;
@@ -9,12 +9,7 @@ public class TrialLevelGoalUIController : MonoBehaviour
     [SerializeField]
     private Text multiplierIncreaseText;
     
-    public Text TimeText
-    {
-        get { return this.timeText; }
-    }
-    
-    public void UpdateData(TrialLevelDataGoal goal)
+    public void UpdateData(TrialGoalData goal)
     {
         this.timeText.text = FormattingUtility.VariableDPTimeToString(goal.Time);
         this.multiplierIncreaseText.text = FormattingUtility.SignedJunkMultiplierToString(goal.MultiplierIncrease);

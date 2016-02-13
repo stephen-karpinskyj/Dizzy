@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -70,7 +69,7 @@ public class StateManager : BehaviourSingleton<StateManager>
     #region Progress
 
 
-    private Dictionary<string, TrialLevelState> levelStateDic;
+    private Dictionary<string, LevelState> levelStateDic;
 
     public ulong JunkCount
     {
@@ -80,11 +79,11 @@ public class StateManager : BehaviourSingleton<StateManager>
     
     public float JunkMultiplier { get; private set; }
 
-    public void ResetProgress(TrialLevelData data)
+    public void ResetProgress()
     {
-        foreach (var l in this.levelStateDic)
+        foreach (var kv in this.levelStateDic)
         {
-            l.Value.ResetProgress(data);
+            kv.Value.ResetProgress();
         }
         
         this.JunkCount = DefaultJunkCount;
@@ -107,23 +106,38 @@ public class StateManager : BehaviourSingleton<StateManager>
         return this.JunkCount;
     }
     
-    public TrialLevelState GetLevel(string id)
+    public void HandleBeaconPurchase(ExplorationLevelData data)
     {
-        if (!this.levelStateDic.ContainsKey(id))
+        Debug.Assert(this.JunkCount >= data.Beacon.ActivationCost);
+        
+        this.JunkCount -= data.Beacon.ActivationCost;
+        
+        var level = this.GetLevel(data) as ExplorationLevelState;
+        level.HandlePurchase();
+    }
+    
+    public LevelState GetLevel(LevelData data)
+    {
+        if (!this.levelStateDic.ContainsKey(data.Id))
         {
-            this.levelStateDic[id] = new TrialLevelState(id);
+            this.levelStateDic[data.Id] = CreateNewState(data);
         }
         
-        return this.levelStateDic[id];
+        return this.levelStateDic[data.Id];
     }
     
     public void UpdateJunkMultiplier()
     {
         this.JunkMultiplier = DefaultJunkMultiplier;
         
-        foreach (var l in this.levelStateDic)
+        foreach (var kv in this.levelStateDic)
         {
-            this.JunkMultiplier += l.Value.JunkMultiplier;
+            var trialState = kv.Value as TrialLevelState;
+            
+            if (trialState != null)
+            {
+                this.JunkMultiplier += trialState.JunkMultiplier;
+            }
         }
     }
 
@@ -138,11 +152,11 @@ public class StateManager : BehaviourSingleton<StateManager>
     {
         base.Awake();
         
-        this.levelStateDic = new Dictionary<string, TrialLevelState>();
+        this.levelStateDic = new Dictionary<string, LevelState>();
         
         foreach (var l in Data.Instance.Levels)
         {
-            this.levelStateDic[l.Id] = new TrialLevelState(l.Id);
+            this.levelStateDic[l.Id] = CreateNewState(l);
         }
         
         this.UpdateJunkMultiplier();
@@ -173,6 +187,18 @@ public class StateManager : BehaviourSingleton<StateManager>
     public static void Save()
     {
         PlayerPrefs.Save();
+    }
+    
+    private static LevelState CreateNewState(LevelData data)
+    {
+        if (data is TrialLevelData)
+        {
+            return new TrialLevelState(data.Id);
+        }
+        else
+        {
+            return new ExplorationLevelState(data.Id);
+        }
     }
     
     

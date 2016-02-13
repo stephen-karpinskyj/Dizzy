@@ -1024,7 +1024,7 @@ MonoBehaviour:
     m_RotationOrder: 0
   angularVelocityDecayDuration: 0.25
   angularVelocityDecayRange: {x: 0.7, y: 0.4}
-  maxAngularVelocity: 215
+  maxAngularVelocity: 220
   torqueCurve:
     serializedVersion: 2
     m_Curve:
@@ -1060,7 +1060,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 0
   aimMaxAngularVelocityRange: {x: 0, y: 450}
-  aimTorque: 220
+  aimTorque: 218
   aimVelocityDecayCurve:
     serializedVersion: 2
     m_Curve:
@@ -1136,7 +1136,6 @@ MonoBehaviour:
   launchShakeMagnitude: 0.1
   launchForce: {x: 0, y: 120}
   centreTransform: {fileID: 466182}
-  controlMode: 3
   doubleTapMode: 0
   rigidBody: {fileID: 5071878}
   bodyTransform: {fileID: 415140}

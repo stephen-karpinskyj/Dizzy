@@ -36,12 +36,21 @@ public class GameManager : BehaviourSingleton<GameManager>
 
     public MultiplierController Multiplier { get; private set; }
     
+    public bool IsUsingKeyboard { get; private set; }
+    
 
     #endregion
 
 
     #region Unity
 
+
+    protected override void Awake()
+    {
+        base.Awake();
+        
+        this.IsUsingKeyboard = Application.platform != RuntimePlatform.Android && Application.platform != RuntimePlatform.IPhonePlayer;
+    }
 
     private void Update()
     {   
@@ -53,26 +62,23 @@ public class GameManager : BehaviourSingleton<GameManager>
         }
 
         var shouldRun = false;
-        var usingKeyboard = false;
 
-        if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
-        {
-            shouldRun = Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began &&
-                (EventSystem.current == null || !EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId));
-        }
-        else
+        if (this.IsUsingKeyboard)
         {
             shouldRun = Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space) ||
                 (Input.GetMouseButtonDown(0) && (!EventSystem.current || !EventSystem.current.IsPointerOverGameObject()));
-            
-            usingKeyboard = true;
+        }
+        else
+        {
+            shouldRun = Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began &&
+                (EventSystem.current == null || !EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId));
         }
         
         if (shouldRun)
         {
             this.OnLevelStart();
         }
-        else if (usingKeyboard)
+        else if (this.IsUsingKeyboard)
         {
             if (Input.GetKeyDown(KeyCode.LeftArrow))
             {
@@ -129,9 +135,9 @@ public class GameManager : BehaviourSingleton<GameManager>
     
     public void ResetProgress()
     {
-        StateManager.Instance.ResetProgress(this.level.CurrentLevel as TrialLevelData);
+        StateManager.Instance.ResetProgress();
         this.level.ReinitialiseJunkValues();
-        this.canvas.ForceUpdateAll(this.level.CurrentLevel, this.level.CurrentLevelState, StateManager.Instance.JunkCount, StateManager.Instance.JunkMultiplier);
+        this.ForceUpdateCanvas();
     }
     
     public void LoadNextLevel(bool forward)
@@ -142,6 +148,11 @@ public class GameManager : BehaviourSingleton<GameManager>
         this.OnLevelLoad(nextLevel);
     }
 
+    public void HandleBeaconPurchase()
+    {
+        this.level.OnBeaconPurchase();
+        this.ForceUpdateCanvas();
+    }
 
     #endregion
 
@@ -245,6 +256,11 @@ public class GameManager : BehaviourSingleton<GameManager>
         this.prevAcceleration = Vector3.Lerp(this.prevAcceleration, Input.acceleration, LowPassFilterFactor);
         
         return this.prevAcceleration;
+    }
+    
+    private void ForceUpdateCanvas()
+    {
+        this.canvas.ForceUpdateAll(this.level.CurrentLevel, this.level.CurrentLevelState, StateManager.Instance.JunkCount, StateManager.Instance.JunkMultiplier);
     }
 
 

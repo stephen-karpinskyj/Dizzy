@@ -4,7 +4,7 @@ using UnityEngine;
 /// <summary>
 /// All persistent state corresponding to a <see cref="TrialLevelData"/>.
 /// </summary>
-public class TrialLevelState
+public class TrialLevelState : LevelState
 {
     #region Constants
     
@@ -26,9 +26,7 @@ public class TrialLevelState
     #region Fields
     
     
-    private string levelId;
-    
-    private List<TrialLevelDataGoal> activeGoals;
+    private List<TrialGoalData> activeGoals;
     
     
     #endregion
@@ -61,7 +59,7 @@ public class TrialLevelState
         private set { PlayerPrefs.SetFloat(JunkMultiplierPrefKey, value); }
     }
     
-    public IEnumerable<TrialLevelDataGoal> ActiveGoals
+    public IEnumerable<TrialGoalData> ActiveGoals
     {
         get { return this.activeGoals; }
     }
@@ -74,8 +72,8 @@ public class TrialLevelState
     
     
     public TrialLevelState(string levelId)
+        : base(levelId)
     {
-        this.levelId = levelId;
     }
     
     
@@ -87,22 +85,22 @@ public class TrialLevelState
     
     private string BestTimePrefKey
     {
-        get { return "State.BestTime." + this.levelId; }
+        get { return "State.BestTime." + this.LevelId; }
     }
 
     private string LastTimePrefKey
     {
-        get { return "State.LastTime." + this.levelId; }
+        get { return "State.LastTime." + this.LevelId; }
     }
     
     private string RunCountPrefKey
     {
-        get { return "State.RunCount." + this.levelId; }
+        get { return "State.RunCount." + this.LevelId; }
     }
     
     private string JunkMultiplierPrefKey
     {
-        get { return "State.JunkMultiplier." + this.levelId; }
+        get { return "State.JunkMultiplier." + this.LevelId; }
     }
 
     
@@ -140,14 +138,12 @@ public class TrialLevelState
         return time;
     }
     
-    public void ResetProgress(TrialLevelData data)
+    public override void ResetProgress()
     {
         this.BestTime = DefaultTime;
         this.LastTime = DefaultTime;
         this.RunCount = DefaultRunCount;
         this.JunkMultiplier = 0f;
-        
-        this.UpdateWithData(data);
     }
     
     public void UpdateWithData(TrialLevelData data)

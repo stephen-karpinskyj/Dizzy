@@ -4,7 +4,7 @@ using UnityEngine;
 public class TrialLevelData : LevelData
 {
     [SerializeField]
-    private TrialLevelDataGoal[] goals;
+    private TrialGoalData[] goals;
     
     public float GetCompletedGoalMultiplier(float time)
     {
@@ -21,9 +21,9 @@ public class TrialLevelData : LevelData
         return multiplier;
     }
     
-    public List<TrialLevelDataGoal> GetActiveGoals(float time, int count)
+    public List<TrialGoalData> GetActiveGoals(float time, int count)
     {
-        var active = new List<TrialLevelDataGoal>();
+        var active = new List<TrialGoalData>();
         
         foreach (var g in this.goals)
         {
