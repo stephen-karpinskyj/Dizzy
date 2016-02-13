@@ -389,6 +389,9 @@ public class ShipController : MonoBehaviour
 
         this.transform.position = this.initialPos;
         this.transform.rotation = this.initialRot;
+        
+        this.xRot = 0f;
+        this.bodyTransform.localEulerAngles = new Vector3(this.xRot, -180f, -180f);
 
         this.rigidBody.angularVelocity = 0f;
         this.rigidBody.velocity = Vector2.zero;
@@ -575,6 +578,25 @@ public class ShipController : MonoBehaviour
         // Handle x-rotation
         {
             var target = 0f;
+        
+            target = (this.rigidBody.rotation - 90f) % 360f;
+            
+            // go to nearest between 
+            if ((target - this.xRot) > 180f)
+            {
+                target -= 360f;
+            }
+            else if ((target - this.xRot) < -180f)
+            {
+                target += 360f;
+            }
+                        
+            //var speed = Mathf.Lerp(this.minRotationXSpeed, this.maxRotationXSpeed, this.SpeedPercentage);
+            //this.xRot += dir * speed * Time.smoothDeltaTime;
+            //var bodyEuler = new Vector3(this.xRot, -180f, -180f);
+            //this.bodyTransform.localRotation = Quaternion.Euler(bodyEuler);
+                        
+            /*var target = 0f;
               
             var speedFactor = (1f - dirDot) * this.SpeedPercentage * this.rollSpeedLinearSpeedFactor;  
             var velAimDiffRot = this.maxRollAimVelDiff * this.AngularSpeedPercentage * speedFactor;
@@ -586,23 +608,24 @@ public class ShipController : MonoBehaviour
             else
             {
                 target -= velAimDiffRot;
-            }
+            }*/
         
             if (Mathf.Abs(this.xRot - target) > 0.2f)
             {
                 var speed = Mathf.Lerp(this.minRotationXSpeed, this.maxRotationXSpeed, this.SpeedPercentage);
                 
-                if (this.IsThrusting)
+                //if (this.IsThrusting)
                 {
                     speed *= Mathf.Lerp(this.thrustRollSpeedMultiplierRange.x, this.thrustRollSpeedMultiplierRange.y, this.timeThrusting / this.thrustRollSpeedMultiplierDuration);
                 }
-                else
+                /*else
                 {
                     speed *= Mathf.Lerp(this.easeRollSpeedMultiplierRange.x, this.easeRollSpeedMultiplierRange.y, this.timeReleased / this.easeRollSpeedMultiplierDuration);
-                }
+                }*/
                 
                 var dir = Mathf.Sign(target - this.xRot);
                 this.xRot += dir * speed * Time.smoothDeltaTime;
+                this.xRot %= 360f;
                 var bodyEuler = new Vector3(this.xRot, -180f, -180f);
                 this.bodyTransform.localRotation = Quaternion.Euler(bodyEuler);
             }
