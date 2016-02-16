@@ -70,8 +70,8 @@
                 half3 worldPos = mul(_Object2World,v.vertex).xyz;
 
                 // Nebula uv scrolling
-				o.uv2.xy = worldPos.xy*.005;
-				o.uv2.zw = worldPos.xy*.125;
+				o.uv2.xy = (worldPos.xy + _Offset34.zw) * .005;
+				o.uv2.zw = (worldPos.xy + _Offset34.zw) * .125;
 				
 				// Loops over all the points
 				half4 h = 0;
@@ -108,9 +108,9 @@
 				half4 a_nebula = tex2D(_Nebula,v.uv2.xy);
 				half4 b_nebula = tex2D(_Nebula,v.uv2.zw);
 				
-				half3 _sm_stars = lerp(0,0.4,sm_stars.b);
-				half3 _md_stars = lerp(0,0.6,md_stars.g);
-				half3 _lg_stars = lerp(0,0.8,lg_stars.r);
+				half3 _sm_stars = lerp(0,0.3,sm_stars.b);
+				half3 _md_stars = lerp(0,0.5,md_stars.g);
+				half3 _lg_stars = lerp(0,0.7,lg_stars.r);
 				
 				half4 stars = half4(_sm_stars+_md_stars+_lg_stars,1);
 

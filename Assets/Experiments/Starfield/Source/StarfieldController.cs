@@ -22,15 +22,20 @@ public class StarfieldController : MonoBehaviour
     
     [SerializeField]
     private Vector4 bounds = new Vector4(-0.8f, 0.8f, -1f, 1f);
+    
+    [SerializeField]
+    private float nebulaDistance = 20f;
+    
+    [SerializeField]
+    private float farStarDistance = 3f;
+    
+    [SerializeField]
+    private float midStarDistance = 2f;
+    
+    [SerializeField]
+    private float nearStarDistance = 0.5f;
         
 	private StarfieldPoint[] points;
-	
-    private Vector2 starFarOffset;
-    private Vector2 starMidOffset;
-    private Vector2 starNearOffset;
-    
-    //private Vector2 nebulaFarOffset;
-    //private Vector2 nebulaNearOffset;
     
     private Vector3 initPosition;
 
@@ -85,29 +90,26 @@ public class StarfieldController : MonoBehaviour
         this.transform.position = this.initPosition;
     }
     
-	public void UpdateOffset(Vector2 offset)
+	public void UpdateOffset(Vector2 offset)   
     {
         offset *= -this.speedMultiplier;
         
-        this.starFarOffset = (Vector2.one * 0.2f) + offset;
-        this.starMidOffset = (Vector2.one * 0.6f) + offset * 3f;
-        this.starNearOffset = offset * 5f;
+        var starFarOffset = offset * 1/this.farStarDistance;
+        var starMidOffset = offset * 1/this.midStarDistance;
+        var starNearOffset = offset * 1/this.nearStarDistance;
         
-        this.material.SetVector("_Offset12", new Vector4(this.starFarOffset.x, this.starFarOffset.y, this.starMidOffset.x, this.starMidOffset.y));
-        this.material.SetVector("_Offset34", new Vector4(this.starNearOffset.x, this.starNearOffset.y, 0f, 0f));
+        var nebulaUVOffset = offset * this.nebulaDistance;
+        var nebulaPosOffset = -nebulaUVOffset;
         
-        /*this.nebulaFarOffset = offset;
-        this.nebulaNearOffset = offset * 1.5f;
+        this.material.SetVector("_Offset12", new Vector4(starFarOffset.x, starFarOffset.y, starMidOffset.x, starMidOffset.y));
+        this.material.SetVector("_Offset34", new Vector4(starNearOffset.x, starNearOffset.y, nebulaUVOffset.x, nebulaUVOffset.y));
         
 		for (var i = 0; i < this.points.Length; i++)
-        {            
-			var p = this.points[i];
-            
-            //p.UpdateBounce(Time.deltaTime, this.bounds);
-            p.UpdateOffset(i % 3 == 0 ? this.nebulaFarOffset : this.nebulaNearOffset);
-            
+        {
+            var p = this.points[i];
+            p.UpdateOffset(nebulaPosOffset);
 			this.material.SetVector("_Points" + i, p.Properties);
-		}*/
+        }
 	}
     
     private void OnDrawGizmosSelected()

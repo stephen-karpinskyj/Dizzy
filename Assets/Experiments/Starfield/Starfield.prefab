@@ -81,6 +81,10 @@ MonoBehaviour:
   radiusRange: {x: 2, y: 10}
   intensity: 0.12
   bounds: {x: -120, y: 120, z: -15, w: 15}
+  nebulaDistance: 28
+  farStarDistance: 3
+  midStarDistance: 2
+  nearStarDistance: 0.5
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
