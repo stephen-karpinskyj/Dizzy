@@ -13,7 +13,7 @@ public class BeaconPingUIController : MonoBehaviour
     private WorldToUI textWorldToUi;
     
     [SerializeField]
-    private ParticleSystem particles;
+    private TweenAlpha pingTween;
     
     [SerializeField]
     private Text text;
@@ -26,14 +26,18 @@ public class BeaconPingUIController : MonoBehaviour
     public void Initialise(Transform target)
     {
         this.particleWorldToUi.Target = target;
-        this.textWorldToUi.Target = target;
+        this.textWorldToUi.Target = this.particleWorldToUi.transform;
         this.target = target;
     }
     
     public void Show(bool show)
     {
         this.parent.SetActive(show);
-        this.particles.Play();
+        
+        if (show)
+        {
+            this.pingTween.Play();
+        }
     }
     
     private void Update()

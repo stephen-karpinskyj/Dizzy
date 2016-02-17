@@ -8,9 +8,17 @@ public class WorldToUI : MonoBehaviour
     [SerializeField]
     private RectTransform canvasRect;
     
+    [SerializeField]
+    private bool raycast = true;
+    
     public Transform Target { get; set; }
     
     public bool IsConstrained { get; private set; }
+    
+    private void OnEnable()
+    {
+        this.Update();
+    }
     
 	private void Update()
     {
@@ -21,7 +29,7 @@ public class WorldToUI : MonoBehaviour
         
         // Place it on canvas
         {
-            Vector2 screenPos = UICamera.Instance.Camera.WorldToViewportPoint(this.Target.position);
+            var screenPos = UICamera.Instance.Camera.WorldToViewportPoint(this.Target.position);
             
             this.rect.anchoredPosition = new Vector2(
                 (screenPos.x * this.canvasRect.sizeDelta.x) - (this.canvasRect.sizeDelta.x * 0.5f),
@@ -30,38 +38,38 @@ public class WorldToUI : MonoBehaviour
         
         // Keep within screen bounds
         {
-            var localPos = this.rect.localPosition;
-            
-            var canvasSize = this.canvasRect.rect.size;
-            var canvasHalfSize = canvasSize / 2f;
-            
-            var halfSize = this.rect.rect.size / 2f;
-            
-            var horz = new Vector2(-canvasHalfSize.x + halfSize.x, canvasHalfSize.x - halfSize.x);
-            var vert = new Vector2(-canvasHalfSize.y + halfSize.y, canvasHalfSize.y - halfSize.y);
-            
-            this.IsConstrained = false;
-            
-            if (localPos.x < horz.x)
-            {
-                localPos.x = horz.x;
-                this.IsConstrained = true;
+            var localPos = (Vector2)this.rect.localPosition;
+            var aabb = new Bounds(Vector2.zero, this.canvasRect.rect.size - this.rect.rect.size);
+                
+            if (raycast)
+            {                
+                if (aabb.Contains(localPos))
+                {
+                    this.IsConstrained = false;
+                }
+                else
+                {
+                    float dist;
+                    var origin = Vector2.zero;
+                    var ray = new Ray(origin, (origin - localPos).normalized);
+                    aabb.IntersectRay(ray, out dist);
+                    localPos = ray.GetPoint(dist);
+                    this.IsConstrained = true;
+                }
             }
-            else if (localPos.x > horz.y)
+            else
             {
-                localPos.x = horz.y;
-                this.IsConstrained = true;
-            }
-            
-            if (localPos.y < vert.x)
-            {
-                localPos.y = vert.x;
-                this.IsConstrained = true;
-            }
-            else if (localPos.y > vert.y)
-            {
-                localPos.y = vert.y;
-                this.IsConstrained = true;
+                var closestPos = (Vector2)aabb.ClosestPoint(localPos);
+               
+                if (localPos == closestPos)
+                {
+                    this.IsConstrained = false;
+                }
+                else
+                {
+                    localPos = closestPos;
+                    this.IsConstrained = true;
+                }
             }
             
             this.rect.localPosition = localPos;
