@@ -32,7 +32,7 @@ public class OrbitGameObject : MonoBehaviour
         // Angular velocity
         {
             var targetDir = (Vector2)(this.transform.position - this.gravitationalTarget.position).normalized;
-            var currDir = this.transform.right;
+            currDir = this.transform.right;
 
             var angle = currDir.SignedAngle(targetDir);
             if (angle < 0f)

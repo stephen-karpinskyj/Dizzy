@@ -174,7 +174,7 @@ public class F3DLightning : MonoBehaviour
         // Update line rendered segments in case number of points less than 2
         if (points < 2)
         {
-            lineRenderer.SetVertexCount(2);
+            lineRenderer.positionCount = 2;
             lineRenderer.SetPosition(0, Vector3.zero);
             lineRenderer.SetPosition(1, new Vector3(0, 0, beamLength));
         }
@@ -182,7 +182,7 @@ public class F3DLightning : MonoBehaviour
         else
         {
             // Update number of points for line renderer
-            lineRenderer.SetVertexCount(points);
+            lineRenderer.positionCount = points;
             // Set zero point manually
             lineRenderer.SetPosition(0, Vector3.zero);
 

@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 Shader "FORGE3D/Heat" {	
 Properties {
 	_TintColor("Tint", Color) = (1.0, 1.0, 1.0, 1.0)
@@ -65,7 +67,7 @@ Category {
 		{
 			v2f o;
 
-			o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
+			o.vertex = UnityObjectToClipPos(v.vertex);
 			
 			o.projPos = ComputeScreenPos (o.vertex);
 			COMPUTE_EYEDEPTH(o.projPos.z);

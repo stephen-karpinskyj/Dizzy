@@ -1,9 +1,7 @@
 * text=auto
 
-
 *.cs text diff=csharp
 *.js text
-
 
 *.fbx binary
 *.png binary

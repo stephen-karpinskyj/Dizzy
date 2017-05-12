@@ -12,12 +12,16 @@ public class F3DParticleScale : MonoBehaviour
     public float ParticleScale = 1.0f;      // Particle scale
     public bool ScaleGameobject = true;     // Should the game be scaled as well
 
+    #if UNITY_EDITOR
     float prevScale;                        // Previous scale
+    #endif
 
     void Start()
     { 
+        #if UNITY_EDITOR
         // Store previous scale
         prevScale = ParticleScale;
+        #endif
     }    
 
     // Scale Shuriken particle system 
@@ -28,9 +32,11 @@ public class F3DParticleScale : MonoBehaviour
 
         foreach (ParticleSystem system in systems)
         {
-            system.startSpeed *= scaleFactor;
-            system.startSize *= scaleFactor;
-            system.gravityModifier *= scaleFactor;
+            var main = system.main;
+            
+            main.startSpeedMultiplier *= scaleFactor;
+            main.startSizeMultiplier *= scaleFactor;
+            main.gravityModifierMultiplier *= scaleFactor;
 
             SerializedObject so = new SerializedObject(system);
 

@@ -1,4 +1,7 @@
-﻿Shader "FORGE3D/Warp Jump Tunnel" {
+﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+Shader "FORGE3D/Warp Jump Tunnel" {
 Properties {
 	_TintColorA ("Tint Color A", Color) = (0.5,0.5,0.5,0.5)
 	_TintColorB ("Tint Color B", Color) = (0.5,0.5,0.5,0.5)
@@ -59,7 +62,7 @@ Category {
 			v2f vert (appdata_t v)
 			{
 				v2f o;
-				o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
+				o.vertex = UnityObjectToClipPos(v.vertex);
 				#ifdef SOFTPARTICLES_ON
 				o.projPos = ComputeScreenPos (o.vertex);
 				COMPUTE_EYEDEPTH(o.projPos.z);
@@ -67,8 +70,8 @@ Category {
 				o.color = v.color;
 				o.texcoord = TRANSFORM_TEX(v.texcoord,_MainTex);
 				o.texcoord = TRANSFORM_TEX(v.texcoord,_MainTex);
-				o.posWorld = mul(_Object2World, v.vertex);
-				o.normalDir = normalize(mul(_Object2World, float4(v.normal.xyz,0)).xyz);
+				o.posWorld = mul(unity_ObjectToWorld, v.vertex);
+				o.normalDir = normalize(mul(unity_ObjectToWorld, float4(v.normal.xyz,0)).xyz);
 				return o;
 			}
 

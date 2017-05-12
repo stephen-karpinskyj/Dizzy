@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class F3DShotgun : MonoBehaviour 
 {
@@ -42,16 +42,11 @@ public class F3DShotgun : MonoBehaviour
     }    
     #else
     // Particle collision events
-    private ParticleCollisionEvent[] collisionEvents = new ParticleCollisionEvent[16];
+    private readonly List<ParticleCollisionEvent> collisionEvents = new List<ParticleCollisionEvent>(16);
 
     // On particle collision
     void OnParticleCollision(GameObject other)
     {
-        int safeLength = GetComponent<ParticleSystem>().GetSafeCollisionEventSize();
-
-        if (collisionEvents.Length < safeLength)
-            collisionEvents = new ParticleCollisionEvent[safeLength];
-
         int numCollisionEvents = GetComponent<ParticleSystem>().GetCollisionEvents(other, collisionEvents);
         
         // Play collision sound and apply force to the rigidbody was hit

@@ -737,7 +737,7 @@ public class ShipController : MonoBehaviour
         var worldInputPos = (Vector3)(Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition); // clear z
         var worldPos = (Vector3)(Vector2)this.transform.position; // clear z
         var inputDir = (worldInputPos - worldPos).normalized;
-        var aimDir = this.transform.right;
+        var aimDir = (Vector2)this.transform.right;
         var velDir = (Vector3)this.rigidBody.velocity.normalized;
         var dirDot = (Vector2.Dot(aimDir, velDir) + 1f) / 2f;
         var inputInvDot = 1f - ((Vector2.Dot(aimDir, inputDir) + 1f) / 2f);

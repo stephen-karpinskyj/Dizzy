@@ -1,4 +1,7 @@
-﻿Shader "FORGE3D/Warp Tunnel Distortion" {
+﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+Shader "FORGE3D/Warp Tunnel Distortion" {
 Properties {
 	_TintColor ("Tint Color", Color) = (0.5,0.5,0.5,0.5)
 	
@@ -76,9 +79,9 @@ GrabPass {
 			v2f vert (appdata_t v)
 			{
 				v2f o;
-				o.posWorld = mul(_Object2World, v.vertex);
+				o.posWorld = mul(unity_ObjectToWorld, v.vertex);
 				v.vertex.xyz += normalize(v.normal.xyz) * _Offset;
-				o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);	
+				o.vertex = UnityObjectToClipPos(v.vertex);	
 				o.vertex.x += sin(_Time.y * _WiggleX) * _WiggleDist;	
 				o.vertex.y -= sin(_Time.y * _WiggleY) * _WiggleDist;		
 				o.color = v.color;

@@ -1,8 +1,11 @@
-﻿Shader "FORGE3D/Additive" {
+﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+Shader "FORGE3D/Trail" {
 Properties {
 	_TintColor ("Tint Color", Color) = (0.5,0.5,0.5,0.5)
 	_MainTex ("Particle Texture", 2D) = "white" {}
-	_InvFade ("Soft Particles Factor", Range(0.01,3.0)) = 1.0	
+	_InvFade ("Soft Particles Factor", Range(0.01,3.0)) = 1.0
+    _UVPan ("Trail UV Pan", Float) = 0
 }
 
 Category {
@@ -10,7 +13,7 @@ Category {
 	Blend SrcAlpha One
 	AlphaTest Greater .01
 	ColorMask RGB
-	Cull Off Lighting Off ZWrite Off Fog { Mode Off }
+	Cull Off Lighting Off ZWrite Off Fog { Color (0,0,0,0) }
 	
 	SubShader {
 		Pass {
@@ -23,7 +26,7 @@ Category {
 			#include "UnityCG.cginc"
 
 			sampler2D _MainTex;
-			fixed4 _TintColor;			
+			fixed4 _TintColor;
 			
 			struct appdata_t {
 				float4 vertex : POSITION;
@@ -41,11 +44,12 @@ Category {
 			};
 			
 			float4 _MainTex_ST;
+            float _UVPan;
 
 			v2f vert (appdata_t v)
 			{
 				v2f o;
-				o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
+				o.vertex = UnityObjectToClipPos(v.vertex);
 				#ifdef SOFTPARTICLES_ON
 				o.projPos = ComputeScreenPos (o.vertex);
 				COMPUTE_EYEDEPTH(o.projPos.z);
@@ -67,7 +71,7 @@ Category {
 				i.color.a *= fade;
 				#endif
 				
-				return pow(i.color * _TintColor * tex2D(_MainTex, i.texcoord), 1);
+				return pow(i.color * _TintColor * tex2D(_MainTex, float2(i.texcoord.x + _UVPan * _Time.x, i.texcoord.y)), 1);
 			}
 			ENDCG 
 		}

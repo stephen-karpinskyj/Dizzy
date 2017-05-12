@@ -72,7 +72,7 @@ public class ShipBoostController : MonoBehaviour
         Debug.Assert(this.source != null, this);
 
         this.boostParticleEmission = this.boostParticles.emission;
-        this.boostParticleRate = this.boostParticleEmission.rate;
+        this.boostParticleRate = this.boostParticleEmission.rateOverTime;
         this.initBoostParticleRateMax = this.boostParticleRate.constantMax;
         
         this.StopBoosting();
@@ -141,7 +141,7 @@ public class ShipBoostController : MonoBehaviour
         this.isBoosting = true;
         
         this.boostParticleRate.constantMax = this.initBoostParticleRateMax;
-        this.boostParticleEmission.rate = this.boostParticleRate;
+        this.boostParticleEmission.rateOverTime = this.boostParticleRate;
         
         AudioManager.Instance.Play(this.source);
         this.targetBoostLightIntensity = this.boostLightIntensityRange.y;
@@ -156,7 +156,7 @@ public class ShipBoostController : MonoBehaviour
         this.isBoosting = false;
         
         this.boostParticleRate.constantMax = 0f;
-        this.boostParticleEmission.rate = this.boostParticleRate;
+        this.boostParticleEmission.rateOverTime = this.boostParticleRate;
 
         AudioManager.Instance.Stop(this.source);
         this.targetBoostLightIntensity = this.boostLightIntensityRange.x;

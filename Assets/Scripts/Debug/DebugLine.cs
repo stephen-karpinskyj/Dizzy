@@ -65,8 +65,9 @@ public class DebugLine : MonoBehaviour
         var line = go.AddComponent<LineRenderer>();
         line.material = Mat;
         line.material.color = c;
-        line.SetVertexCount(2);
-        line.SetWidth(0.03f, 0.03f);
+        line.positionCount = 2;
+        line.startWidth = 0.03f;
+        line.endWidth = 0.03f;
 
         debug.line = line;
         debug.Move(a, b);

@@ -33,7 +33,7 @@ public class F3DCurvedBeam : MonoBehaviour
         // Randomize uv offset
         initialBeamOffset = Random.Range(0f, 5f);
 
-        lineRenderer.SetVertexCount(curvePoints);
+        lineRenderer.positionCount = curvePoints;
     }
     
     void Update()

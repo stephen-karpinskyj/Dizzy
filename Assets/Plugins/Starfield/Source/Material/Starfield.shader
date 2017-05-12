@@ -1,4 +1,7 @@
-﻿Shader "Custom/Starfield" 
+﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+Shader "Custom/Starfield" 
 {
 	Properties
 	{
@@ -67,7 +70,7 @@
                 o.uv1.zw += _Offset12.zw;
                 o.uv3.xy += _Offset34.xy;
 
-                half3 worldPos = mul(_Object2World,v.vertex).xyz;
+                half3 worldPos = mul(unity_ObjectToWorld,v.vertex).xyz;
 
                 // Nebula uv scrolling
 				o.uv2.xy = (worldPos.xy + _Offset34.zw) * .005;
@@ -95,7 +98,7 @@
           		v.vertex.xyz += dis*_Blast.w*float3(blastNormal.x,1,blastNormal.y);
           		//end of blast section
 
-				o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+				o.pos = UnityObjectToClipPos(v.vertex);
 				return o;
 			}
 
