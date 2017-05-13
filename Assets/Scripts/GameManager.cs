@@ -42,10 +42,8 @@ public class GameManager : BehaviourSingleton<GameManager>
     #region Unity
 
 
-    protected override void Awake()
+    private void Awake()
     {
-        base.Awake();
-        
         this.IsUsingKeyboard = Application.platform != RuntimePlatform.Android && Application.platform != RuntimePlatform.IPhonePlayer;
     }
 

@@ -185,7 +185,7 @@ public class MineController : LevelObjectController
 
         foreach (var j in junk)
         {
-            var p = GameObjectUtility.InstantiateBehaviour<JunkPusher>(this.junkParent);
+            var p = GameObjectUtility.InstantiateComponent<JunkPusher>(this.junkParent);
             p.transform.localPosition = Vector3.zero;
             p.transform.localRotation = Quaternion.identity;
             

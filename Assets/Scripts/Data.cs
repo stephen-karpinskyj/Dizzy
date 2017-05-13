@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class Data : DataAsset<Data>
+public class Data : ScriptableAsset<Data>
 {
     #region Inspector
 
@@ -69,7 +69,7 @@ public class Data : DataAsset<Data>
     [UnityEditor.MenuItem("Dizzy/Create or Reset Data")]
     private static void CreateResetData()
     {
-        DataAsset<Data>.CreateOrResetAsset(AssetName);
+        ScriptableAsset<Data>.EDITOR_CreateOrResetAsset();
     }
 
 

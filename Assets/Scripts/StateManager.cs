@@ -139,10 +139,8 @@ public class StateManager : BehaviourSingleton<StateManager>
     #region Unity
     
     
-    protected override void Awake()
+    private void Awake()
     {
-        base.Awake();
-        
         this.levelStateDic = new Dictionary<string, LevelState>();
         
         foreach (var l in Data.Instance.Levels)
