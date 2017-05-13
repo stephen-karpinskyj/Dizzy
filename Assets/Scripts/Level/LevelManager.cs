@@ -151,11 +151,6 @@ public class LevelManager : MonoBehaviour
         this.startTime = Time.time;
     }
     
-    public void OnBeaconPurchase()
-    {
-        StateManager.Instance.HandleBeaconPurchase(this.CurrentLevel as ExplorationLevelData);
-    }
-    
     
     #endregion
     

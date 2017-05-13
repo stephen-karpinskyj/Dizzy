@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class CanvasUIController : MonoBehaviour
 {
@@ -13,15 +14,9 @@ public class CanvasUIController : MonoBehaviour
     
     [SerializeField]
     private TrialProgressUIController trialProgress;
-    
-    [SerializeField]
-    private ExplorationProgressUIController explorationProgress;
-    
+
     [SerializeField]
     private TimerUIController timer;
-    
-    [SerializeField]
-    private BeaconPingUIController beaconPing;
     
     [SerializeField]
     private Transform[] childrenToHideInGame;
@@ -58,11 +53,6 @@ public class CanvasUIController : MonoBehaviour
         get { return this.trialProgress; }
     }
     
-    public ExplorationProgressUIController ExplorationProgress
-    {
-        get { return this.explorationProgress; }
-    }
-    
     
     #endregion
     
@@ -75,9 +65,7 @@ public class CanvasUIController : MonoBehaviour
         Debug.Assert(this.header);
         Debug.Assert(this.junk);
         Debug.Assert(this.trialProgress);
-        Debug.Assert(this.explorationProgress);
         Debug.Assert(this.timer);
-        Debug.Assert(this.beaconPing);
     }
     
     
@@ -106,7 +94,7 @@ public class CanvasUIController : MonoBehaviour
         }
         else
         {
-            this.explorationProgress.ForceUpdateAll(data as ExplorationLevelData, state as ExplorationLevelState, junkCount);
+            throw new NotImplementedException();
         }
     }
 
@@ -148,12 +136,7 @@ public class CanvasUIController : MonoBehaviour
         }
         else
         {
-            var explorationState = state as ExplorationLevelState;
-            
-            if (explorationState.IsBeaconPurchased)
-            {
-                this.beaconPing.Show(true);
-            }
+            throw new NotImplementedException();
         }
         
         this.ForceUpdateAll(data, state, junkCount, junkMultiplier);
@@ -169,23 +152,13 @@ public class CanvasUIController : MonoBehaviour
         this.Show(true);
         
         this.timer.StopTimer();
-        this.beaconPing.Show(false);
     }
     
     public void OnLevelLoad(LevelData data, LevelState state, ulong junkCount, float junkMultiplier)
     {
         this.ForceUpdateAll(data, state, junkCount, junkMultiplier);
-        
-        var explorationData = data as ExplorationLevelData;
-        var isTrial = explorationData == null;
-        
-        this.TrialProgress.Show(isTrial);
-        this.ExplorationProgress.Show(!isTrial);
-        
-        if (!isTrial)
-        {
-            this.beaconPing.Initialise(explorationData.Beacon.Target);
-        }
+
+        this.TrialProgress.Show(true);
     }
 
 

@@ -40,9 +40,6 @@ public class SettingsUIController : MonoBehaviour
     private string spinDirectionCWText = "INITIAL SPIN: CW";
 
     [SerializeField]
-    private string graphicsModePrefixText = "GRAPHICS: ";
-
-    [SerializeField]
     private string fpsEnabledText = "FPS: ON";
 
     [SerializeField]
@@ -50,12 +47,6 @@ public class SettingsUIController : MonoBehaviour
     
     [SerializeField]
     private Text fpsParent;
-
-    [SerializeField]
-    private Mesh[] starfieldMeshes;
-    
-    [SerializeField]
-    private MeshFilter starfieldMeshFilter;
 
     private bool isResetProgressConfirmShowing = false;
 
@@ -69,7 +60,6 @@ public class SettingsUIController : MonoBehaviour
 
         this.UpdateSoundToggle(StateManager.Instance.SoundEnabled);
         this.UpdateSpinDirectionToggle(StateManager.Instance.SpinDirectionCCW);
-        this.UpdateGraphicsModeToggle(StateManager.Instance.GraphicsMode);
         this.UpdateFpsToggle(StateManager.Instance.FpsEnabled);
         this.UpdateResetProgressConfirm(false);
     }
@@ -92,11 +82,6 @@ public class SettingsUIController : MonoBehaviour
     
     public void OnGraphicsModeToggle()
     {
-        var mode = StateManager.Instance.GraphicsMode + 1;
-        
-        mode = this.UpdateGraphicsModeToggle(mode);
-        
-        StateManager.Instance.GraphicsMode = mode;
     }
     
     public void OnFpsToggle()
@@ -127,40 +112,6 @@ public class SettingsUIController : MonoBehaviour
     private void UpdateSpinDirectionToggle(bool ccw)
     {
         this.spinDirectionText.text = ccw ? this.spinDirectionCCWText : this.spinDirectionCWText;
-    }
-    
-    private int UpdateGraphicsModeToggle(int mode)
-    {
-        if (mode > this.starfieldMeshes.Length + 1)
-        {
-            mode = 0;
-        }
-        
-        if (mode < 0)
-        {
-            mode = this.starfieldMeshes.Length + 1;
-        }
-        
-        this.graphicsModeText.text = this.graphicsModePrefixText + (mode + 1);
-        
-        if (mode == this.starfieldMeshes.Length + 1)
-        {
-            this.starfieldMeshFilter.GetComponent<Renderer>().enabled = true;
-            this.starfieldMeshFilter.mesh = this.starfieldMeshes[0];
-            this.starfieldMeshFilter.GetComponent<StarfieldController>().ToggleNebula(false);
-        }
-        else if (mode == this.starfieldMeshes.Length)
-        {
-            this.starfieldMeshFilter.GetComponent<Renderer>().enabled = false;
-        }
-        else
-        {
-            this.starfieldMeshFilter.GetComponent<Renderer>().enabled = true;
-            this.starfieldMeshFilter.mesh = this.starfieldMeshes[mode];
-            this.starfieldMeshFilter.GetComponent<StarfieldController>().ToggleNebula(true);
-        }
-        
-        return mode;
     }
 
     private void UpdateFpsToggle(bool fps)

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -105,17 +106,7 @@ public class StateManager : BehaviourSingleton<StateManager>
         
         return this.JunkCount;
     }
-    
-    public void HandleBeaconPurchase(ExplorationLevelData data)
-    {
-        Debug.Assert(this.JunkCount >= data.Beacon.ActivationCost);
-        
-        this.JunkCount -= data.Beacon.ActivationCost;
-        
-        var level = this.GetLevel(data) as ExplorationLevelState;
-        level.HandlePurchase();
-    }
-    
+
     public LevelState GetLevel(LevelData data)
     {
         if (!this.levelStateDic.ContainsKey(data.Id))
@@ -197,7 +188,7 @@ public class StateManager : BehaviourSingleton<StateManager>
         }
         else
         {
-            return new ExplorationLevelState(data.Id);
+            throw new NotImplementedException();
         }
     }
     

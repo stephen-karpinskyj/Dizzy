@@ -10,7 +10,6 @@ public class GameManager : BehaviourSingleton<GameManager>
     private LevelManager level;
     private WorldManager world;
     private CanvasUIController canvas;
-    private StarfieldController starfield;
     
     private LaunchLightsController launchLights;
 
@@ -29,8 +28,6 @@ public class GameManager : BehaviourSingleton<GameManager>
 
 
     public bool IsRunning { get { return this.isRunning; } }
-    
-    public bool InExplorationMode { get; private set; }
 
     public ShipController Ship { get; private set; }
 
@@ -53,15 +50,13 @@ public class GameManager : BehaviourSingleton<GameManager>
     }
 
     private void Update()
-    {   
-        this.UpdateStarfield();
-        
+    {
         if (this.isRunning || !this.canRun)
         {
             return;
         }
 
-        var shouldRun = false;
+        bool shouldRun;
 
         if (this.IsUsingKeyboard)
         {
@@ -113,9 +108,6 @@ public class GameManager : BehaviourSingleton<GameManager>
         this.canvas = Object.FindObjectOfType<CanvasUIController>();
         Debug.Assert(this.canvas);
         
-        this.starfield = Object.FindObjectOfType<StarfieldController>();
-        Debug.Assert(this.starfield);
-        
         this.Ship = Object.FindObjectOfType<ShipController>();
         Debug.Assert(this.Ship);
         
@@ -148,12 +140,6 @@ public class GameManager : BehaviourSingleton<GameManager>
         this.OnLevelLoad(nextLevel);
     }
 
-    public void HandleBeaconPurchase()
-    {
-        this.level.OnBeaconPurchase();
-        this.ForceUpdateCanvas();
-    }
-
     #endregion
 
 
@@ -168,20 +154,8 @@ public class GameManager : BehaviourSingleton<GameManager>
     private void OnLevelLoad(LevelData level)
     {
         Debug.LogFormat("[{0}] Loading level={1}", this.GetType().Name, level.Id);
-        
-        this.InExplorationMode = level is ExplorationLevelData;
-        
-        if (this.InExplorationMode)
-        {
-            CameraController.AddChild(this.starfield.transform);
-        }
-        else
-        {
-            this.starfield.transform.parent = null;
-            this.starfield.ResetPosition();
-        }
-        
-        CameraController.ChangeMode(this.InExplorationMode);
+
+        CameraController.ChangeMode(false);
         
         this.level.OnLeveUnload();
         this.level.OnLevelLoad(level, () => this.OnLevelStop(true));
@@ -230,20 +204,6 @@ public class GameManager : BehaviourSingleton<GameManager>
 
         this.level.OnLevelStart();
         this.canvas.OnLevelStart(this.level.CurrentLevel, this.level.CurrentLevelState, StateManager.Instance.JunkCount, StateManager.Instance.JunkMultiplier);
-    }
-    
-    private void UpdateStarfield()
-    {
-        if (this.InExplorationMode)
-        {
-            this.offset = (Vector2)GameManager.Instance.Ship.Trans.position;
-        }
-        else
-        {
-            this.offset = this.GetAcceleration() * 0.5f;
-        }
-        
-        this.starfield.UpdateOffset(this.offset);
     }
 
     private Vector3 GetAcceleration()

@@ -246,7 +246,7 @@ public class JunkController : LevelObjectController
 
         this.transform.eulerAngles = Vector3.forward * this.rotationAtAttraction;
 
-        this.sparkParticles.Play();
+//        this.sparkParticles.Play();
 
         GameManager.Instance.Multiplier.Increment();
     }

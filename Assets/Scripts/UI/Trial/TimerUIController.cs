@@ -42,7 +42,7 @@ public class TimerUIController : MonoBehaviour
         if (time < 0f)
         {
             this.text.color = this.expiredColor;
-            this.text.text = ":-(";
+            this.text.text = string.Empty;
         }
         else if (time < this.alertTime)
         {
