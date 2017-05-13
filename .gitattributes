@@ -3,11 +3,24 @@
 *.cs text diff=csharp
 *.js text
 
-*.fbx binary
-*.png binary
-*.jpg binary
-*.ogg binary
-*.wav binary
-*.ttf binary
-*.bundle binary
-*.unity binary
+*.fbx binary -delta
+
+*.tga binary -delta
+*.png binary -delta
+*.jpg binary -delta
+*.gif binary -delta
+*.bmp binary -delta
+*.psd binary -delta
+*.tif binary -delta
+*.tiff binary -delta
+
+*.aif binary -delta
+*.ogg binary -delta
+*.wav binary -delta
+
+*.ttf binary -delta
+*.otf binary -delta
+
+*.bundle binary -delta
+
+*.dll binary -delta
