@@ -24,6 +24,9 @@ public class JunkController : LevelObjectController
     private AudioSource source;
 
     [SerializeField]
+    private SpinningGameObject spin;
+
+    [SerializeField]
     private AudioClip[] deathClips;
 
     [SerializeField]

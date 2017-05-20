@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ShipController : MonoBehaviour
 {
@@ -129,37 +128,6 @@ public class ShipController : MonoBehaviour
     private float dotProductLimitBeforeThrust = 0.01f;
 
 
-    [Header("Roll")]
-
-    [SerializeField]
-    private float minRotationXSpeed = 100f;
-    [SerializeField]
-    private float maxRotationXSpeed = 200;
-
-    [SerializeField]
-    private AnimationCurve barrelRollCurve;
-    [SerializeField]
-    private float barrelRollDelay = 0.15f;
-    [SerializeField]
-    private float barrelRollDuration = 1f;
-
-    [SerializeField]
-    private float maxRollAimVelDiff = 10f;
-
-    [SerializeField]
-    private Vector2 easeRollSpeedMultiplierRange = new Vector2(0.3f, 1f);
-    [SerializeField]
-    private float easeRollSpeedMultiplierDuration = 1f;
-    
-    [SerializeField]
-    private Vector2 thrustRollSpeedMultiplierRange = new Vector2(1f, 2.5f);
-    [SerializeField]
-    private float thrustRollSpeedMultiplierDuration = 0.5f;
-    
-    [SerializeField]
-    private float rollSpeedLinearSpeedFactor = 1.2f;
-
-
     [Header("Launch")]
 
     [SerializeField]
@@ -194,6 +162,9 @@ public class ShipController : MonoBehaviour
     private ShipShieldController shieldController;
 
     [SerializeField]
+    private GameObject beamParent;
+
+    [SerializeField]
     private float baseTrailDuration = 0.1f;
 
     [SerializeField]
@@ -217,23 +188,19 @@ public class ShipController : MonoBehaviour
 
     private TapType tapType;
 
-    private float timeHeld = 0f;
-    private float timeReleased = 0f;
-    private bool isTapping = false;
-    private bool wasTapping = false;
-    private float timeThrusting = 0f;
-    private bool isThrusting = false;
-    private bool wasThrusting = false;
-    private bool isDoubleTapping = false;
+    private float timeHeld;
+    private float timeReleased;
+    private bool isTapping;
+    private bool wasTapping;
+    private float timeThrusting;
+    private bool isThrusting;
+    private bool wasThrusting;
+    private bool isDoubleTapping;
 
-    private float currentBarrelRoll;
+    private float angularVelocityOnRelease;
 
-    private float angularVelocityOnRelease = 0f;
-
-    private bool isRunning = false;
-    private bool isCCW = false;
-
-    private float xRot = 0f;
+    private bool isRunning;
+    private bool isCCW;
 
     private float lastTapStartTime;
     private float lastDoubleTapTime;
@@ -312,8 +279,6 @@ public class ShipController : MonoBehaviour
         //this.debugYellowLine = DebugLine.Draw(Vector3.zero, Vector3.zero, Color.yellow);
         //this.debugText = DebugText.Draw(Vector3.zero, string.Empty);
 
-        this.StartCoroutine(this.RollCoroutine());
-
         this.initialPos = this.transform.position;
         this.initialRot = this.transform.rotation;
 
@@ -326,7 +291,11 @@ public class ShipController : MonoBehaviour
     {
         if (!this.isRunning)
         {
-            this.isThrusting = false;
+            if (this.IsThrusting)
+            {
+                this.OnStopThrusting();
+            }
+
             return;
         }
         
@@ -382,7 +351,7 @@ public class ShipController : MonoBehaviour
 
         // Trails
         {
-            var trailDuration = 0f;
+            float trailDuration;
             var aimDir = this.transform.right;
             var velDir = (Vector3)this.rigidBody.velocity.normalized;
             var dirDot = (Vector2.Dot(aimDir, velDir) + 1f) / 2f;
@@ -404,9 +373,6 @@ public class ShipController : MonoBehaviour
 
         this.wasTapping = this.isTapping;
         this.wasThrusting = this.isThrusting;
-
-        //this.debugString = string.Format("{0:f2}", this.currentFullRoll);
-        //this.debugString = string.Empty;
 
         //this.debugText.Move(this.transform.position + Vector3.up * 1f);
         //this.debugText.Text = this.debugString;
@@ -488,40 +454,6 @@ public class ShipController : MonoBehaviour
     #endregion
 
 
-    #region Coroutines
-
-
-    private IEnumerator RollCoroutine()
-    {
-        yield return new WaitForSeconds(this.barrelRollDelay);
-
-        if (!this.isThrusting)
-        {
-            yield break;
-        }
-
-        var startTime = Time.time;
-        var timeSoFar = 0f;
-        var t = 0f;
-
-        do
-        {
-            timeSoFar = Time.time - startTime;
-            t = timeSoFar / this.barrelRollDuration;
-
-            var curveValue = this.barrelRollCurve.Evaluate(t);
-            this.currentBarrelRoll = Mathf.Lerp(0, -360f, curveValue);
-
-            yield return null;
-
-        }
-        while (t < 1f);
-    }
-
-
-    #endregion
-
-
     #region Private
 
 
@@ -536,7 +468,11 @@ public class ShipController : MonoBehaviour
         if (this.tapType == TapType.Both)
         {
             this.UpdateThrust(velDir, dirDot);
-            this.isThrusting = true;
+
+            if (!this.IsThrusting)
+            {
+                this.OnStartThrusting();
+            }
         }
         else
         {
@@ -550,11 +486,12 @@ public class ShipController : MonoBehaviour
                 this.UpdateSpin(false); 
                 this.isCCW = false;
             }
-            
-            this.isThrusting = false;
-        }
 
-        this.UpdateRoll(dirDot, this.isCCW);
+            if (this.IsThrusting)
+            {
+                this.OnStopThrusting();
+            }
+        }
     }
 
     private void UpdateMaxSpeed()
@@ -622,41 +559,19 @@ public class ShipController : MonoBehaviour
             this.rigidBody.angularVelocity *= multiplier;
         }
     }
-    
-    private void UpdateRoll(float dirDot, bool counterclockwise)
+
+    private void OnStartThrusting()
     {
-        var target = 0f;
-            
-        var speedFactor = (1f - dirDot) * this.SpeedPercentage * this.rollSpeedLinearSpeedFactor;  
-        var velAimDiffRot = this.maxRollAimVelDiff * this.AngularSpeedPercentage * speedFactor;
-        
-        if (counterclockwise)
-        {
-            target += velAimDiffRot;
-        }
-        else
-        {
-            target -= velAimDiffRot;
-        }
-    
-        if (Mathf.Abs(this.xRot - target) > 0.2f)
-        {
-            var speed = Mathf.Lerp(this.minRotationXSpeed, this.maxRotationXSpeed, this.SpeedPercentage);
-            
-            if (this.IsThrusting)
-            {
-                speed *= Mathf.Lerp(this.thrustRollSpeedMultiplierRange.x, this.thrustRollSpeedMultiplierRange.y, this.timeThrusting / this.thrustRollSpeedMultiplierDuration);
-            }
-            else
-            {
-                speed *= Mathf.Lerp(this.easeRollSpeedMultiplierRange.x, this.easeRollSpeedMultiplierRange.y, this.timeReleased / this.easeRollSpeedMultiplierDuration);
-            }
-            
-            var dir = Mathf.Sign(target - this.xRot);
-            this.xRot += dir * speed * Time.fixedDeltaTime;
-            var bodyEuler = new Vector3(this.xRot, -180f, -180f);
-            this.bodyTransform.localRotation = Quaternion.Euler(bodyEuler);
-        }
+        this.isThrusting = true;
+
+//        this.beamParent.SetActive(true);
+    }
+
+    private void OnStopThrusting()
+    {
+        this.isThrusting = false;
+
+//        this.beamParent.SetActive(false);
     }
 
     private void OnStartDoubleTap()
@@ -727,8 +642,11 @@ public class ShipController : MonoBehaviour
 
     private void ControlGoToPoint()
     {
-        var worldInputPos = (Vector3)(Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition); // clear z
-        var worldPos = (Vector3)(Vector2)this.transform.position; // clear z
+        var worldInputPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        worldInputPos.z = 0f;
+        var worldPos = this.transform.position;
+        worldPos.z = 0f;
+
         var inputDir = (worldInputPos - worldPos).normalized;
         var aimDir = (Vector2)this.transform.right;
         var velDir = (Vector3)this.rigidBody.velocity.normalized;
@@ -737,7 +655,10 @@ public class ShipController : MonoBehaviour
         var angleDiff = aimDir.SignedAngle(inputDir);
         var normAngleDiff = angleDiff / 180f;
 
-        this.isThrusting = false;
+        if (this.IsThrusting)
+        {
+            this.OnStopThrusting();
+        }
 
         if (Input.GetMouseButton(0))
         {
@@ -762,7 +683,10 @@ public class ShipController : MonoBehaviour
             // Thrust
             if (inputInvDot < this.dotProductLimitBeforeThrust)
             {
-                this.isThrusting = true;
+                if (!this.IsThrusting)
+                {
+                    this.OnStartThrusting();
+                }
 
                 // Decay
                 if (!this.wasThrusting)
@@ -798,16 +722,6 @@ public class ShipController : MonoBehaviour
             {
                 this.rigidBody.angularVelocity = Mathf.Sign(this.rigidBody.angularVelocity) * this.maxAngularVelocity;
             }
-        }
-
-        // Handle x-rotation
-        {
-            //var angVelPer = this.rotationXCurve.Evaluate(this.rigidBody.angularVelocity / this.maxAngularVelocity);
-            //var xRot = Mathf.Lerp(this.rotationXRange.x / 2f, this.rotationXRange.y / 2f, Mathf.Abs(angVelPer));
-            //xRot *= Mathf.Sign(angVelPer);
-
-            var bodyEuler = new Vector3(/*xRot + */this.currentBarrelRoll, -180f, -180f);
-            this.bodyTransform.localRotation = Quaternion.Euler(bodyEuler);
         }
     }
     

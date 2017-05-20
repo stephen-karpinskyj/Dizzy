@@ -3,31 +3,20 @@
 public class JunkNode : LevelObjectNode
 {    
     private JunkController junk;
-    
-    
-    #region MonoBehaviour
-    
-    
+
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(this.transform.position, 0.12f);
     }
-    
-    
-    #endregion
-    
-    
-    #region LevelObjectNode
-    
-    
+
     public override LevelObjectNodeLoadResult OnLevelLoad(LevelObjectPool pool)
     {        
         var result = base.OnLevelLoad(pool);
         
         this.junk = pool.Get<JunkController>();
         
-        result.Junk = new JunkController[] { this.junk };
+        result.Junk = new [] { this.junk };
         
         return result;
     }
@@ -52,7 +41,4 @@ public class JunkNode : LevelObjectNode
         
         this.junk.OnLevelStart();
     }
-    
-    
-    #endregion
 }
