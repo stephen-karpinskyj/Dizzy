@@ -60,7 +60,7 @@ public class LevelManager : MonoBehaviour
         this.canvas = canvas;
     }
     
-    public void OnLeveUnload()
+    public void OnLevelUnload()
     {
         if (!this.CurrentLevel)
         {

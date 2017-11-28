@@ -5,34 +5,6 @@ public class ShipController : MonoBehaviour
     #region Types
 
 
-    /*private enum ControlMode
-    {
-        /// <summary>
-        /// Tapping: thrust.
-        /// None: drift rotating in last direction.
-        /// </summary>
-        SpinCCW = 0,
-
-        /// <summary>
-        /// Tapping: thrust.
-        /// None: drift rotating in last direction.
-        /// </summary>
-        SpinCW,
-
-        /// <summary>
-        /// Tapping: rotate/thrust toward point.
-        /// None: drift without rotation.
-        /// </summary>
-        GoToPoint,
-
-        /// <summary>
-        /// Tapping left: thrust/change direction to ccw.
-        /// Tapping right: thrust/change direction to cw.
-        /// None: drift rotating in last direction.
-        /// </summary>
-        DualSpin,
-    }*/
-
     private enum DoubleTapMode
     {
         Nothing = 0,
@@ -108,26 +80,6 @@ public class ShipController : MonoBehaviour
     private float torqueCurveDuration = 0.5f;
 
 
-    [Header("Aim")]
-
-    [SerializeField]
-    private AnimationCurve aimMaxAngularVelocityCurve;
-    [SerializeField]
-    private Vector2 aimMaxAngularVelocityRange = new Vector2(0f, 5f);
-    [SerializeField]
-    private float aimTorque = 300f;
-    [SerializeField]
-    private AnimationCurve aimVelocityDecayCurve;
-    [SerializeField]
-    private Vector2 aimVelocityDecayRange = new Vector2(0.8f, 0.9f);
-    [SerializeField]
-    private AnimationCurve aimBoostMultiplierCurve;
-    [SerializeField]
-    private Vector2 aimBoostMultiplierRange = new Vector2(0.8f, 1f);
-    [SerializeField]
-    private float dotProductLimitBeforeThrust = 0.01f;
-
-
     [Header("Launch")]
 
     [SerializeField]
@@ -142,9 +94,6 @@ public class ShipController : MonoBehaviour
 
     [SerializeField]
     private Transform centreTransform;
-
-    //[SerializeField]
-    //private ControlMode controlMode = ControlMode.SpinCCW;
 
     [SerializeField]
     private DoubleTapMode doubleTapMode = DoubleTapMode.Nothing;
@@ -207,11 +156,6 @@ public class ShipController : MonoBehaviour
     
     private float currMaxSpeed;
 
-    //private DebugLine debugBlueLine;
-    //private DebugLine debugYellowLine;
-    //private DebugText debugText;
-    //private string debugString;
-
 
     #endregion
 
@@ -273,18 +217,25 @@ public class ShipController : MonoBehaviour
 
     private void Awake()
     {
-        Debug.Assert(this.rigidBody != null, this);
-
-        //this.debugBlueLine = DebugLine.Draw(Vector3.zero, Vector3.zero, Color.blue);
-        //this.debugYellowLine = DebugLine.Draw(Vector3.zero, Vector3.zero, Color.yellow);
-        //this.debugText = DebugText.Draw(Vector3.zero, string.Empty);
-
         this.initialPos = this.transform.position;
         this.initialRot = this.transform.rotation;
 
         this.currMaxSpeed = this.maxSpeed;
+    }
 
-        this.OnLevelStop();
+    private void Start()
+    {
+        GameManager.Instance.OnLevelStop += this.HandleLevelStop;
+        GameManager.Instance.OnLevelStart += this.HandleLevelStart;
+    }
+
+    private void OnDestroy()
+    {
+        if (GameManager.Exists)
+        {
+            GameManager.Instance.OnLevelStop -= this.HandleLevelStop;
+            GameManager.Instance.OnLevelStart -= this.HandleLevelStart;
+        }
     }
 
     private void FixedUpdate()
@@ -330,7 +281,6 @@ public class ShipController : MonoBehaviour
                 var doubleTapped = (Time.time - this.lastTapStartTime) <= this.doubleTapDuration;
                 if (doubleTapped)
                 {
-                    // TODO: Do special action with double tap
                     this.lastDoubleTapTime = Time.time;
                     this.isDoubleTapping = true;
                     this.OnStartDoubleTap();
@@ -373,57 +323,9 @@ public class ShipController : MonoBehaviour
 
         this.wasTapping = this.isTapping;
         this.wasThrusting = this.isThrusting;
-
-        //this.debugText.Move(this.transform.position + Vector3.up * 1f);
-        //this.debugText.Text = this.debugString;
     }
 
 
-    #endregion
-
-
-    #region Level events
-
-
-    public void OnLevelStop()
-    {
-        this.isRunning = false;
-
-        this.transform.position = this.initialPos;
-        this.transform.rotation = this.initialRot;
-
-        this.rigidBody.angularVelocity = 0f;
-        this.rigidBody.velocity = Vector2.zero;
-
-        foreach (var t in this.trails)
-        {
-            t.enabled = false;
-        }
-        
-        this.currMaxSpeed = this.maxSpeed;
-    }
-
-    public void OnLevelStart()
-    {
-        if (this.isRunning)
-        {
-            return;
-        }
-
-        this.isRunning = true;
-        //this.isCCW = StateManager.Instance.SpinDirectionCCW;
-
-        CameraController.Shake(this.launchShakeDuration, this.launchShakeMagnitude);
-
-        this.AddImpulseForce(this.launchForce);
-
-        foreach (var t in this.trails)
-        {
-            t.enabled = true;
-        }
-    }
-    
-    
     #endregion
     
     
@@ -595,139 +497,53 @@ public class ShipController : MonoBehaviour
         if (GameManager.Instance.IsUsingKeyboard)
         {
             return Input.anyKey ? TapType.Both : TapType.Left;
-            
-            /*var left = Input.GetKey(KeyCode.LeftArrow);
-            var right = Input.GetKey(KeyCode.RightArrow);
-            
-            if (left && right)
-            {
-                return TapType.Both;
-            }
-            else if (left)
-            {
-                return TapType.Left;
-            }
-            else if (right)
-            {
-                return TapType.Right;
-            }*/
         }
-        else
+
+        switch (Input.touchCount)
         {
-            switch (Input.touchCount)
-            {
-                case 0: return TapType.Left;
-                default: return TapType.Both;
-            }
-            
-            /*switch (Input.touchCount)
-            {
-                case 1: return Input.mousePosition.x >= (Screen.width / 2) ? TapType.Left : TapType.Both;
-                case 2: return TapType.Both;
-            }*/
-            
-            /*switch (Input.touchCount)
-            {
-                case 1: return Input.mousePosition.x >= (Screen.width / 2) ? TapType.Right : TapType.Left;
-                case 2: return TapType.Both;
-            }*/
+            case 0: return TapType.Left;
+            default: return TapType.Both;
         }
-        
-        //return TapType.None;
     }
 
 
-    #region Unused
+    #endregion
 
 
-    private void ControlGoToPoint()
+    private void HandleLevelStop()
     {
-        var worldInputPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        worldInputPos.z = 0f;
-        var worldPos = this.transform.position;
-        worldPos.z = 0f;
+        this.isRunning = false;
 
-        var inputDir = (worldInputPos - worldPos).normalized;
-        var aimDir = (Vector2)this.transform.right;
-        var velDir = (Vector3)this.rigidBody.velocity.normalized;
-        var dirDot = (Vector2.Dot(aimDir, velDir) + 1f) / 2f;
-        var inputInvDot = 1f - ((Vector2.Dot(aimDir, inputDir) + 1f) / 2f);
-        var angleDiff = aimDir.SignedAngle(inputDir);
-        var normAngleDiff = angleDiff / 180f;
+        this.transform.position = this.initialPos;
+        this.transform.rotation = this.initialRot;
 
-        if (this.IsThrusting)
+        this.rigidBody.angularVelocity = 0f;
+        this.rigidBody.velocity = Vector2.zero;
+
+        foreach (var t in this.trails)
         {
-            this.OnStopThrusting();
+            t.enabled = false;
         }
 
-        if (Input.GetMouseButton(0))
+        this.currMaxSpeed = this.maxSpeed;
+    }
+
+    private void HandleLevelStart()
+    {
+        if (this.isRunning)
         {
-            // Torque
-            {
-                // Add
-                var newAngVel = normAngleDiff * this.aimTorque;
-                this.rigidBody.AddTorque(newAngVel, ForceMode2D.Force);
-
-                // Cap
-                {
-                    var maxAngVelDir = Mathf.Sign(angleDiff);
-                    var maxAngVel = Mathf.Lerp(this.aimMaxAngularVelocityRange.x, this.aimMaxAngularVelocityRange.y, this.aimMaxAngularVelocityCurve.Evaluate(inputInvDot)) * maxAngVelDir;
-
-                    if (Mathf.Abs(this.rigidBody.angularVelocity) > Mathf.Abs(maxAngVel))
-                    {
-                        this.rigidBody.angularVelocity = maxAngVel;
-                    }
-                }
-            }
-
-            // Thrust
-            if (inputInvDot < this.dotProductLimitBeforeThrust)
-            {
-                if (!this.IsThrusting)
-                {
-                    this.OnStartThrusting();
-                }
-
-                // Decay
-                if (!this.wasThrusting)
-                {
-                    var multiplier = Mathf.Lerp(this.aimVelocityDecayRange.x, this.aimVelocityDecayRange.y, this.aimVelocityDecayCurve.Evaluate(dirDot));
-                    this.rigidBody.velocity = velDir * this.rigidBody.velocity.magnitude * multiplier;
-                }
-
-                // Add
-                {
-                    var multiplier = Mathf.Lerp(this.aimBoostMultiplierRange.x, this.aimBoostMultiplierRange.y, this.aimBoostMultiplierCurve.Evaluate(dirDot));
-                    this.rigidBody.AddRelativeForce(this.boostForce * multiplier);
-                }
-
-                // Cap
-                if (this.rigidBody.velocity.magnitude > this.currMaxSpeed)
-                {
-                    this.rigidBody.velocity = this.rigidBody.velocity.normalized * this.currMaxSpeed;
-                }
-            }
+            return;
         }
-        else
+
+        this.isRunning = true;
+
+        CameraController.Shake(this.launchShakeDuration, this.launchShakeMagnitude);
+
+        this.AddImpulseForce(this.launchForce);
+
+        foreach (var t in this.trails)
         {
-            if (Input.GetMouseButtonUp(0))
-            {
-                this.angularVelocityOnRelease = this.rigidBody.angularVelocity;
-            }
-
-            this.rigidBody.angularVelocity = this.angularVelocityOnRelease;
-
-            // Cap
-            if (Mathf.Abs(this.rigidBody.angularVelocity) > this.maxAngularVelocity)
-            {
-                this.rigidBody.angularVelocity = Mathf.Sign(this.rigidBody.angularVelocity) * this.maxAngularVelocity;
-            }
+            t.enabled = true;
         }
     }
-    
-    
-    #endregion
-
-
-    #endregion
 }

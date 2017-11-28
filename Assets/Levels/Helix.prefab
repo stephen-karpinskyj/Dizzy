@@ -2380,7 +2380,7 @@ MonoBehaviour:
     multiplierIncrease: 25
   - time: 8
     multiplierIncrease: 40
-  - time: 7.7
+  - time: 7.5
     multiplierIncrease: 80
 --- !u!114 &11443028
 MonoBehaviour:

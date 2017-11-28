@@ -144,7 +144,7 @@ public class ShipBoostController : MonoBehaviour
         this.boostParticleEmission.rateOverTime = this.boostParticleRate;
         
         AudioManager.Instance.Play(this.source);
-        this.targetBoostLightIntensity = this.boostLightIntensityRange.y;
+        //this.targetBoostLightIntensity = this.boostLightIntensityRange.y;
         
         this.smallBoostCollider.enabled = true;
         
@@ -159,7 +159,7 @@ public class ShipBoostController : MonoBehaviour
         this.boostParticleEmission.rateOverTime = this.boostParticleRate;
 
         AudioManager.Instance.Stop(this.source);
-        this.targetBoostLightIntensity = this.boostLightIntensityRange.x;
+        //this.targetBoostLightIntensity = this.boostLightIntensityRange.x;
     }
 
     private IEnumerator DelayColliderDisable()

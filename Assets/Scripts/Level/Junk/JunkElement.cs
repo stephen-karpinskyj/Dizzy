@@ -9,9 +9,6 @@ public class JunkElement
     
     [SerializeField]
     private Material mat;
-    
-    [SerializeField]
-    private GameObject sparkles;
 
     public Renderer Rend
     {
@@ -23,14 +20,5 @@ public class JunkElement
     public void Initialise()
     {
         this.rend.material = mat;
-        this.ShowSparkles(false);
-    }
-    
-    public void ShowSparkles(bool show)
-    {
-        if (this.sparkles)
-        {
-            this.sparkles.SetActive(show);
-        }
     }
 }

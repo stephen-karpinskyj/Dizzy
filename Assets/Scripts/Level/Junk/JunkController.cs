@@ -18,9 +18,6 @@ public class JunkController : LevelObjectController
     private JunkElement[] elements;
 
     [SerializeField]
-    private ParticleSystem sparkParticles;
-
-    [SerializeField]
     private AudioSource source;
 
     [SerializeField]
@@ -55,7 +52,7 @@ public class JunkController : LevelObjectController
 
     [SerializeField]
     private Vector2 speedMultiplierRange = new Vector2(20f, 80f);
-    
+
     [SerializeField]
     private Transform visualsParent;
 
@@ -99,14 +96,6 @@ public class JunkController : LevelObjectController
 
     #region Unity
 
-
-    protected override void Awake()
-    {
-        base.Awake();
-        
-        Debug.Assert(this.sparkParticles, this);
-        Debug.Assert(this.source, this);
-    }
 
     private void Update()
     {
@@ -167,7 +156,7 @@ public class JunkController : LevelObjectController
         this.coll.enabled = true;
         
         this.transform.localPosition = Vector3.zero;
-        this.visualsParent.rotation = Random.rotation;
+        this.visualsParent.eulerAngles = Vector3.forward * Random.Range(0f, 360f);
     }
 
     public override void OnLevelStart()
@@ -201,12 +190,11 @@ public class JunkController : LevelObjectController
         
         if (showNow)
         {
-            this.chosenElement.Rend.enabled = true;
-            this.chosenElement.ShowSparkles(true);
+            this.visualsParent.gameObject.SetActive(true);
         }
         else
         {
-            this.StartCoroutine(this.ShowCoroutine(this.chosenElement.Rend, () => this.chosenElement.ShowSparkles(true)));
+            this.StartCoroutine(this.ShowCoroutine(this.visualsParent.gameObject));
         }
     }
     
@@ -244,12 +232,9 @@ public class JunkController : LevelObjectController
         this.source.pitch = 1f + this.deathPitchMultiplier * GameManager.Instance.Multiplier.CurrentMultiplier;
         AudioManager.Instance.Play(this.source);
 
-        this.chosenElement.Rend.enabled = false;
-        this.chosenElement.ShowSparkles(false);
+		this.visualsParent.gameObject.SetActive(false);
 
         this.transform.eulerAngles = Vector3.forward * this.rotationAtAttraction;
-
-//        this.sparkParticles.Play();
 
         GameManager.Instance.Multiplier.Increment();
     }
@@ -257,12 +242,8 @@ public class JunkController : LevelObjectController
     private void HideAllElements()
     {
         this.StopAllCoroutines();
-        
-        foreach (var e in this.elements)
-        {
-            e.Rend.enabled = false;
-            e.ShowSparkles(false);
-        }
+
+        this.visualsParent.gameObject.SetActive(false);
     }
 
 

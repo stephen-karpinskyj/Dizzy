@@ -35,7 +35,7 @@ public abstract class LevelObjectController : MonoBehaviour
     #region Coroutines
 
 
-    protected IEnumerator ShowCoroutine(Renderer rend, Action onComplete = null)
+    protected IEnumerator ShowCoroutine(GameObject go, Action onComplete = null)
     {
         var x = this.transform.position.x - this.showPositionRange.x;
         var t = x / (this.showPositionRange.y - this.showPositionRange.x);
@@ -43,7 +43,7 @@ public abstract class LevelObjectController : MonoBehaviour
         yield return new WaitForSeconds(this.maxShowDuration * t + Random.Range(this.showDurationOffset.x, this.showDurationOffset.y));
 
         this.transform.localScale = this.initialScale;
-        rend.enabled = true;
+        go.SetActive(true);
 
         var time = Time.time;
         var progress = 0f;

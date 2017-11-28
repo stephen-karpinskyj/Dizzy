@@ -4,52 +4,43 @@ using UnityEngine.EventSystems;
 
 public class GameManager : BehaviourSingleton<GameManager>
 {
-    #region Fields
-
-
     private LevelManager level;
     private WorldManager world;
     private CanvasUIController canvas;
-    
+
     private LaunchLightsController launchLights;
 
-    private bool hasInitialised = false;
-    private bool isRunning = false;
-    private bool canRun = false;
-    
+    private bool hasInitialised;
+    private bool canRun;
+
     private Vector2 offset;
     private Vector3 prevAcceleration;
 
-
-    #endregion
-
-
-    #region Properties
-
-
-    public bool IsRunning { get { return this.isRunning; } }
+    public bool IsRunning { get; private set; }
 
     public ShipController Ship { get; private set; }
 
     public MultiplierController Multiplier { get; private set; }
-    
+
     public bool IsUsingKeyboard { get; private set; }
-    
 
-    #endregion
+    public delegate void OnLevelStartDelegate();
+    public event OnLevelStartDelegate OnLevelStart = delegate { };
 
+	public delegate void OnLevelStopDelegate();
+	public event OnLevelStopDelegate OnLevelStop = delegate { };
 
-    #region Unity
+    public delegate void OnLevelWinDelegate();
+    public event OnLevelWinDelegate OnLevelWin = delegate { };
 
-
-    private void Awake()
+	private void Awake()
     {
         this.IsUsingKeyboard = Application.platform != RuntimePlatform.Android && Application.platform != RuntimePlatform.IPhonePlayer;
     }
 
     private void Update()
     {
-        if (this.isRunning || !this.canRun)
+        if (this.IsRunning || !this.canRun)
         {
             return;
         }
@@ -69,7 +60,7 @@ public class GameManager : BehaviourSingleton<GameManager>
         
         if (shouldRun)
         {
-            this.OnLevelStart();
+            this.StartLevel();
         }
         else if (this.IsUsingKeyboard)
         {
@@ -83,13 +74,6 @@ public class GameManager : BehaviourSingleton<GameManager>
             }
         }
     }
-
-
-    #endregion
-
-
-    #region Public
-
 
     public void Initialise()
     {
@@ -120,7 +104,7 @@ public class GameManager : BehaviourSingleton<GameManager>
 
     public void HandleOutOfBounds()
     {
-        this.OnLevelStop(false);
+        this.StopLevel(false);
     }
     
     public void ResetProgress()
@@ -138,12 +122,6 @@ public class GameManager : BehaviourSingleton<GameManager>
         this.OnLevelLoad(nextLevel);
     }
 
-    #endregion
-
-
-    #region Private
-
-
     private void OnGameStart()
     {
         this.level.OnGameStart(this.canvas);
@@ -155,20 +133,27 @@ public class GameManager : BehaviourSingleton<GameManager>
 
         CameraController.ChangeMode(false);
         
-        this.level.OnLeveUnload();
-        this.level.OnLevelLoad(level, () => this.OnLevelStop(true));
-        this.OnLevelStop(false);
+        this.level.OnLevelUnload();
+        this.level.OnLevelLoad(level, () => this.StopLevel(true));
+        this.StopLevel(false);
         
         this.canvas.OnLevelLoad(this.level.CurrentLevel, this.level.CurrentLevelState, StateManager.Instance.JunkCount, StateManager.Instance.JunkMultiplier);
     }
     
-    private void OnLevelStop(bool won)
+    private void StopLevel(bool won)
     {
-        Debug.LogFormat("[{0}] Stopping level, won={1}", this.GetType().Name, won);
+		this.IsRunning = false;
         
-        this.isRunning = false;
+        Debug.LogFormat(this, "[Game] Stopping level, won={0}", won);
 
-        this.Ship.OnLevelStop();
+        this.OnLevelStop();
+
+        if (won)
+        {
+            this.OnLevelWin();
+        }
+
+        // TODO: Have them subscribe
         this.Multiplier.OnLevelStop();
         
         this.launchLights.OnLevelStop(this.level.CurrentLevel is TrialLevelData);
@@ -189,15 +174,17 @@ public class GameManager : BehaviourSingleton<GameManager>
         CameraController.Shake(0.05f, 0.05f);
     }
 
-    private void OnLevelStart()
+    private void StartLevel()
     {
-        Debug.LogFormat("[{0}] Starting level", this.GetType().Name);
-        
-        Debug.Assert(!this.isRunning);
+        Debug.Assert(!this.IsRunning, this);
 
-        this.isRunning = true;
+		Debug.Log("[Game] Starting level", this);
 
-        this.Ship.OnLevelStart();
+        this.IsRunning = true;
+
+        this.OnLevelStart();
+
+        // TODO: Have them subscribe
         this.launchLights.OnLevelStart();
 
         this.level.OnLevelStart();
@@ -221,27 +208,10 @@ public class GameManager : BehaviourSingleton<GameManager>
         this.canvas.ForceUpdateAll(this.level.CurrentLevel, this.level.CurrentLevelState, StateManager.Instance.JunkCount, StateManager.Instance.JunkMultiplier);
     }
 
-
-    #endregion
-
-
-    #region Coroutines
-
-
     private IEnumerator BlockRunStart()
     {
         this.canRun = false;
         yield return new WaitForSeconds(0.5f);
         this.canRun = true;
     }
-    
-    private IEnumerator DelayedLevelStop(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        
-        this.HandleOutOfBounds();
-    }
-
-
-    #endregion
 }

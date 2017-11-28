@@ -10,12 +10,9 @@ public class MineController : LevelObjectController
         Waiting,
         Exploded,
     }
-    
+
     [SerializeField]
     private Renderer rend;
-    
-    [SerializeField]
-    private string colourProperty = "_EmissionColor";
     
     [SerializeField]
     private float lightOnSpeed = 5f;
@@ -56,12 +53,16 @@ public class MineController : LevelObjectController
     [SerializeField]
     private AnimationCurve junkPusherCurve;
 
+    [SerializeField]
+    private GameObject visualParent;
+
     private State currState;
     
     private float currLight;
     private float targetLight;
     private float lastLightOffTime;
-    
+
+    private Color defaultLightColour;
     private Color lightColour;
     
     private Dictionary<JunkPusher, JunkController> junkPushers;
@@ -75,8 +76,9 @@ public class MineController : LevelObjectController
     protected override void Awake()
     {
         base.Awake();
-        
-        this.lightColour = Color.black;
+
+        this.defaultLightColour = this.rend.material.color;
+        this.lightColour = this.defaultLightColour;
     }
     
     private void Start()
@@ -156,8 +158,8 @@ public class MineController : LevelObjectController
             kv.Value.OnLevelStop();
         }
         
-        this.rend.enabled = false;
-        this.StartCoroutine(this.ShowCoroutine(this.rend));
+        this.visualParent.SetActive(false);
+        this.StartCoroutine(this.ShowCoroutine(this.visualParent));
     }
     
     public override void OnLevelStart()
@@ -231,7 +233,7 @@ public class MineController : LevelObjectController
         this.UpdateLight(true);
         this.explosionParticles.Stop();
 
-        this.rend.enabled = true;
+		this.visualParent.SetActive(true);
     }
     
     private IEnumerator ExplodeCoroutine()
@@ -251,35 +253,20 @@ public class MineController : LevelObjectController
         ship.AddImpulseForce(ship.Direction * this.explosionForce, true);
         
         CameraController.Shake(this.explosionShakeDuration, this.explosionShakeMagnitude);
-        
-        this.rend.enabled = false;
+
+        this.visualParent.SetActive(false);
     }
     
     private float UpdateLight(bool blinking)
     {
         this.currLight = Mathf.Clamp01(this.currLight);
-        
-        var r = this.currLight;
-        var g = this.currLight;
-        var b = this.currLight;
-        
-        if (blinking)
-        {
-            r *= this.blinkingColor.r;
-            g *= this.blinkingColor.g;
-            b *= this.blinkingColor.b;
-        }
-        else
-        {
-            r *= this.explodingColor.r;
-            g *= this.explodingColor.g;
-            b *= this.explodingColor.b;
-        }
-        
-        this.lightColour.r = r;
-        this.lightColour.g = g;
-        this.lightColour.b = b;
-        this.rend.material.SetColor(this.colourProperty, this.lightColour);
+
+        var targetColour = blinking ? this.blinkingColor : this.explodingColor;
+
+        this.lightColour.r = Mathf.Lerp(this.defaultLightColour.r, targetColour.r, this.currLight);
+        this.lightColour.g = Mathf.Lerp(this.defaultLightColour.g, targetColour.g, this.currLight);
+        this.lightColour.b = Mathf.Lerp(this.defaultLightColour.b, targetColour.b, this.currLight);
+        this.rend.material.color = this.lightColour;
         
         return this.currLight;
     }
