@@ -314,11 +314,6 @@ public class ShipController : MonoBehaviour
             {
                 trailDuration = 0f;
             }
-
-            foreach (var t in this.trails)
-            {
-                t.time = trailDuration;
-            }
         }
 
         this.wasTapping = this.isTapping;
@@ -520,11 +515,6 @@ public class ShipController : MonoBehaviour
         this.rigidBody.angularVelocity = 0f;
         this.rigidBody.velocity = Vector2.zero;
 
-        foreach (var t in this.trails)
-        {
-            t.enabled = false;
-        }
-
         this.currMaxSpeed = this.maxSpeed;
     }
 
@@ -540,10 +530,5 @@ public class ShipController : MonoBehaviour
         CameraController.Shake(this.launchShakeDuration, this.launchShakeMagnitude);
 
         this.AddImpulseForce(this.launchForce);
-
-        foreach (var t in this.trails)
-        {
-            t.enabled = true;
-        }
     }
 }

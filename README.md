@@ -1,2 +1,2 @@
 # Dizzy
-Peggle + Luftrausers => One-button racing game
+One-touch, single-screen mobile racer.
